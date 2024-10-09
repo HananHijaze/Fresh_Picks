@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="16dp"
+    app:cardCornerRadius="15dp"
+    android:background="@color/beige">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <!-- Image Section -->
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="74dp"
+            android:layout_height="87dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/stuff" />
+
+        <!-- X Button (Close Button in Corner) -->
+        <ImageButton
+            android:id="@+id/buttonClose"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Close"
+            android:src="@drawable/ic_delete" />
+
+        <!-- Text Content Section -->
+        <LinearLayout
+            android:layout_width="237dp"
+            android:layout_height="79dp"
+            android:layout_above="@+id/linearLayout"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="15dp"
+            android:layout_toStartOf="@+id/buttonClose"
+            android:layout_toEndOf="@id/productImage"
+            android:orientation="vertical">
+
+            <!-- Product Name -->
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fresh Lemon"
+                android:textColor="@color/black"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+            <!-- Product Description -->
+            <TextView
+                android:id="@+id/productDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lorem Ipsum is simply"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <!-- Price Section -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Selling Price -->
+                <TextView
+                    android:id="@+id/sellingPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Price:"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <!-- MRP Price -->
+                <TextView
+                    android:id="@+id/mrpPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="30.0 NIS"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Increment/Decrement Section at the Bottom -->
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Decrement Button -->
+            <ImageButton
+                android:id="@+id/buttonDecrement"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="Decrement"
+                android:src="@drawable/ic_remove" />
+
+            <!-- Quantity Display -->
+            <TextView
+                android:id="@+id/textQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="30dp" />
+
+            <!-- Increment Button -->
+            <ImageButton
+                android:id="@+id/buttonIncrement"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:contentDescription="Increment"
+                android:src="@drawable/ic_add" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
