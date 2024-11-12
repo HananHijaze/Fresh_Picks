@@ -10,13 +10,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class Checkout extends AppCompatActivity {
+public class Checkout2 extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_checkout);
+        setContentView(R.layout.activity_checkout2);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -25,7 +25,7 @@ public class Checkout extends AppCompatActivity {
         Button btn_next;
         btn_next=findViewById(R.id.btn_next);
         btn_next.setOnClickListener(view -> {
-            Intent in = new Intent(Checkout.this, Checkout2.class);
+            Intent in = new Intent(this, Checkout3.class);
             startActivity(in);
         });
     }

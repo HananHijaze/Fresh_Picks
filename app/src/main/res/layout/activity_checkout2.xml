@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Checkout"
-    android:background="@drawable/homebackground">
+    android:background="@drawable/homebackground"
+    tools:context=".Checkout2">
 
     <!-- Horizontal Progress Bar -->
     <LinearLayout
@@ -61,12 +61,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <!-- Empty Circle -->
+            <!-- Full Circle -->
             <ImageView
                 android:id="@+id/circle_payment"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_circle_unchecked" />
+                android:src="@drawable/ic_circle_checked" />
 
             <!-- Payment Label -->
             <TextView
@@ -126,13 +126,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.1" />
 
-    <!-- CardView containing the form -->
+    <!-- Shipping Method CardView -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="0dp"
+        android:id="@+id/cardView_shipping"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="16dp"
@@ -147,160 +146,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Text: Are you existing customers... -->
-            <TextView
-                android:layout_gravity="center"
-                android:id="@+id/customer_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="16dp"
-                android:text="Are you existing customers please signin or signup."
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <!-- Buttons: Signin, Signup, Guest Checkout -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_signin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/grey"
-                    android:text="Signin"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btn_signup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/grey"
-                    android:text="Signup"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/btn_guest_checkout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/grey"
-                    android:text="Guest checkout"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <!-- Input Fields: Name, Mobile Number, Address -->
-            <EditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/grey"
-                android:hint="Enter your name"
-                android:padding="12dp" />
-
-            <EditText
-                android:id="@+id/et_mobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/grey"
-                android:hint="Enter your mobile no."
-                android:padding="12dp" />
-
-            <EditText
-                android:id="@+id/et_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/grey"
-                android:hint="Enter your address"
-                android:padding="12dp" />
-
-            <!-- Continue Button -->
-            <Button
-                android:id="@+id/btn_continue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/grey"
-                android:text="Continue"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Coupon Code CardView -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_coupon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:padding="16dp"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <!-- Coupon Code Input Field -->
-            <EditText
-                android:id="@+id/et_coupon_code"
-                android:layout_width="295dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/grey"
-                android:hint="Enter coupon code"
-                android:padding="12dp" />
-
-            <!-- Apply Button -->
-            <Button
-                android:id="@+id/btn_apply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="@color/grey"
-                android:text="Apply"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_shipping"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:padding="16dp"
-        app:cardCornerRadius="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/cardView_coupon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
             <!-- Shipping Method Title -->
             <TextView
-                android:id="@+id/tv_shipping_title"
+                android:id="@+id/tv_payment_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="Shipping Method"
+                android:text="Payment Method"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:textColor="@color/grey"
@@ -315,7 +167,7 @@
 
                 <!-- Pickup Option -->
                 <LinearLayout
-                    android:id="@+id/pickup_option"
+                    android:id="@+id/card_option"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -326,19 +178,20 @@
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_shippingmeth2"
-                        />
+                        android:src="@drawable/ic_creditcard" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Shop Pickup"
+                        android:text="Credit Card"
                         android:textColor="@color/grey"
                         android:textSize="16sp" />
                 </LinearLayout>
+
+                <!-- Courier Option -->
                 <LinearLayout
-                    android:id="@+id/pickup_option1"
+                    android:id="@+id/cash_option"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -349,13 +202,12 @@
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_shippingmeth1"
-                        />
+                        android:src="@drawable/ic_mony" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Courier"
+                        android:text="Cash"
                         android:textColor="@color/grey"
                         android:textSize="16sp"
                         android:gravity="center"/>
@@ -363,22 +215,122 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <!-- Next Button -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:layout_marginTop="40dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/cardView_shipping"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardElevation="4dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <!-- Payment Method Title -->
+            <TextView
+                android:id="@+id/card_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payment Method"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/grey"
+                android:paddingBottom="12dp"/>
+
+            <!-- Cardholder Name -->
+            <EditText
+                android:id="@+id/et_cardholder_name"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="Cardholder Name"
+                android:inputType="textPersonName"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <!-- Card Number -->
+            <EditText
+                android:id="@+id/et_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="Card Number"
+                android:inputType="number"
+                android:maxLength="16"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp"/>
+
+            <!-- Expiry Date and CVV -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <!-- Expiry Date -->
+                <EditText
+                    android:id="@+id/et_expiry_date"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:hint="MM/YY"
+                    android:inputType="date"
+                    android:maxLength="5"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+
+                <!-- CVV -->
+                <EditText
+                    android:id="@+id/et_cvv"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:hint="CVV"
+                    android:inputType="numberPassword"
+                    android:maxLength="3"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginStart="12dp"/>
+            </LinearLayout>
+            <!-- Save Credit Card Option -->
+            <CheckBox
+                android:id="@+id/save_card_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save this card"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="411dp"
-        android:layout_height="122dp"
-        android:layout_margin="16dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="@color/white"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    android:layout_marginBottom="0dp">
 
-        <!-- Additional TextView -->
+    <!-- Additional TextView -->
         <TextView
             android:id="@+id/tv_additional"
             android:layout_width="wrap_content"
