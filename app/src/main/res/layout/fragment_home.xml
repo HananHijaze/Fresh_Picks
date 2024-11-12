@@ -61,13 +61,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/veggies" />
+                android:src="@drawable/seasonal" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Vegetables"
+                android:text="Seasonal Fruits"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -127,14 +127,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/bread" />
+                android:src="@drawable/veggies" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Bread and Pastries"
+                android:text="Vegetables"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -160,13 +160,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/fridge" />
+                android:src="@drawable/bread" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Dairy"
+                android:text="Bread and Pastries"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -193,14 +193,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/stuff" />
+                android:src="@drawable/fridge" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Grocery Essentials"
+                android:text="Dairy "
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -226,13 +226,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/candy" />
+                android:src="@drawable/stuff" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Snacks"
+                android:text="Grocery Essentials"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -259,13 +259,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/drinkes" />
+                android:src="@drawable/frozen" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Drinks"
+                android:text="Frozen Foods"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -292,13 +292,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/frozen" />
+                android:src="@drawable/candy" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Frozen Foods"
+                android:text="Snacks"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -323,13 +323,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/spices" />
+                android:src="@drawable/drinkes" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Spices"
+                android:text="Drinks"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -355,14 +355,78 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/superwoman" />
+                android:src="@drawable/spices" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
+                android:text="Spices"
+                android:textColor="@color/grey"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <!-- Card 9 -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        android:background="@drawable/rounded_card_background"
+        android:contentDescription="spices"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/superwoman" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Support Super👸"
+                android:background="@color/beige"
+                android:textColor="@color/grey"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <!-- Card 12 -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_columnWeight="1"
+        android:layout_margin="8dp"
+        android:background="@drawable/rounded_card_background"
+        android:contentDescription="spices"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bulkdeal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@color/beige"
+                android:text="Min 90' deals"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
