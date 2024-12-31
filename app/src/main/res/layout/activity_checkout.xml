@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="16dp"
-                android:text="Are you existing customers please signin or signup."
+                android:text="Are you existing customer please signin or signup."
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -169,53 +169,30 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_signin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/grey"
-                    android:text="Signin"
-                    android:textColor="@android:color/white" />
-
-                <Button
                     android:id="@+id/btn_signup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/grey"
-                    android:text="Signup"
+                    android:text="SignUp"
                     android:textColor="@android:color/white" />
 
-                <Button
-                    android:id="@+id/btn_guest_checkout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/grey"
-                    android:text="Guest checkout"
-                    android:textColor="@android:color/white" />
             </LinearLayout>
 
             <!-- Input Fields: Name, Mobile Number, Address -->
             <EditText
-                android:id="@+id/et_name"
+                android:id="@+id/et_Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/grey"
-                android:hint="Enter your name"
+                android:hint="Enter your Email"
                 android:padding="12dp" />
 
-            <EditText
-                android:id="@+id/et_mobile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/grey"
-                android:hint="Enter your mobile no."
-                android:padding="12dp" />
+            <!-- Continue Button -->
 
             <EditText
-                android:id="@+id/et_address"
+                android:id="@+id/et_Password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -223,14 +200,13 @@
                 android:hint="Enter your address"
                 android:padding="12dp" />
 
-            <!-- Continue Button -->
             <Button
                 android:id="@+id/btn_continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/grey"
-                android:text="Continue"
+                android:text="SignIn"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -251,7 +227,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 

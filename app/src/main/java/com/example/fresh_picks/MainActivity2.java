@@ -43,7 +43,7 @@ public class MainActivity2 extends AppCompatActivity {
             } else if (id == R.id.wishList_BottomIcon) {
                 selectedFragment = new WishList();  // Load WishListFragment
             } else if (id == R.id.cart_BottomIcon) {
-                selectedFragment = new Cart();  // Load CartFragment
+                selectedFragment = new Cart();
             }
 
             // If a fragment is selected (not null), replace the existing one

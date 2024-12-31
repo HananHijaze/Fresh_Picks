@@ -1,15 +1,30 @@
 package com.example.fresh_picks.classes;
 
 public class Category {
-    private int categoryId;
-    private String categoryName;
-    private String description;
+    private int id;
+    private String name;
 
-    public Category(int categoryId, String categoryName, String description) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.description = description;
+    // Constructors
+    public Category(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    // Getters and setters for category details
+    // Getters and Setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

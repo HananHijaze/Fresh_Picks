@@ -134,15 +134,7 @@
             android:text="Submit Order"
             android:backgroundTint="@color/grey"/>
 
-        <!-- Lottie Animation -->
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieAnimationView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:visibility="gone"
-            app:lottie_rawRes="@raw/successanimation"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="false"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

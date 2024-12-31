@@ -24,22 +24,7 @@ public class Checkout3 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button orderButton = findViewById(R.id.orderButton);
-        LottieAnimationView lottieAnimationView = findViewById(R.id.lottieAnimationView);
 
-        orderButton.setOnClickListener(v -> {
-            // Start a simple scale animation for the button
-            v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(200).withEndAction(() -> {
-                v.animate().scaleX(1f).scaleY(1f).setDuration(200);
-
-                // Simulate order submission by showing the Lottie animation
-                lottieAnimationView.setVisibility(View.VISIBLE);
-                lottieAnimationView.playAnimation();
-
-                // Optionally, hide the button after submission
-                orderButton.setVisibility(View.GONE);
-            });
-        });
 
     }
 }

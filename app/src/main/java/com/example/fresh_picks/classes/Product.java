@@ -5,19 +5,21 @@ public class Product {
     private String name;
     private String description;
     private double price;
-    private String category;
+    private Category category;
     private int stockQuantity;
-    private String imageUrl;
 
-    public Product(int id, String name, String description, double price, String category, int stockQuantity, String imageUrl) {
+    // Constructors
+    public Product(int id, String name, String description, double price, Category category, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
         this.stockQuantity = stockQuantity;
-        this.imageUrl = imageUrl;
     }
+
+    // Getters and Setters
+
 
     public int getId() {
         return id;
@@ -51,11 +53,11 @@ public class Product {
         this.price = price;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -66,18 +68,4 @@ public class Product {
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public void updateStock(int quantity) {
-
-        this.stockQuantity = quantity;
-    }
-
 }
