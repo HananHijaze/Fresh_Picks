@@ -44,6 +44,6 @@
     <string name="home">Home</string>
     <string name="profile">Profile</string>
     <string name="order_submitted_successfully">Order Submitted Successfully</string>
-    <string name="track">Track</string>
+    <string name="track">Track Your Order</string>
     <string name="address">Address</string>
 </resources>

@@ -17,7 +17,6 @@ import com.example.fresh_picks.DAO.UserEntity;
 public class Profile extends Fragment {
 
     private TextView tvUserName, tvUserPhone, tvUserAddresses;
-    private ImageView imgUserIcon;
 
     @Nullable
     @Override
@@ -25,13 +24,13 @@ public class Profile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Initialize views
-        imgUserIcon = view.findViewById(R.id.img_user_icon);
         tvUserName = view.findViewById(R.id.tv_user_name);
         tvUserPhone = view.findViewById(R.id.tv_user_phone);
-        tvUserAddresses = view.findViewById(R.id.tv_user_addresses);
+        tvUserAddresses = view.findViewById(R.id.btn_my_location); // Update ID based on your XML
 
         // Load user data
-        loadUserData("0532811583"); // Replace with the actual phone number, if dynamically retrieved
+        String phoneNumber = "0532811583"; // Replace with dynamic retrieval if needed
+        loadUserData(phoneNumber);
 
         return view;
     }
@@ -40,14 +39,13 @@ public class Profile extends Fragment {
         new Thread(() -> {
             // Access the Room database
             AppDatabase db = AppDatabase.getInstance(requireContext());
-            UserEntity user = db.userDao().getUserByPhoneNumber(phoneNumber);
+            UserEntity user = db.userDao().getUserByPhone(phoneNumber);
 
             // Update the UI with the user data
             if (user != null) {
                 requireActivity().runOnUiThread(() -> {
                     tvUserName.setText(user.getName());
                     tvUserPhone.setText(phoneNumber);
-                    tvUserAddresses.setText(String.join(", ", user.getAddresses()));
                 });
             }
         }).start();
