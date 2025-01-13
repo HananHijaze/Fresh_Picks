@@ -4,6 +4,7 @@ public class Payment {
     private String paymentMethod; // "Cash" or "CreditCard"
     private boolean isPaid;
     private Cart cart; // Link to the Cart
+    private Coupon appliedCoupon; // Add Coupon field
 
     // Credit Card Details
     private String cardNumber;
@@ -35,7 +36,16 @@ public class Payment {
         this.cvv = cvv;
     }
 
-    // Getters and Setters
+    // Getter and Setter for Coupon
+    public Coupon getAppliedCoupon() {
+        return appliedCoupon;
+    }
+
+    public void setAppliedCoupon(Coupon appliedCoupon) {
+        this.appliedCoupon = appliedCoupon;
+    }
+
+    // Getter and Setter for Payment Method
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -44,6 +54,7 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
+    // Getter and Setter for isPaid
     public boolean isPaid() {
         return isPaid;
     }
@@ -52,6 +63,7 @@ public class Payment {
         isPaid = paid;
     }
 
+    // Getter and Setter for Cart
     public Cart getCart() {
         return cart;
     }
@@ -60,6 +72,7 @@ public class Payment {
         this.cart = cart;
     }
 
+    // Credit Card Getters and Setters
     public String getCardNumber() {
         return cardNumber;
     }
@@ -104,9 +117,17 @@ public class Payment {
         this.cvv = cvv;
     }
 
-    // Utility Method to calculate the total payment amount from the Cart
+    // Calculate total amount with coupon
     public double calculateTotalAmount() {
-        return cart.calculateTotalPrice();
+        double total = cart.calculateTotalPrice(); // Get the total price of items in the cart
+
+        // Check if a coupon is applied and valid
+        if (appliedCoupon != null && appliedCoupon.isValid(total, cart.getItems())) {
+            // Subtract the discount amount calculated by the coupon
+            total -= appliedCoupon.calculateDiscount(total, cart.getItems());
+        }
+
+        return Math.max(total, 0); // Ensure the total is not negative
     }
 
     @Override
@@ -115,6 +136,7 @@ public class Payment {
                 "paymentMethod='" + paymentMethod + '\'' +
                 ", isPaid=" + isPaid +
                 ", totalAmount=" + calculateTotalAmount() +
+                ", appliedCoupon=" + (appliedCoupon != null ? appliedCoupon.getCode() : "None") +
                 ", cart=" + cart +
                 '}';
     }
