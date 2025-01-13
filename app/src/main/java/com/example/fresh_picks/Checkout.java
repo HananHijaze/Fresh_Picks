@@ -37,11 +37,5 @@ public class Checkout extends AppCompatActivity {
         });
 
         // Define the btn_signup button and set an OnClickListener
-        Button btnSignup = findViewById(R.id.btn_signup);
-        btnSignup.setOnClickListener(view -> {
-            // Navigate to SignUp activity
-            Intent intent = new Intent(Checkout.this, SignUp.class);
-            startActivity(intent);
-        });
     }
 }

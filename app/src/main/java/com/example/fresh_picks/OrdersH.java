@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WishList#newInstance} factory method to
+ * Use the {@link OrdersH#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WishList extends Fragment {
+public class OrdersH extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +24,7 @@ public class WishList extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public WishList() {
+    public OrdersH() {
         // Required empty public constructor
     }
 
@@ -34,11 +34,11 @@ public class WishList extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment WishList.
+     * @return A new instance of fragment OrdersH.
      */
     // TODO: Rename and change types and number of parameters
-    public static WishList newInstance(String param1, String param2) {
-        WishList fragment = new WishList();
+    public static OrdersH newInstance(String param1, String param2) {
+        OrdersH fragment = new OrdersH();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +59,6 @@ public class WishList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_wish_list, container, false);
+        return inflater.inflate(R.layout.fragment_orders_h, container, false);
     }
 }

@@ -3,24 +3,22 @@ package com.example.fresh_picks.classes;
 public class Product {
     private int id;
     private String name;
-    private String description;
     private double price;
     private Category category;
     private int stockQuantity;
+    private String imageUrl; // Field to store the image URL or path
 
     // Constructors
-    public Product(int id, String name, String description, double price, Category category, int stockQuantity) {
+    public Product(int id, String name, double price, Category category, int stockQuantity, String imageUrl) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.price = price;
         this.category = category;
         this.stockQuantity = stockQuantity;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
-
-
     public int getId() {
         return id;
     }
@@ -35,14 +33,6 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public double getPrice() {
@@ -67,5 +57,13 @@ public class Product {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

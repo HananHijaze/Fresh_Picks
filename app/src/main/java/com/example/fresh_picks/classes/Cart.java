@@ -4,36 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart {
-    private List<CartItem> items;
-    //gettter and setter for items
-    public List<CartItem> getItems() {
+    private List<Product> items;
+
+    // Constructor
+    public Cart(List<Product> items) {
+        this.items = items;
+    }
+
+    // Getters and Setters
+    public List<Product> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItem> items) {
+    public void setItems(List<Product> items) {
         this.items = items;
-    }
-    //constructor
-    public Cart(List<CartItem> items) {
-        this.items = items;
-    }
-
-    public Cart() {
-        this.items = new ArrayList<>();
     }
 
     // Methods to add, remove, and clear items
-    public void addItem(CartItem item) {
-        items.add(item);
+    public void addItem(Product product) {
+        if (!items.contains(product)) { // Avoid duplicates
+            items.add(product);
+        }
     }
 
-    public void removeItem(CartItem item) {
-        items.remove(item);
+    public void removeItem(Product product) {
+        items.remove(product);
     }
 
     public void clearCart() {
         items.clear();
     }
 
-    // Getters and a method to calculate total price
+    // Method to calculate total price
+    public double calculateTotalPrice() {
+        double total = 0;
+        for (Product product : items) {
+            total += product.getPrice(); // Assuming Product has a getPrice() method
+        }
+        return total;
+    }
 }

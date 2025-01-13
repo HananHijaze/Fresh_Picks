@@ -40,10 +40,14 @@ public class MainActivity2 extends AppCompatActivity {
             // Handle item selection based on the selected ID
             if (id == R.id.home_BottomIcon) {
                 selectedFragment = new Home();  // Load HomeFragment
-            } else if (id == R.id.wishList_BottomIcon) {
-                selectedFragment = new WishList();  // Load WishListFragment
-            } else if (id == R.id.cart_BottomIcon) {
+            } else if (id == R.id.myOrders_BottomIcon) {
+                selectedFragment = new OrdersH();  // Load WishListFragment
+            }
+            else if (id == R.id.cart_BottomIcon) {
                 selectedFragment = new Cart();
+            }
+            else if (id == R.id.profile_BottomIcon) {
+                selectedFragment = new Profile();
             }
 
             // If a fragment is selected (not null), replace the existing one

@@ -9,12 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Cart#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.example.fresh_picks.DAO.AppDatabase;
+import com.example.fresh_picks.DAO.UserEntity;
+
+import java.util.List;
+
 public class Cart extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -54,12 +55,43 @@ public class Cart extends Fragment {
         // Define the buttonCheckout
         Button buttonCheckout = view.findViewById(R.id.buttonCheckout);
 
-        // Set a click listener to navigate to the CheckoutActivity
+        // Set a click listener to check user registration status
         buttonCheckout.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Checkout.class);
-            startActivity(intent);
+            if (isUserRegistered()) {
+                // User is registered, proceed to CheckoutActivity
+                Intent intent = new Intent(getActivity(), Checkout.class);
+                startActivity(intent);
+            } else {
+                // User is not registered, redirect to SignUp activity
+                Toast.makeText(getActivity(), "Please sign up before checking out.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), SignUp.class);
+                startActivity(intent);
+            }
         });
 
         return view;
+    }
+
+    // Method to check if the user is registered
+    private boolean isUserRegistered() {
+        final boolean[] isRegistered = {false}; // Use an array to allow modification inside the thread
+
+        Thread thread = new Thread(() -> {
+            // Access the Room database
+            AppDatabase db = AppDatabase.getInstance(getActivity());
+            // Check if there is any user in the database
+            List<UserEntity> users = db.userDao().getAllUsers(); // Fetch all users
+            isRegistered[0] = users != null && !users.isEmpty(); // Set true if there's at least one user
+        });
+
+        thread.start();
+
+        try {
+            thread.join(); // Wait for the thread to finish execution
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return isRegistered[0];
     }
 }

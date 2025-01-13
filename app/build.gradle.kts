@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+
 android {
     namespace = "com.example.fresh_picks"
     compileSdk = 34
@@ -25,19 +26,49 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
 
+    // Core AndroidX libraries
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
-    implementation("com.airbnb.android:lottie:5.0.3")
     implementation(libs.constraintlayout)
+
+    // MongoDB Driver (use only one version)
+    implementation("org.mongodb:mongodb-driver-sync:4.8.0") {
+        exclude(group = "javax.naming")
+        exclude(group = "javax.naming.directory")
+    }
+
+    // Retrofit for REST API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Room Database
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
+
+    // Glide for image loading
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+
+    // Lottie for animations
+    implementation("com.airbnb.android:lottie:5.0.3")
+
+    // SLF4J Logging
+    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.slf4j:slf4j-simple:1.7.36")
+
+    //realm
+    implementation ("io.realm:realm-gradle-plugin:10.16.1")
+    // Testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

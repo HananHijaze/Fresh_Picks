@@ -4,20 +4,20 @@ import java.util.List;
 
 public class Order {
     private int id;
-    private List<CartItem> items;
+    private List<Product> items;
     private double totalPrice;
     private Payment payment;
-    private String status; // e.g., "Pending", "Ready for Pickup", "Delivered", "Picked Up"
+    private String status; // e.g., "Pending", "Ready for Pickup", "Delivered", "Canceled"
     private boolean isReadyForPickup;
     private boolean isDelivered;
 
     // Constructors
-    public Order(int id, List<CartItem> items, double totalPrice, Payment payment, String status) {
+    public Order(int id, List<Product> items, Payment payment) {
         this.id = id;
         this.items = items;
-        this.totalPrice = totalPrice;
         this.payment = payment;
-        this.status = status;
+        this.totalPrice = calculateTotalPrice();
+        this.status = "Pending";
         this.isReadyForPickup = false;
         this.isDelivered = false;
     }
@@ -31,20 +31,17 @@ public class Order {
         this.id = id;
     }
 
-    public List<CartItem> getItems() {
+    public List<Product> getItems() {
         return items;
     }
 
-    public void setItems(List<CartItem> items) {
+    public void setItems(List<Product> items) {
         this.items = items;
+        this.totalPrice = calculateTotalPrice(); // Recalculate total price when items change
     }
 
     public double getTotalPrice() {
         return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
     }
 
     public Payment getPayment() {
@@ -74,7 +71,6 @@ public class Order {
         }
     }
 
-
     public boolean isDelivered() {
         return isDelivered;
     }
@@ -86,18 +82,42 @@ public class Order {
         }
     }
 
-    // Other Methods
+    // Methods to change order status
     public void markReadyForPickup() {
         this.isReadyForPickup = true;
         this.status = "Ready for Pickup";
     }
 
-
-
     public void markDelivered() {
         this.isDelivered = true;
         this.status = "Delivered";
     }
+
+    public void cancelOrder() {
+        this.status = "Canceled";
+        this.isReadyForPickup = false;
+        this.isDelivered = false;
+    }
+
+    // Calculate total price
+    private double calculateTotalPrice() {
+        double total = 0;
+        for (Product product : items) {
+            total += product.getPrice();
+        }
+        return total;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", items=" + items +
+                ", totalPrice=" + totalPrice +
+                ", payment=" + payment +
+                ", status='" + status + '\'' +
+                ", isReadyForPickup=" + isReadyForPickup +
+                ", isDelivered=" + isDelivered +
+                '}';
+    }
 }
-
-

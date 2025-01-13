@@ -23,7 +23,7 @@
         android:elevation="6dp"
         android:iconifiedByDefault="false"
         android:padding="8dp"
-        android:queryHint="Search here..." />
+        android:queryHint="@string/search_here" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -36,7 +36,7 @@
         android:fillViewport="true"
         android:paddingBottom="0dp">
 <GridLayout
-    android:layout_width="400dp"
+    android:layout_width="match_parent"
     android:layout_gravity="top"
     android:layout_height="wrap_content"
     android:columnCount="2"
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Seasonal Fruits"
+                android:text="@string/seasonal_fruits"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Fruits"
+                android:text="@string/fruits"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Vegetables"
+                android:text="@string/vegetables"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -166,7 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Bread and Pastries"
+                android:text="@string/bread_and_pastries"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -200,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Dairy "
+                android:text="@string/dairy"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -232,7 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Grocery Essentials"
+                android:text="@string/grocery_essentials"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -265,7 +265,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Frozen Foods"
+                android:text="@string/frozen_foods"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -298,7 +298,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Snacks"
+                android:text="@string/snacks"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -329,7 +329,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Drinks"
+                android:text="@string/drinks"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -362,7 +362,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Spices"
+                android:text="@string/spices"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -393,7 +393,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Support Super👸"
+                android:text="@string/support_super"
                 android:background="@color/beige"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
@@ -426,7 +426,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:background="@color/beige"
-                android:text="Min 90' deals"
+                android:text="@string/min_90_deals"
                 android:textColor="@color/grey"
                 android:textSize="20sp" />
         </LinearLayout>
