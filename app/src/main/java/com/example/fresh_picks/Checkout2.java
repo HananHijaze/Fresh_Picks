@@ -28,13 +28,5 @@ public class Checkout2 extends AppCompatActivity {
             return insets;
         });
 
-        // Define the button
-        Button btnNext = findViewById(R.id.btn_next);
-
-        // Set an OnClickListener to navigate to Checkout3
-        btnNext.setOnClickListener(view -> {
-            Intent intent = new Intent(Checkout2.this, Checkout3.class);
-            startActivity(intent);
-        });
     }
 }

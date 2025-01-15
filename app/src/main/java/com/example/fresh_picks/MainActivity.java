@@ -13,9 +13,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.fresh_picks.APIS.MongoDBHelper;
+import com.example.fresh_picks.DAO.AppDatabase;
 import com.mongodb.client.MongoDatabase;
 
+import java.util.concurrent.Executors;
+
 public class MainActivity extends AppCompatActivity {
+    private AppDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Connect to MongoDB
+        // Initialize Room database asynchronously
+        initializeRoomDatabase();
+
+        // Connect to MongoDB asynchronously
         connectToMongoDB();
 
         // Wait 3 seconds and then start the next activity
@@ -40,16 +48,37 @@ public class MainActivity extends AppCompatActivity {
         }, 3000); // 3 seconds delay
     }
 
-    private void connectToMongoDB() {
-        // Initialize MongoDB connection using MongoDBHelper
-        MongoDBHelper.init();
+    private void initializeRoomDatabase() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // Initialize Room database using AppDatabase
+                db = AppDatabase.getInstance(this);
+                Log.i("RoomDB", "Room database initialized successfully.");
 
-        try {
-            // Access the database directly
-            MongoDatabase database = MongoDBHelper.getDatabase();
-            Log.i("MongoDB", "Connected to MongoDB successfully. Database: " + database.getName());
-        } catch (Exception e) {
-            Log.e("MongoDB", "Error connecting to MongoDB", e);
-        }
+                // Example: Query some data from the database
+                if (db.userDao().getAllUsers().isEmpty()) { // Assuming `getAllUsers()` is a method in your UserDao
+                    Log.i("RoomDB", "No users found in the database.");
+                } else {
+                    Log.i("RoomDB", "Users fetched successfully.");
+                }
+            } catch (Exception e) {
+                Log.e("RoomDB", "Error accessing Room database", e);
+            }
+        });
+    }
+
+    private void connectToMongoDB() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // Initialize MongoDB connection using MongoDBHelper
+                MongoDBHelper.init();
+
+                // Access the database directly
+                MongoDatabase database = MongoDBHelper.getDatabase();
+                Log.i("MongoDB", "Connected to MongoDB successfully. Database: " + database.getName());
+            } catch (Exception e) {
+                Log.e("MongoDB", "Error connecting to MongoDB", e);
+            }
+        });
     }
 }

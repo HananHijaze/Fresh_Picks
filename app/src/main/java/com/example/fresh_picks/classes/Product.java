@@ -1,15 +1,35 @@
 package com.example.fresh_picks.classes;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Product {
-    private int id;
+
+    @SerializedName("_id")
+    private IdWrapper id; // Wrapper for ObjectId to handle "$oid"
+
     private String name;
     private double price;
-    private Category category;
+    private String category;
     private int stockQuantity;
-    private String imageUrl; // Field to store the image URL or path
+    private String imageUrl;
+
+    public static class IdWrapper {
+        @SerializedName("$oid")
+        private String oid;
+
+        public String getOid() {
+            return oid;
+        }
+
+        public void setOid(String oid) {
+            this.oid = oid;
+        }
+    }
 
     // Constructors
-    public Product(int id, String name, double price, Category category, int stockQuantity, String imageUrl) {
+    public Product() {}
+
+    public Product(IdWrapper id, String name, double price, String category, int stockQuantity, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -19,12 +39,15 @@ public class Product {
     }
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public String getId() {
+        return id != null ? id.getOid() : null;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(String oid) {
+        if (this.id == null) {
+            this.id = new IdWrapper();
+        }
+        this.id.setOid(oid);
     }
 
     public String getName() {
@@ -43,11 +66,11 @@ public class Product {
         this.price = price;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

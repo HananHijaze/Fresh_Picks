@@ -1,7 +1,8 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
+    android:id="@+id/card_view"
+    android:layout_width="175dp"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:backgroundTint="@color/beige"
@@ -10,11 +11,13 @@
 
     <!-- FrameLayout to position heart icon in the top-right corner -->
     <FrameLayout
+        android:id="@+id/card_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- Main Content -->
         <LinearLayout
+            android:id="@+id/card_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -22,9 +25,8 @@
             android:padding="8dp">
 
             <!-- Product Image -->
-
             <ImageView
-                android:id="@+id/card_image"
+                android:id="@+id/product_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
@@ -34,16 +36,18 @@
 
             <!-- Product Price -->
             <TextView
+                android:id="@+id/product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="15 ILS"
+                android:textSize="18dp"
                 android:textColor="@color/grey"
                 android:textStyle="bold" />
 
             <!-- Product Title -->
             <TextView
-                android:id="@+id/card_title"
+                android:id="@+id/product_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/beige"
@@ -51,27 +55,12 @@
                 android:paddingTop="4dp"
                 android:text="Cumin"
                 android:textColor="@color/grey"
-                android:textSize="14sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <!-- Add to Cart Button -->
-            <ImageButton
-                android:id="@+id/add_to_cart_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@null"
-                android:contentDescription="Add to cart"
-                android:src="@drawable/ic_add" />
 
             <!-- Weight Information -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/kg"
-                android:textColor="@color/grey"
-                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Heart Icon Positioned in Top-Right Corner -->

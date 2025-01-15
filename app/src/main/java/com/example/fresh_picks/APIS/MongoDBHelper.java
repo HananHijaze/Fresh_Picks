@@ -7,8 +7,8 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class MongoDBHelper {
-    private static final String CONNECTION_STRING = "mongodb://username:password@cluster0.mongodb.net:27017/freshpicks?retryWrites=true&w=majority";
-    private static final String DATABASE_NAME = "freshpicks"; // Ensure consistency
+    private static final String CONNECTION_STRING = "mongodb://hananhij11:KWlNeSrsrMLwo5KA@cluster0-shard-00-00.s3p3r.mongodb.net:27017,Fresh_Picks-shard-01-01:27017/?retryWrites=true&w=majority";
+    private static final String DATABASE_NAME = "freshpicks";
 
     private static MongoClient mongoClient;
     private static MongoDatabase database;
@@ -23,11 +23,17 @@ public class MongoDBHelper {
 
     // Get a collection
     public static MongoCollection<Document> getCollection(String collectionName) {
+        if (database == null) {
+            init();
+        }
         return database.getCollection(collectionName);
     }
 
     // Get the database
     public static MongoDatabase getDatabase() {
+        if (database == null) {
+            init();
+        }
         return database;
     }
 

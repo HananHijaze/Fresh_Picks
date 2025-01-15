@@ -1,5 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 
@@ -68,6 +70,12 @@ dependencies {
 
     //realm
     implementation ("io.realm:realm-gradle-plugin:10.16.1")
+    //
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    //image loading
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
     // Testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

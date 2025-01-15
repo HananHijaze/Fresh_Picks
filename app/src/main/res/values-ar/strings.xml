@@ -1,4 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FreshPicks</string>
+    <string name="app_name">فريش بيكس</string>
+    <string name="my_location">مواقعي</string>
+    <string name="price">السعر:</string>
+    <string name="kg">كيلو</string>
+    <string name="my_coupons">كوبوناتي</string>
+    <string name="cards">بطاقات</string>
+    <string name="lang">اللغة</string>
+    <string name="deliveries">التوصيلات</string>
+    <string name="current_orders">الطلبات الحالية</string>
+    <string name="order_history">سجل الطلبات</string>
+    <string name="categories">الفئات</string>
+    <string name="search_here">ابحث هنا...</string>
+    <string name="seasonal_fruits">موسمية</string>
+    <string name="fruits">الفواكه</string>
+    <string name="vegetables">الخضروات</string>
+    <string name="bread_and_pastries">الخبز والمعجنات</string>
+    <string name="dairy">منتجات الألبان</string>
+    <string name="grocery_essentials">الأساسيات</string>
+    <string name="frozen_foods">الأطعمة المجمدة</string>
+    <string name="snacks">وجبات خفيفة</string>
+    <string name="drinks">المشروبات</string>
+    <string name="spices">التوابل</string>
+    <string name="support_super">ادعم السوبر 👸</string>
+    <string name="min_90_deals">عروض بحد أدنى</string>
+    <string name="my_cart">سلة التسوق</string>
+    <string name="total_items">إجمالي العناصر</string>
+    <string name="total_amount">المبلغ الإجمالي</string>
+    <string name="discount">الخصم</string>
+    <string name="grand_total">الإجمالي النهائي</string>
+    <string name="checkout">إتمام الشراء</string>
+    <string name="sign_up">التسجيل</string>
+    <string name="full_name">الاسم الكامل</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="phone_number">رقم الهاتف</string>
+    <string name="sign_up1">التسجيل</string>
+    <string name="shipping">الشحن</string>
+    <string name="payment">الدفع</string>
+    <string name="submit">إرسال</string>
+    <string name="cart">السلة</string>
+    <string name="my_orders">طلباتي</string>
+    <string name="home">الرئيسية</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="order_submitted_successfully">تم إرسال الطلب بنجاح</string>
+    <string name="track">تتبع طلبك</string>
+    <string name="address">العنوان</string>
 </resources>

@@ -10,19 +10,19 @@ public class Coupon {
     private Date expiryDate; // Expiration date of the coupon
     private boolean isRedeemed; // True if the coupon has already been used
     private List<Integer> applicableProductIds; // Products eligible for this coupon
-    private List<Integer> applicableCategoryIds; // Categories eligible for this coupon
+    private List<String> applicableCategoryNames; // Categories eligible for this coupon (now String-based)
     private double minimumPurchaseAmount; // Minimum cart value to apply coupon
 
     // Constructor
     public Coupon(String code, double discountValue, boolean isPercentage, Date expiryDate,
-                  List<Integer> applicableProductIds, List<Integer> applicableCategoryIds, double minimumPurchaseAmount) {
+                  List<Integer> applicableProductIds, List<String> applicableCategoryNames, double minimumPurchaseAmount) {
         this.code = code;
         this.discountValue = discountValue;
         this.isPercentage = isPercentage;
         this.expiryDate = expiryDate;
         this.isRedeemed = false; // By default, coupons are not redeemed
         this.applicableProductIds = applicableProductIds;
-        this.applicableCategoryIds = applicableCategoryIds;
+        this.applicableCategoryNames = applicableCategoryNames;
         this.minimumPurchaseAmount = minimumPurchaseAmount;
     }
 
@@ -75,12 +75,12 @@ public class Coupon {
         this.applicableProductIds = applicableProductIds;
     }
 
-    public List<Integer> getApplicableCategoryIds() {
-        return applicableCategoryIds;
+    public List<String> getApplicableCategoryNames() {
+        return applicableCategoryNames;
     }
 
-    public void setApplicableCategoryIds(List<Integer> applicableCategoryIds) {
-        this.applicableCategoryIds = applicableCategoryIds;
+    public void setApplicableCategoryNames(List<String> applicableCategoryNames) {
+        this.applicableCategoryNames = applicableCategoryNames;
     }
 
     public double getMinimumPurchaseAmount() {
@@ -110,8 +110,8 @@ public class Coupon {
                 isApplicable = true;
                 break;
             }
-            if (applicableCategoryIds != null && product.getCategory() != null &&
-                    applicableCategoryIds.contains(product.getCategory().getId())) {
+            if (applicableCategoryNames != null && product.getCategory() != null &&
+                    applicableCategoryNames.contains(product.getCategory())) {
                 isApplicable = true;
                 break;
             }
@@ -136,7 +136,7 @@ public class Coupon {
                 ", expiryDate=" + expiryDate +
                 ", isRedeemed=" + isRedeemed +
                 ", applicableProductIds=" + applicableProductIds +
-                ", applicableCategoryIds=" + applicableCategoryIds +
+                ", applicableCategoryNames=" + applicableCategoryNames +
                 ", minimumPurchaseAmount=" + minimumPurchaseAmount +
                 '}';
     }
