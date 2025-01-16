@@ -6,8 +6,7 @@ import java.util.List;
 public class Product {
 
     // Basic Information
-    @SerializedName("_id")
-    private IdWrapper id; // Wrapper for ObjectId to handle "$oid"
+    private String id; // Regular String for ID
 
     private String name;
     private String category;
@@ -20,12 +19,6 @@ public class Product {
 
     // Shelf Life
     private String shelfLife;
-
-    // Nutritional Information (Optional, can be expanded)
-    private int calories;
-    private double protein;
-    private double fat;
-    private double carbs;
 
     // Dietary Information
     private List<String> dietaryInfo;
@@ -47,24 +40,10 @@ public class Product {
     // Product Image URL (Optional)
     private String imageUrl;
 
-    // Inner Class for ID Wrapper
-    public static class IdWrapper {
-        @SerializedName("$oid")
-        private String oid;
-
-        public String getOid() {
-            return oid;
-        }
-
-        public void setOid(String oid) {
-            this.oid = oid;
-        }
-    }
-
     // Constructors
     public Product() {}
 
-    public Product(IdWrapper id, String name, String category, double price, String quantity, String unit, boolean inStock) {
+    public Product(String id, String name, String category, double price, String quantity, String unit, boolean inStock) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -77,14 +56,11 @@ public class Product {
     // Getters and Setters
 
     public String getId() {
-        return id != null ? id.getOid() : null;
+        return id;
     }
 
-    public void setId(String oid) {
-        if (this.id == null) {
-            this.id = new IdWrapper();
-        }
-        this.id.setOid(oid);
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -143,37 +119,6 @@ public class Product {
         this.shelfLife = shelfLife;
     }
 
-    public int getCalories() {
-        return calories;
-    }
-
-    public void setCalories(int calories) {
-        this.calories = calories;
-    }
-
-    public double getProtein() {
-        return protein;
-    }
-
-    public void setProtein(double protein) {
-        this.protein = protein;
-    }
-
-    public double getFat() {
-        return fat;
-    }
-
-    public void setFat(double fat) {
-        this.fat = fat;
-    }
-
-    public double getCarbs() {
-        return carbs;
-    }
-
-    public void setCarbs(double carbs) {
-        this.carbs = carbs;
-    }
 
     public List<String> getDietaryInfo() {
         return dietaryInfo;
@@ -242,7 +187,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "id='" + getId() + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", category='" + category + '\'' +
                 ", price=" + price +

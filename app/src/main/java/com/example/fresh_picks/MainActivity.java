@@ -5,16 +5,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import androidx.core.view.WindowCompat;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.fresh_picks.APIS.MongoDBHelper;
 import com.example.fresh_picks.DAO.AppDatabase;
-import com.mongodb.client.MongoDatabase;
 
 import java.util.concurrent.Executors;
 
@@ -24,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
 
         // Adjust padding for system bars
@@ -37,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Room database asynchronously
         initializeRoomDatabase();
 
-        // Connect to MongoDB asynchronously
-        connectToMongoDB();
+
 
         // Wait 3 seconds and then start the next activity
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -67,18 +64,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void connectToMongoDB() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                // Initialize MongoDB connection using MongoDBHelper
-                MongoDBHelper.init();
-
-                // Access the database directly
-                MongoDatabase database = MongoDBHelper.getDatabase();
-                Log.i("MongoDB", "Connected to MongoDB successfully. Database: " + database.getName());
-            } catch (Exception e) {
-                Log.e("MongoDB", "Error connecting to MongoDB", e);
-            }
-        });
-    }
 }

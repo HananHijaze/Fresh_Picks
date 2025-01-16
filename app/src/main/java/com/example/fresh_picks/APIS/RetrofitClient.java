@@ -1,10 +1,5 @@
 package com.example.fresh_picks.APIS;
 
-import com.example.fresh_picks.ProductDeserializer;
-import com.example.fresh_picks.classes.Product;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -14,15 +9,9 @@ public class RetrofitClient {
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
-            // Create a Gson instance with the custom deserializer
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(Product.class, new ProductDeserializer())
-                    .create();
-
-            // Use the Gson instance with the custom deserializer in Retrofit
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(gson)) // Pass the custom Gson instance
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return retrofit;

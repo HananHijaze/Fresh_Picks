@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1039261279090",
-    "project_id": "freshpicksecommerce",
-    "storage_bucket": "freshpicksecommerce.firebasestorage.app"
+    "project_number": "780606478512",
+    "project_id": "freshpicks-f173d",
+    "storage_bucket": "freshpicks-f173d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1039261279090:android:3193eed7ddb055ca4ff3eb",
+        "mobilesdk_app_id": "1:780606478512:android:2a74a7172070d007d54375",
         "android_client_info": {
           "package_name": "com.example.fresh_picks"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDjm0dn_6q5cc5NDZG7tYL-VrwT2GolVp0"
+          "current_key": "AIzaSyA0NR8xlkaU0cMirtup9ti7AHiYVEPMFFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780606478512:android:b0076eaac59d1b21d54375",
+        "android_client_info": {
+          "package_name": "com.example.freshpick"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0NR8xlkaU0cMirtup9ti7AHiYVEPMFFI"
         }
       ],
       "services": {

@@ -1,9 +1,9 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")
-}
 
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+}
 
 android {
     namespace = "com.example.fresh_picks"
@@ -36,26 +36,20 @@ android {
 }
 
 dependencies {
-
     // Core AndroidX libraries
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.activity)
-    implementation(libs.constraintlayout)
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // MongoDB Driver (use only one version)
-    implementation("org.mongodb:mongodb-driver-sync:4.8.0") {
-        exclude(group = "javax.naming")
-        exclude(group = "javax.naming.directory")
-    }
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
-    // Retrofit for REST API calls
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Firebase Analytics
+    implementation("com.google.firebase:firebase-analytics")
 
-    // Room Database
-    implementation("androidx.room:room-runtime:2.5.2")
-    annotationProcessor("androidx.room:room-compiler:2.5.2")
+    // Add other Firebase dependencies as needed
+    // https://firebase.google.com/docs/android/setup#available-libraries
 
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
@@ -64,20 +58,22 @@ dependencies {
     // Lottie for animations
     implementation("com.airbnb.android:lottie:5.0.3")
 
-    // SLF4J Logging
-    implementation("org.slf4j:slf4j-api:1.7.36")
-    implementation("org.slf4j:slf4j-simple:1.7.36")
+    // Room Database
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
-    //realm
-    implementation ("io.realm:realm-gradle-plugin:10.16.1")
-    //
-    implementation ("androidx.appcompat:appcompat:1.6.1")
-    //image loading
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("androidx.core:core-ktx:1.12.0")
 
     // Testing libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
