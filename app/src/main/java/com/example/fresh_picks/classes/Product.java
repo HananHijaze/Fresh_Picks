@@ -10,12 +10,12 @@ public class Product {
 
     private String name;
     private String category;
-    private String description;
 
     // Attributes
     private double price;
-    private String quantity;
-    private String unit;
+    private String packSize; // Information about packaging size (e.g., "1 kg", "500 g")
+    private int stockQuantity; // Total stock available in inventory
+    private String unit; // Unit of measurement (e.g., kg, pcs)
 
     // Shelf Life
     private String shelfLife;
@@ -34,21 +34,19 @@ public class Product {
     private List<String> foodPairings;
     private List<String> recipeSuggestions;
 
-    // Storage Information
-    private String storageInfo;
-
-    // Product Image URL (Optional)
+    // Product Image URL
     private String imageUrl;
 
     // Constructors
     public Product() {}
 
-    public Product(String id, String name, String category, double price, String quantity, String unit, boolean inStock) {
+    public Product(String id, String name, String category, double price, String packSize, int stockQuantity, String unit, boolean inStock) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
-        this.quantity = quantity;
+        this.packSize = packSize;
+        this.stockQuantity = stockQuantity;
         this.unit = unit;
         this.inStock = inStock;
     }
@@ -79,14 +77,6 @@ public class Product {
         this.category = category;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -95,12 +85,20 @@ public class Product {
         this.price = price;
     }
 
-    public String getQuantity() {
-        return quantity;
+    public String getPackSize() {
+        return packSize;
     }
 
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
+    public void setPackSize(String packSize) {
+        this.packSize = packSize;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public String getUnit() {
@@ -118,7 +116,6 @@ public class Product {
     public void setShelfLife(String shelfLife) {
         this.shelfLife = shelfLife;
     }
-
 
     public List<String> getDietaryInfo() {
         return dietaryInfo;
@@ -168,14 +165,6 @@ public class Product {
         this.recipeSuggestions = recipeSuggestions;
     }
 
-    public String getStorageInfo() {
-        return storageInfo;
-    }
-
-    public void setStorageInfo(String storageInfo) {
-        this.storageInfo = storageInfo;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -191,7 +180,8 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", category='" + category + '\'' +
                 ", price=" + price +
-                ", quantity='" + quantity + '\'' +
+                ", packSize='" + packSize + '\'' +
+                ", stockQuantity=" + stockQuantity +
                 ", unit='" + unit + '\'' +
                 ", inStock=" + inStock +
                 '}';
