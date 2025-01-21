@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Fresh_Picks" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/beige</item>
+        <item name="colorPrimary">@color/grey</item>
     </style>
 
     <style name="Theme.Fresh_Picks" parent="Base.Theme.Fresh_Picks" />

@@ -1,58 +1,66 @@
 package com.example.fresh_picks.classes;
 
-import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Product {
 
     // Basic Information
-    private String id; // Regular String for ID
+    private String id; // Product ID
+    private String name; // Product Name in English
+    private String nameAr; // Product Name in Arabic
+    private List<String> category; // Product Category (single category)
 
-    private String name;
-    private String category;
-
-    // Attributes
-    private double price;
-    private String packSize; // Information about packaging size (e.g., "1 kg", "500 g")
-    private int stockQuantity; // Total stock available in inventory
+    // Pricing and Stock
+    private double price; // Product Price
+    private String packSize; // Packaging size (e.g., "1 kg", "500 g")
+    private int stockQuantity; // Stock Quantity
     private String unit; // Unit of measurement (e.g., kg, pcs)
 
-    // Shelf Life
-    private String shelfLife;
-
     // Dietary Information
-    private List<String> dietaryInfo;
+    private List<String> dietaryInfo; // List of dietary tags (e.g., Vegan, Gluten-Free)
 
     // Cuisine Tags
-    private List<String> cuisineTags;
+    private List<String> cuisineTags; // List of cuisine categories
 
     // Availability
-    private boolean inStock;
-    private boolean seasonal;
+    private boolean inStock; // If the product is currently in stock
+    private boolean seasonal; // If the product is seasonal
 
-    // AI-Friendly Tags
-    private List<String> foodPairings;
-    private List<String> recipeSuggestions;
+    // AI Tags and Suggestions
+    private List<String> foodPairings; // Suggested food pairings
+    private List<String> recipeSuggestions; // Suggested recipes
 
-    // Product Image URL
-    private String imageUrl;
+    // Image
+    private String imageUrl; // Image URL
+
+    // Popularity Score
+    private int popularityScore; // Popularity Score of the product
 
     // Constructors
     public Product() {}
 
-    public Product(String id, String name, String category, double price, String packSize, int stockQuantity, String unit, boolean inStock) {
+    public Product(String id, String name, String nameAr, List<String> category, double price, String packSize, int stockQuantity,
+                   String unit, List<String> dietaryInfo, List<String> cuisineTags, boolean inStock, boolean seasonal,
+                   List<String> foodPairings, List<String> recipeSuggestions, String imageUrl, int popularityScore) {
         this.id = id;
         this.name = name;
+        this.nameAr = nameAr;
         this.category = category;
         this.price = price;
         this.packSize = packSize;
         this.stockQuantity = stockQuantity;
         this.unit = unit;
+        this.dietaryInfo = dietaryInfo;
+        this.cuisineTags = cuisineTags;
         this.inStock = inStock;
+        this.seasonal = seasonal;
+        this.foodPairings = foodPairings;
+        this.recipeSuggestions = recipeSuggestions;
+        this.imageUrl = imageUrl;
+        this.popularityScore = popularityScore;
     }
 
     // Getters and Setters
-
     public String getId() {
         return id;
     }
@@ -69,11 +77,17 @@ public class Product {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public String getNameAr() {
+        return nameAr;
     }
 
-    public void setCategory(String category) {
+    public void setNameAr(String nameAr) {
+        this.nameAr = nameAr;
+    }
+
+    public List<String> getCategory() {return category;}
+
+    public void setCategory(List<String> category) {
         this.category = category;
     }
 
@@ -107,14 +121,6 @@ public class Product {
 
     public void setUnit(String unit) {
         this.unit = unit;
-    }
-
-    public String getShelfLife() {
-        return shelfLife;
-    }
-
-    public void setShelfLife(String shelfLife) {
-        this.shelfLife = shelfLife;
     }
 
     public List<String> getDietaryInfo() {
@@ -173,17 +179,33 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public int getPopularityScore() {
+        return popularityScore;
+    }
+
+    public void setPopularityScore(int popularityScore) {
+        this.popularityScore = popularityScore;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", category='" + category + '\'' +
+                ", nameAr='" + nameAr + '\'' +
+                ", category=" + category +
                 ", price=" + price +
                 ", packSize='" + packSize + '\'' +
                 ", stockQuantity=" + stockQuantity +
                 ", unit='" + unit + '\'' +
+                ", dietaryInfo=" + dietaryInfo +
+                ", cuisineTags=" + cuisineTags +
                 ", inStock=" + inStock +
+                ", seasonal=" + seasonal +
+                ", foodPairings=" + foodPairings +
+                ", recipeSuggestions=" + recipeSuggestions +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", popularityScore=" + popularityScore +
                 '}';
     }
 }

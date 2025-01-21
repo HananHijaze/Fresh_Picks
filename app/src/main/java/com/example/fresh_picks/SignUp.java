@@ -15,12 +15,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.fresh_picks.APIS.RetrofitClient;
 import com.example.fresh_picks.APIS.UserApiService;
 import com.example.fresh_picks.DAO.AppDatabase;
+import com.example.fresh_picks.DAO.UserDao;
 import com.example.fresh_picks.DAO.UserEntity;
 import com.example.fresh_picks.classes.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -118,44 +122,63 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void saveUserData(String fullName, String email, String password, String phoneNumber, String address) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create a new User object
         User user = new User(fullName, email, password, Arrays.asList(address), phoneNumber);
-        UserApiService userApiService = RetrofitClient.getRetrofitInstance().create(UserApiService.class);
 
-        Call<User> call = userApiService.registerUser(user);
+        // Create a map to store the user details for Firestore
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("name", user.getName());
+        userMap.put("email", user.getEmail());
+        userMap.put("password", user.getPassword()); // Avoid storing passwords as plain text
+        userMap.put("addresses", user.getAddresses());
+        userMap.put("phoneNumber", user.getPhoneNumber());
+        userMap.put("bulkSaleBuyer", user.isBulkSaleBuyer());
+        userMap.put("cart", user.getCart());
+        userMap.put("orders", user.getOrders());
 
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    UserEntity userEntity = new UserEntity(
-                            response.body().getId(),
-                            response.body().getName(),
-                            response.body().getEmail(),
-                            response.body().getPassword(),
-                            response.body().getPhoneNumber()
-                    );
+        // Save user data to Firestore
+        db.collection("users")
+                .add(userMap)
+                .addOnSuccessListener(documentReference -> {
+                    String userId = documentReference.getId(); // Get the Firestore-generated ID
+                    user.setId(userId.hashCode()); // Optional: Keep track of the Firestore ID in your user object
 
+                    // Save user to Room database
                     new Thread(() -> {
-                        AppDatabase db = AppDatabase.getInstance(SignUp.this);
-                        db.userDao().insertUser(userEntity);
-                        runOnUiThread(() -> Toast.makeText(SignUp.this, "User saved locally!", Toast.LENGTH_SHORT).show());
+                        AppDatabase dbRoom = AppDatabase.getInstance(SignUp.this);
+                        UserDao userDao = dbRoom.userDao();
 
-                        // Navigate to Checkout activity
-                        Intent intent = new Intent(SignUp.this, Checkout.class);
-                        startActivity(intent);
-                        finish(); // Finish the SignUp activity
+                        // Delete all existing users
+                        userDao.deleteAllUsers();
+
+                        // Insert the new user into Room database
+                        UserEntity userEntity = new UserEntity(
+                                userId, // Use the Firestore document ID as the Room ID
+                                user.getName(),
+                                user.getEmail(),
+                                user.getPassword(),
+                                user.getPhoneNumber()
+                        );
+                        userDao.insertUser(userEntity);
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(SignUp.this, "User saved locally!", Toast.LENGTH_SHORT).show();
+
+                            // Navigate to Checkout activity
+                            Intent intent = new Intent(SignUp.this, Checkout.class);
+                            startActivity(intent);
+                            finish(); // Finish the SignUp activity
+                        });
                     }).start();
 
                     Toast.makeText(SignUp.this, "User registered successfully!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(SignUp.this, "Registration failed: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(SignUp.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(SignUp.this, "Error registering user: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
+
+
 }

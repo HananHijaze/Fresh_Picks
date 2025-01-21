@@ -45,10 +45,11 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         // Set the product image
         Glide.with(context)
-                .load(product.getImageUrl())
+                .load(convertGoogleDriveLinkToDirect(product.getImageUrl())) // Convert the URL
                 .placeholder(R.drawable.logo) // Placeholder
                 .error(R.drawable.noconnection3) // Error fallback
                 .into(productImage);
+
 
         // Set the product title and price
         productTitle.setText(product.getName());
@@ -58,4 +59,12 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         return convertView;
     }
+    public String convertGoogleDriveLinkToDirect(String driveLink) {
+        if (driveLink.contains("/d/") && driveLink.contains("/view")) {
+            String fileId = driveLink.substring(driveLink.indexOf("/d/") + 3, driveLink.indexOf("/view"));
+            return "https://drive.google.com/uc?export=view&id=" + fileId;
+        }
+        return driveLink; // Return the original link if it doesn't match the format
+    }
+
 }

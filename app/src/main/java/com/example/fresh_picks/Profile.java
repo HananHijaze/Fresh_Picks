@@ -1,10 +1,10 @@
 package com.example.fresh_picks;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,10 +13,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.fresh_picks.DAO.AppDatabase;
 import com.example.fresh_picks.DAO.UserEntity;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Profile extends Fragment {
 
     private TextView tvUserName, tvUserPhone, tvUserAddresses;
+    private static final String TAG = "ProfileFragment";
 
     @Nullable
     @Override
@@ -29,25 +31,45 @@ public class Profile extends Fragment {
         tvUserAddresses = view.findViewById(R.id.btn_my_location); // Update ID based on your XML
 
         // Load user data
-        String phoneNumber = "0532811583"; // Replace with dynamic retrieval if needed
-        loadUserData(phoneNumber);
+        loadUserIdFromRoom();
 
         return view;
     }
 
-    private void loadUserData(String phoneNumber) {
+    private void loadUserIdFromRoom() {
         new Thread(() -> {
             // Access the Room database
             AppDatabase db = AppDatabase.getInstance(requireContext());
-            UserEntity user = db.userDao().getUserByPhone(phoneNumber);
+            UserEntity user = db.userDao().getAllUsers().get(0); // Assuming a single user in Room
 
-            // Update the UI with the user data
             if (user != null) {
-                requireActivity().runOnUiThread(() -> {
-                    tvUserName.setText(user.getName());
-                    tvUserPhone.setText(phoneNumber);
-                });
+                String userId = user.getId(); // Retrieve the Firestore document ID from Room
+                loadUserDataFromFirestore(userId);
             }
         }).start();
+    }
+
+    private void loadUserDataFromFirestore(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users").document(userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        // Retrieve the user data from Firestore
+                        String name = task.getResult().getString("name");
+                        String phone = task.getResult().getString("phoneNumber");
+                        String addresses = task.getResult().get("addresses").toString();
+
+                        // Update the UI
+                        requireActivity().runOnUiThread(() -> {
+                            tvUserName.setText(name);
+                            tvUserPhone.setText(phone);
+                            tvUserAddresses.setText(addresses);
+                        });
+                    } else {
+                        Log.w(TAG, "Error getting user data", task.getException());
+                    }
+                });
     }
 }

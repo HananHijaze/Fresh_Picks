@@ -9,38 +9,47 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.fresh_picks.APIS.ProductApiService;
-import com.example.fresh_picks.APIS.RetrofitClient;
 import com.example.fresh_picks.classes.Product;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ListsView extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_TITLE = "title";
+    private static final String ARG_CATEGORY = "category";
+
+    private String title;
     private String category;
 
     private GridView gridView;
+    private ProductAdapter productAdapter;
+    private List<Product> products = new ArrayList<>();
+    private FirebaseFirestore firestore;
 
     public ListsView() {
         // Required empty public constructor
     }
 
-    public static ListsView newInstance(String category) {
+    /**
+     * Factory method to create a new instance of this fragment.
+     *
+     * @param title    The title to display in the fragment.
+     * @param category The category to fetch products for.
+     * @return A new instance of fragment ListsView.
+     */
+    public static ListsView newInstance(String title, String category) {
         ListsView fragment = new ListsView();
         Bundle args = new Bundle();
-
-        // Convert the category to lowercase
-        category = category.toLowerCase(Locale.ROOT);
-
-        args.putString(ARG_PARAM1, category);
+        args.putString(ARG_TITLE, title);
+        args.putString(ARG_CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,57 +58,65 @@ public class ListsView extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            category = getArguments().getString(ARG_PARAM1);
-
-            // Ensure category is always in lowercase
-            if (category != null) {
-                category = category.toLowerCase(Locale.ROOT);
-            }
-
-            Log.d("ListsView", "Category received: " + category);
+            title = getArguments().getString(ARG_TITLE);
+            category = getArguments().getString(ARG_CATEGORY);
+            Log.d("ListsView", "Title: " + title + ", Category: " + category);
         }
+
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance();
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lists_view, container, false);
 
-        // Set the category title
+        // Set the title in the TextView
         TextView textView = view.findViewById(R.id.textView);
-        textView.setText(category);
+        if (title != null) {
+            textView.setText(title);
+        }
 
+        // Initialize the GridView and Adapter
         gridView = view.findViewById(R.id.grid_view);
+        productAdapter = new ProductAdapter(requireContext(), products);
+        gridView.setAdapter(productAdapter);
 
+        // Fetch and display products based on the selected category
         fetchProductsByCategory();
 
         return view;
     }
 
+    /**
+     * Fetches products from Firestore based on the selected category.
+     */
     private void fetchProductsByCategory() {
-        ProductApiService productApiService = RetrofitClient.getRetrofitInstance().create(ProductApiService.class);
+        if (category == null || category.isEmpty()) {
+            Toast.makeText(requireContext(), "Category is not valid!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Call<List<Product>> call = productApiService.getProductsByCategory(category);
-        call.enqueue(new Callback<List<Product>>() {
-            @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Product> products = response.body();
-                    Log.d("ListsView", "Products fetched: " + products.toString());
-                    ProductAdapter adapter = new ProductAdapter(requireContext(), products);
-                    gridView.setAdapter(adapter);
-                } else {
-                    Log.e("ListsView", "Failed to fetch products: " + response.message());
-                    Toast.makeText(requireContext(), "No products found for this category", Toast.LENGTH_SHORT).show();
-                }
-            }
+        firestore.collection("products")
+                .whereArrayContains("category", category) // Use arrayContains instead of whereEqualTo
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null) {
+                            products.clear(); // Clear the previous list
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                Product product = document.toObject(Product.class);
+                                products.add(product);
+                                Log.d("ListsView", "Product fetched: " + product.toString());
+                            }
+                            productAdapter.notifyDataSetChanged(); // Notify adapter of data change
+                        }
+                    } else {
+                        Log.e("ListsView", "Error fetching products", task.getException());
+                        Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-            @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
-                Log.e("ListsView", "Error fetching products", t);
-                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

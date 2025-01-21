@@ -42,17 +42,11 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-
-    // Firebase Analytics
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-analytics")
-
-    // Add other Firebase dependencies as needed
-    // https://firebase.google.com/docs/android/setup#available-libraries
-
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation(libs.firebase.storage)
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // Lottie for animations
@@ -61,9 +55,6 @@ dependencies {
     // Room Database
     implementation("androidx.room:room-runtime:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -76,4 +67,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    implementation("com.google.firebase:firebase-firestore")
+
 }

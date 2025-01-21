@@ -20,8 +20,9 @@
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
+        android:layout_height="710dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginBottom="150dp"
         android:columnWidth="150dp"
         android:gravity="center"
         android:horizontalSpacing="10dp"

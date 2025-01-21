@@ -22,7 +22,7 @@
     <string name="drinks">Drinks</string>
     <string name="spices">Spices</string>
     <string name="support_super">Support Super👸</string>
-    <string name="min_90_deals">Min 90\' deals</string>
+    <string name="min_90_deals">Super Deals</string>
     <string name="my_cart">MY CART</string>
     <string name="total_items">Total Items</string>
     <string name="total_amount">Total Amount</string>
@@ -46,19 +46,6 @@
     <string name="order_submitted_successfully">Order Submitted Successfully</string>
     <string name="track">Track Your Order</string>
     <string name="address">Address</string>
-    <string-array name="card_titles">
-        <item>Seasonal Fruits</item>
-        <item>Fruits</item>
-        <item>Vegetables</item>
-        <item>Bread and Pastries</item>
-        <item>Dairy</item>
-        <item>Grocery Essentials</item>
-        <item>Snacks</item>
-        <item>Frozen Foods</item>
-        <item>Drinks</item>
-        <item>Spices</item>
-        <item>Support Superwoman</item>
-        <item>Bulk Deals</item>
-    </string-array>
+
 
 </resources>

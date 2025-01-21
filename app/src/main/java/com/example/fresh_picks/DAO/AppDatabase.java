@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {UserEntity.class}, version = 1) // Start with version 1
+@Database(entities = {UserEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
 
@@ -17,8 +17,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "fresh_picks_database")
-                            .fallbackToDestructiveMigration() // Optional for auto-resetting on schema changes
+                                    AppDatabase.class, "fresh_picks_database")
+                            .fallbackToDestructiveMigration() // Automatically resets the database on schema changes
                             .build();
                 }
             }

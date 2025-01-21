@@ -1,19 +1,21 @@
 package com.example.fresh_picks.DAO;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "users")
 public class UserEntity {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+    private String id;
 
     private String name;
     private String email;
     private String password;
     private String phoneNumber;
 
-    public UserEntity(int id, String name, String email, String password, String phoneNumber) {
+    public UserEntity(String id, String name, String email, String password, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -22,8 +24,8 @@ public class UserEntity {
     }
 
     // Getters and setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

@@ -1,6 +1,7 @@
 package com.example.fresh_picks.DAO;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -19,5 +20,8 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE phoneNumber = :Phone LIMIT 1")
     UserEntity getUserByPhone(String Phone);
+    // Delete all users
+    @Query("DELETE FROM users")
+    void deleteAllUsers();
 
 }

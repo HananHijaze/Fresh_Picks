@@ -13,11 +13,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.fresh_picks.DAO.AppDatabase;
+import com.example.fresh_picks.DAO.UserDao;
+import com.example.fresh_picks.DAO.UserEntity;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.concurrent.Executors;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private AppDatabase db;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +38,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize Room database asynchronously
-        initializeRoomDatabase();
-
+        // Update the user in Room database asynchronously
+      //  addProductToFirebase();
 
 
         // Wait 3 seconds and then start the next activity
@@ -45,23 +50,55 @@ public class MainActivity extends AppCompatActivity {
         }, 3000); // 3 seconds delay
     }
 
-    private void initializeRoomDatabase() {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                // Initialize Room database using AppDatabase
-                db = AppDatabase.getInstance(this);
-                Log.i("RoomDB", "Room database initialized successfully.");
-
-                // Example: Query some data from the database
-                if (db.userDao().getAllUsers().isEmpty()) { // Assuming `getAllUsers()` is a method in your UserDao
-                    Log.i("RoomDB", "No users found in the database.");
-                } else {
-                    Log.i("RoomDB", "Users fetched successfully.");
-                }
-            } catch (Exception e) {
-                Log.e("RoomDB", "Error accessing Room database", e);
-            }
-        });
-    }
-
+//    public static void addProductToFirebase() {
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        // Prepare product data based on the provided line
+//        String id = "0001";
+//        String name = "Tomato";
+//        String nameAr = "طمام";
+//        String category = "vegetables";
+//        double price = 6.9;
+//        String packSize = "1 kg";
+//        int stockQuantity = 100;
+//        String unit = "Kg";
+//        List<String> dietaryInfo = Arrays.asList("Vegan", "Gluten-Free", "Low-Calorie");
+//        List<String> cuisineTags = Arrays.asList("Mediterranean", "Italian", "Middle Eastern", "Israeli Cuisine", "Levantine Cuisine");
+//        boolean inStock = true;
+//        boolean seasonal = false;
+//        List<String> foodPairings = Arrays.asList("Cheese", "Basil", "Olive Oil", "eggs", "Cucumber", "Garlic");
+//        List<String> recipeSuggestions = Arrays.asList("Tomato Soup", "Shaksuka", "Israeli Salad", "Stuffed Tomatoes", "Tabbouleh");
+//        String imageUrl = "https://drive.google.com/file/d/1HCrc6e9gO8ZZ1v0Lg8zuYHDf7qUeS6XW/view?usp=sharing";
+//        int popularityScore = 6;
+//
+//        // Create a map to represent the Firestore document
+//        Map<String, Object> productData = new HashMap<>();
+//        productData.put("id", id);
+//        productData.put("name", name);
+//        productData.put("nameAr", nameAr);
+//        productData.put("category", category);
+//        productData.put("price", price);
+//        productData.put("packSize", packSize);
+//        productData.put("stockQuantity", stockQuantity);
+//        productData.put("unit", unit);
+//        productData.put("dietaryInfo", dietaryInfo);
+//        productData.put("cuisineTags", cuisineTags);
+//        productData.put("inStock", inStock);
+//        productData.put("seasonal", seasonal);
+//        productData.put("foodPairings", foodPairings);
+//        productData.put("recipeSuggestions", recipeSuggestions);
+//        productData.put("imageUrl", imageUrl);
+//        productData.put("popularityScore", popularityScore);
+//
+//        // Add the product to Firestore
+//        db.collection("products")
+//                .document(id) // Use the product ID as the document ID
+//                .set(productData)
+//                .addOnSuccessListener(aVoid -> {
+//                    System.out.println("Product added successfully: " + name);
+//                })
+//                .addOnFailureListener(e -> {
+//                    System.err.println("Error adding product: " + e.getMessage());
+//                });
+//    }
 }
