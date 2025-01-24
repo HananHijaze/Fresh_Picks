@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "886592862331",
+    "project_id": "freshpicks-f76b9",
+    "storage_bucket": "freshpicks-f76b9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886592862331:android:70dab759b768b88edb4ade",
+        "android_client_info": {
+          "package_name": "com.example.fresh_picks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTRVjZIy2FOcpbPY2KTM2-BnAEwMDx0FM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -98,7 +98,8 @@ public class ListsView extends Fragment {
         }
 
         firestore.collection("products")
-                .whereArrayContains("category", category) // Use arrayContains instead of whereEqualTo
+                .whereArrayContains("category", category) // Check if the category matches
+                .whereEqualTo("inStock", true) // Filter for products that are in stock
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -117,6 +118,6 @@ public class ListsView extends Fragment {
                         Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
+
 }
