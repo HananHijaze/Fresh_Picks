@@ -107,4 +107,10 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/logout"
+        android:layout_width="52dp"
+        android:layout_height="61dp"
+        android:src="@drawable/loh_out" />
+
 </FrameLayout>

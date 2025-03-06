@@ -10,23 +10,22 @@ public class User {
     private String password;
     private List<String> addresses; // List of user's addresses
     private String phoneNumber; // User's phone number
-    private Cart cart;
+    private String cartId;
     private List<Order> orders;
     private boolean bulkSaleBuyer; // Indicates if the user qualifies for bulk sales
 
     // Constructors
-
-    public User(int id, String name, String email, String password, List<String> addresses, String phoneNumber, Cart cart, List<Order> orders, boolean bulkSaleBuyer) {
-        this.id = id;
+    public User(String name, String email, String password, List<String> addresses, String phoneNumber, String cartId) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.addresses = addresses;
+        this.addresses = new ArrayList<>(addresses);
         this.phoneNumber = phoneNumber;
-        this.cart = cart;
-        this.orders = orders;
-        this.bulkSaleBuyer = bulkSaleBuyer;
+        this.cartId = cartId; // ✅ Store cartId instead of Cart object
+        this.orders = new ArrayList<>();
+        this.bulkSaleBuyer = false;
     }
+
 
     public User(String name, String email, String password, List<String> addresses, String phoneNumber) {
         this.name = name;
@@ -34,7 +33,7 @@ public class User {
         this.password = password;
         this.addresses = new ArrayList<>(addresses); // Ensure immutability by creating a new list
         this.phoneNumber = phoneNumber;
-        this.cart = new Cart(new ArrayList<>());
+        this.cartId = cartId;
         this.orders = new ArrayList<>();
         this.bulkSaleBuyer = false; // Default value
     }
@@ -45,7 +44,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.addresses = addresses;
-        this.cart = cart;
+        this.cartId = cartId;
         this.orders = orders;
         this.bulkSaleBuyer = bulkSaleBuyer;
     }
@@ -55,7 +54,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.addresses = new ArrayList<>(addresses); // Ensure immutability by creating a new list
-        this.cart = new Cart(new ArrayList<>());
+        this.cartId = cartId;
         this.orders = new ArrayList<>();
         this.bulkSaleBuyer = false; // Default value
     }
@@ -117,12 +116,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Cart getCart() {
-        return cart;
+    public String getCartId() {
+        return cartId;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 
     public List<Order> getOrders() {
@@ -158,7 +157,6 @@ public class User {
     // Utility Methods
     public void placeOrder(Order order) {
         orders.add(order);
-        cart.clearCart(); // Clear the cart after placing the order
     }
 
     @Override

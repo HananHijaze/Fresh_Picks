@@ -1,6 +1,8 @@
 package com.example.fresh_picks;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,23 +11,33 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.fresh_picks.DAO.AppDatabase;
+import com.example.fresh_picks.DAO.UserDao;
+import com.example.fresh_picks.DAO.UserEntity;
 import com.example.fresh_picks.R;
 import com.example.fresh_picks.classes.Product;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class ProductAdapter extends ArrayAdapter<Product> {
 
     private final Context context;
     private final List<Product> products;
+    private final UserDao userDao;
 
     public ProductAdapter(Context context, List<Product> products) {
         super(context, 0, products);
         this.context = context;
         this.products = products;
+        this.userDao = AppDatabase.getInstance(context).userDao();
     }
 
     @Override
@@ -40,7 +52,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         // Bind the product details to the UI components
         ImageView productImage = convertView.findViewById(R.id.product_image);
         TextView productPrice = convertView.findViewById(R.id.product_price);
-        TextView productTitle = convertView.findViewById(R.id.product_title_text); // Updated id
+        TextView productTitle = convertView.findViewById(R.id.product_title_text);
 
         // Set product data
         Glide.with(context)
@@ -56,7 +68,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         return convertView;
     }
-
 
     private void showProductDetails(Product product) {
         // Inflate the layout for the BottomSheetDialog
@@ -75,12 +86,6 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             Button minusButton = sheetView.findViewById(R.id.quantity_minus);
             Button plusButton = sheetView.findViewById(R.id.quantity_plus);
             Button addToCartButton = sheetView.findViewById(R.id.add_to_cart_button);
-
-            // Log to verify the views
-            Log.d("ProductAdapter", "Product Image: " + (productImage != null));
-            Log.d("ProductAdapter", "Product Price: " + (productPrice != null));
-            Log.d("ProductAdapter", "Product Name: " + (productName != null));
-            Log.d("ProductAdapter", "Quantity Text: " + (quantityText != null));
 
             // Load product image
             Glide.with(context).load(product.getImageUrl()).into(productImage);
@@ -105,11 +110,69 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 quantityText.setText(String.valueOf(quantity[0]));
             });
 
-            // Handle "Add to Cart" button click
+            // ✅ Fix: Properly set OnClickListener for addToCartButton
             addToCartButton.setOnClickListener(v -> {
-                // Add the product to the cart with the selected quantity
-                Log.d("ProductAdapter", "Added to cart: " + product.getName() + ", Quantity: " + quantity[0]);
-                bottomSheetDialog.dismiss();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                getCurrentUserId(userId -> {
+                    if (userId == null) {
+                        Log.e("ProductAdapter", "User ID is null. Cannot proceed.");
+                        Toast.makeText(context, "User not logged in!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Fetch cartId dynamically
+                    getCartIdForUser(userId, new CartIdCallback() {
+                        @Override
+                        public void onSuccess(String cartId) {
+                            int requestedQuantity = quantity[0]; // The quantity user selected
+
+                            // Step 1: Check stock availability
+                            db.collection("products").document(product.getId())
+                                    .get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+                                        if (documentSnapshot.exists()) {
+                                            int stockQuantity = documentSnapshot.getLong("stockQuantity").intValue(); // Get available stock
+
+                                            if (stockQuantity < requestedQuantity) {
+                                                Toast.makeText(context, "Only " + stockQuantity + " items available!", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+
+                                            // ✅ Step 2: Proceed to add the product to the cart
+                                            Map<String, Object> cartItem = new HashMap<>();
+                                            cartItem.put("productId", product.getId());
+                                            cartItem.put("name", product.getName());
+                                            cartItem.put("price", product.getPrice());
+                                            cartItem.put("quantity", requestedQuantity);
+                                            cartItem.put("imageUrl", product.getImageUrl());
+
+                                            db.collection("carts").document(cartId)
+                                                    .collection("items")
+                                                    .document(product.getId())
+                                                    .set(cartItem)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        Log.d("ProductAdapter", "Product added to cart: " + product.getName() + ", Quantity: " + requestedQuantity);
+                                                        Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show();
+                                                        bottomSheetDialog.dismiss();
+                                                    })
+                                                    .addOnFailureListener(e -> Log.e("ProductAdapter", "Error adding to cart: " + e.getMessage()));
+
+                                        } else {
+                                            Log.e("ProductAdapter", "Product does not exist!");
+                                            Toast.makeText(context, "Product not found!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> Log.e("ProductAdapter", "Error checking stock: " + e.getMessage()));
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            Log.e("ProductAdapter", "Error fetching cart ID: " + error);
+                            Toast.makeText(context, "Error retrieving cart!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
             });
 
             // Show the BottomSheetDialog
@@ -117,7 +180,42 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
         } catch (ClassCastException e) {
             Log.e("ProductAdapter", "View casting error: " + e.getMessage());
-            bottomSheetDialog.dismiss(); // Dismiss the dialog in case of an error
+            bottomSheetDialog.dismiss();
         }
+    }
+
+    private void getCurrentUserId(UserIdCallback callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<UserEntity> users = userDao.getAllUsers(); // Fetch users in background
+            String userId = (!users.isEmpty()) ? users.get(0).getId() : null;
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                callback.onSuccess(userId);
+            });
+        });
+    }
+
+    private void getCartIdForUser(String userId, CartIdCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("cartId")) {
+                        String cartId = documentSnapshot.getString("cartId");
+                        callback.onSuccess(cartId);
+                    } else {
+                        callback.onFailure("Cart ID not found!");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    public interface UserIdCallback {
+        void onSuccess(String userId);
+    }
+
+    public interface CartIdCallback {
+        void onSuccess(String cartId);
+        void onFailure(String error);
     }
 }

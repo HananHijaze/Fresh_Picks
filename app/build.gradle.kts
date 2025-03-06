@@ -47,6 +47,7 @@ dependencies {
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.firebase.storage)
+    implementation(libs.activity)
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // Lottie for animations
@@ -69,5 +70,9 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("com.google.firebase:firebase-firestore")
+    dependencies {
+        implementation ("com.google.firebase:firebase-auth:22.1.2")
+        implementation ("com.google.android.material:material:1.10.0")
+    }
 
 }

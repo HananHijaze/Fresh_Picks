@@ -44,7 +44,7 @@ public class MainActivity2 extends AppCompatActivity {
                 selectedFragment = new OrdersH();  // Load WishListFragment
             }
             else if (id == R.id.cart_BottomIcon) {
-                selectedFragment = new Cart();
+                selectedFragment = new CartF();
             }
             else if (id == R.id.profile_BottomIcon) {
                 selectedFragment = new Profile();

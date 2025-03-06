@@ -1,5 +1,10 @@
 package com.example.fresh_picks.classes;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Payment {
     private String paymentMethod; // "Cash" or "CreditCard"
     private boolean isPaid;
@@ -117,17 +122,32 @@ public class Payment {
         this.cvv = cvv;
     }
 
-    // Calculate total amount with coupon
-    public double calculateTotalAmount() {
-        double total = cart.calculateTotalPrice(); // Get the total price of items in the cart
+    // ✅ Calculate total amount with coupon
+    public double calculateTotalAmount(Map<String, Product> productMap) {
+        double total = cart.calculateTotalPrice(productMap); // ✅ Pass productMap
+
+        // ✅ Convert cart items to a List<Product> for coupon validation
+        List<Product> cartProductList = getCartProductList(productMap);
 
         // Check if a coupon is applied and valid
-        if (appliedCoupon != null && appliedCoupon.isValid(total, cart.getItems())) {
+        if (appliedCoupon != null && appliedCoupon.isValid(total, cartProductList)) {
             // Subtract the discount amount calculated by the coupon
-            total -= appliedCoupon.calculateDiscount(total, cart.getItems());
+            total -= appliedCoupon.calculateDiscount(total, cartProductList);
         }
 
         return Math.max(total, 0); // Ensure the total is not negative
+    }
+
+    // ✅ Helper method to convert Map<String, Integer> to List<Product>
+    private List<Product> getCartProductList(Map<String, Product> productMap) {
+        List<Product> productList = new ArrayList<>();
+        for (String productId : cart.getItems().keySet()) {
+            Product product = productMap.get(productId);
+            if (product != null) {
+                productList.add(product);
+            }
+        }
+        return productList;
     }
 
     @Override
@@ -135,7 +155,7 @@ public class Payment {
         return "Payment{" +
                 "paymentMethod='" + paymentMethod + '\'' +
                 ", isPaid=" + isPaid +
-                ", totalAmount=" + calculateTotalAmount() +
+                ", totalAmount=" + calculateTotalAmount(new HashMap<>()) + // Provide an empty productMap for now
                 ", appliedCoupon=" + (appliedCoupon != null ? appliedCoupon.getCode() : "None") +
                 ", cart=" + cart +
                 '}';
