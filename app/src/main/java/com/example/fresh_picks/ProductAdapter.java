@@ -121,49 +121,71 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                         return;
                     }
 
-                    // Fetch cartId dynamically
+                    // Retrieve Cart ID
                     getCartIdForUser(userId, new CartIdCallback() {
                         @Override
                         public void onSuccess(String cartId) {
-                            int requestedQuantity = quantity[0]; // The quantity user selected
+                            int requestedQuantity = quantity[0]; // User-selected quantity
 
-                            // Step 1: Check stock availability
-                            db.collection("products").document(product.getId())
+                            // Read the cart first to check if the product exists
+                            db.collection("carts").document(cartId)
                                     .get()
-                                    .addOnSuccessListener(documentSnapshot -> {
-                                        if (documentSnapshot.exists()) {
-                                            int stockQuantity = documentSnapshot.getLong("stockQuantity").intValue(); // Get available stock
+                                    .addOnSuccessListener(cartSnapshot -> {
+                                        if (cartSnapshot.exists()) {
+                                            Map<String, Object> items = (Map<String, Object>) cartSnapshot.get("items");
 
-                                            if (stockQuantity < requestedQuantity) {
-                                                Toast.makeText(context, "Only " + stockQuantity + " items available!", Toast.LENGTH_SHORT).show();
-                                                return;
+                                            // If items exist in the cart
+                                            if (items != null && items.containsKey(product.getId())) {
+                                                Map<String, Object> existingProduct = (Map<String, Object>) items.get(product.getId());
+                                                int currentQuantity = ((Long) existingProduct.get("quantity")).intValue();
+
+                                                // Step 3: Check stock availability for new quantity
+                                                int newTotalQuantity = currentQuantity + requestedQuantity;
+
+                                                checkStockAvailability(product, newTotalQuantity, (isAvailable) -> {
+                                                    if (isAvailable) {
+                                                        // Update cart with new quantity
+                                                        existingProduct.put("quantity", newTotalQuantity);
+                                                        db.collection("carts").document(cartId)
+                                                                .update("items." + product.getId(), existingProduct)
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    Log.d("ProductAdapter", "Cart updated successfully!");
+                                                                    Toast.makeText(context, "Updated cart quantity!", Toast.LENGTH_SHORT).show();
+                                                                    bottomSheetDialog.dismiss();
+                                                                })
+                                                                .addOnFailureListener(e -> Log.e("ProductAdapter", "Error updating cart: " + e.getMessage()));
+                                                    } else {
+                                                        Toast.makeText(context, "Not enough stock available!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            } else {
+                                                // Product does not exist in cart - Check stock before adding
+                                                checkStockAvailability(product, requestedQuantity, (isAvailable) -> {
+                                                    if (isAvailable) {
+                                                        // Add new product to cart
+                                                        Map<String, Object> cartItem = new HashMap<>();
+                                                        cartItem.put("productId", product.getId());
+                                                        cartItem.put("name", product.getName());
+                                                        cartItem.put("price", product.getPrice());
+                                                        cartItem.put("quantity", requestedQuantity);
+                                                        cartItem.put("imageUrl", product.getImageUrl());
+
+                                                        db.collection("carts").document(cartId)
+                                                                .update("items." + product.getId(), cartItem)
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    Log.d("ProductAdapter", "Added to cart successfully!");
+                                                                    Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show();
+                                                                    bottomSheetDialog.dismiss();
+                                                                })
+                                                                .addOnFailureListener(e -> Log.e("ProductAdapter", "Error adding to cart: " + e.getMessage()));
+                                                    } else {
+                                                        Toast.makeText(context, "Not enough stock available!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
                                             }
-
-                                            // ✅ Step 2: Proceed to add the product to the cart
-                                            Map<String, Object> cartItem = new HashMap<>();
-                                            cartItem.put("productId", product.getId());
-                                            cartItem.put("name", product.getName());
-                                            cartItem.put("price", product.getPrice());
-                                            cartItem.put("quantity", requestedQuantity);
-                                            cartItem.put("imageUrl", product.getImageUrl());
-
-                                            db.collection("carts").document(cartId)
-                                                    .collection("items")
-                                                    .document(product.getId())
-                                                    .set(cartItem)
-                                                    .addOnSuccessListener(aVoid -> {
-                                                        Log.d("ProductAdapter", "Product added to cart: " + product.getName() + ", Quantity: " + requestedQuantity);
-                                                        Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show();
-                                                        bottomSheetDialog.dismiss();
-                                                    })
-                                                    .addOnFailureListener(e -> Log.e("ProductAdapter", "Error adding to cart: " + e.getMessage()));
-
-                                        } else {
-                                            Log.e("ProductAdapter", "Product does not exist!");
-                                            Toast.makeText(context, "Product not found!", Toast.LENGTH_SHORT).show();
                                         }
                                     })
-                                    .addOnFailureListener(e -> Log.e("ProductAdapter", "Error checking stock: " + e.getMessage()));
+                                    .addOnFailureListener(e -> Log.e("ProductAdapter", "Error fetching cart: " + e.getMessage()));
                         }
 
                         @Override
@@ -174,6 +196,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                     });
                 });
             });
+
 
             // Show the BottomSheetDialog
             bottomSheetDialog.show();
@@ -218,4 +241,28 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         void onSuccess(String cartId);
         void onFailure(String error);
     }
+    private void checkStockAvailability(Product product, int requestedQuantity, StockCheckCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("products").document(product.getId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("stockQuantity")) {
+                        int stockQuantity = documentSnapshot.getLong("stockQuantity").intValue();
+                        callback.onResult(stockQuantity >= requestedQuantity);
+                    } else {
+                        callback.onResult(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ProductAdapter", "Error checking stock: " + e.getMessage());
+                    callback.onResult(false);
+                });
+    }
+
+    // Callback Interface
+    public interface StockCheckCallback {
+        void onResult(boolean isAvailable);
+    }
+
 }

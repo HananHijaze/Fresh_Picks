@@ -11,15 +11,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="160dp"
         android:gravity="center"
         android:padding="8dp">
 
         <!-- Image Section -->
         <ImageView
             android:id="@+id/productImage"
-            android:layout_width="74dp"
-            android:layout_height="87dp"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:scaleType="centerCrop"
@@ -28,8 +28,8 @@
         <!-- X Button (Close Button in Corner) -->
         <ImageButton
             android:id="@+id/buttonClose"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:background="?android:attr/selectableItemBackground"
@@ -60,13 +60,6 @@
                 android:textStyle="bold" />
 
             <!-- Product Description -->
-            <TextView
-                android:id="@+id/productDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lorem Ipsum is simply"
-                android:textColor="@color/black"
-                android:textSize="18dp" />
 
             <!-- Price Section -->
             <LinearLayout
@@ -81,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/price"
                     android:textColor="@color/black"
-                    android:textSize="18dp" />
+                    android:textSize="20dp" />
 
                 <!-- MRP Price -->
                 <TextView
@@ -89,9 +82,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="30.0 NIS"
+                    android:text=""
                     android:textColor="@color/black"
-                    android:textSize="18dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -108,8 +101,8 @@
             <!-- Decrement Button -->
             <ImageButton
                 android:id="@+id/buttonDecrement"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="Decrement"
                 android:src="@drawable/ic_remove" />
@@ -123,13 +116,13 @@
                 android:gravity="center"
                 android:text="1"
                 android:textColor="@color/black"
-                android:textSize="30dp" />
+                android:textSize="25dp" />
 
             <!-- Increment Button -->
             <ImageButton
                 android:id="@+id/buttonIncrement"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="Increment"
                 android:src="@drawable/ic_add" />
