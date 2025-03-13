@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Discount</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('images/img6.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        .header-buttons {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .back-button {
+            background-color: #85929e;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #2c3e50;
+        }
+        .options-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 60px auto 20px;
+            padding: 10px 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .options-container button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 5px;
+            max-width: 150px;
+            text-align: center;
+        }
+        .options-container button:hover {
+            background-color: #2980b9;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        h2 {
+            color: black;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        form input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            outline: none;
+        }
+        form input:focus {
+            border-color: #f39c12;
+        }
+        button.submit-btn {
+            width: 80%;
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button.submit-btn:hover {
+            background-color: #c0392b;
+        }
+        #status {
+            color: #e74c3c;
+            font-weight: bold;
+            display: none;
+            margin-top: 20px;
+        }
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9em;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-buttons">
+        <button class="back-button" onclick="navigate('index.html')">Back to Main</button>
+    </div>
+    <div class="options-container">
+        <button onclick="navigate('add_product.html')">Add Product</button>
+        <button onclick="navigate('delete_product.html')">Delete Product</button>
+        <button onclick="navigate('update_product.html')">Update Product</button>
+        <button onclick="navigate('sales.html')">View Sales</button>
+    </div>
+    <div class="container">
+        <img src="images/discount.jpg" alt="Set Discount">
+        <form id="discountForm">
+            <h2>Set Discount Criteria</h2>
+            <input type="number" id="minPrice" placeholder="Minimum Price for Discount" required>
+            <input type="number" id="discountPercent" placeholder="Discount Percentage" required>
+            <button type="button" class="submit-btn" onclick="setDiscount()">Apply Discount</button>
+        </form>
+        <p id="status">Discount applied successfully!</p>
+    </div>
+    <footer>
+        <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
+    </footer>
+    <script>
+        function setDiscount() {
+            const minPrice = document.getElementById("minPrice").value;
+            const discountPercent = document.getElementById("discountPercent").value;
+            if (minPrice && discountPercent) {
+                document.getElementById("status").style.display = "block";
+                document.getElementById("discountForm").reset();
+            }
+        }
+        function navigate(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>

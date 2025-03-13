@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Picks - Manager Login</title>
+    <style>
+       body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f8ff; /* Light blue background color */
+    min-height: 100vh; /* Ensure full height */
+    display: flex;
+    flex-direction: column; /* Arrange content in a column */
+    justify-content: space-between; /* Space out the content */
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    text-align: center;
+    margin: auto; /* Center the container vertically */
+}
+
+footer {
+    text-align: center;
+    background: url('images/img7.jpg') no-repeat center center/cover;
+    color: black;
+    padding: 20px;
+    font-size: 0.9em;
+    width: 100%; /* Ensure the footer spans the full width */
+}
+input[type="password"], input[type="text"] {
+            width: calc(100% - 50px);
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Eye Icon */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 200px;
+        }
+
+       /* .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }*/
+        .form-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+       /* input[type="password"] {
+            width: calc(100% - 50px); /* Adjust width to account for image */
+           /* padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }*/
+
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+        }
+
+        p {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        #error {
+            display: none;
+            color: red;
+            margin-top: 10px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="images/fresh picks.jpg" alt="Fresh Picks Logo">
+        </div>
+        <h1>Manager Login</h1>
+        <form onsubmit="return checkPassword()">
+            <div class="form-group">
+                <img src="images/managerPassword.jpg" alt="Manager Password Icon">
+                <input type="password" id="password" placeholder="Enter Manager Password" required>
+                <img src="images/eye_closed.png" alt="Toggle Password" class="toggle-password" onclick="togglePassword()">
+
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p id="error">Invalid password. Try again.</p>
+    </div>
+    <footer>
+        <p>&copy; 2024 Fresh Picks, Taha Hijazi market. All rights reserved.</p>
+        <img src="images/img4.jpg" alt="Fresh Picks Logo" style="width: 60px; border-radius: 50%; margin-top: 10px;">
+    </footer>
+    <script>
+        const correctPassword = "manager123"; // Example password (replace securely in production)
+        function checkPassword() {
+            const input = document.getElementById("password").value;
+            if (input === correctPassword) {
+                window.location.href = "menu.html";
+                return false; // Prevent form submission
+            } else {
+                document.getElementById("error").style.display = "block";
+                return false;
+            }
+        }
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const eyeIcon = document.querySelector(".toggle-password");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.src = "images/eye_open.png"; // Change to an open eye image
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.src = "images/eye_closed.png"; // Change to a closed eye image
+            }
+        }
+        function closePage() {
+            window.close();
+        }
+    </script>
+</body>
+</html>

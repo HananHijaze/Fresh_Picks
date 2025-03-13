@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f8ff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 320px;
+            position: relative;
+            margin-top: -50px; /* Moves container slightly up */
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s;
+            background-color: #e6b0aa;
+        }
+
+        button:hover {
+            background-color: #d4efdf;
+            transform: translateY(-2px);
+        }
+
+        .header-buttons {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            background: url('images/img7.jpg') no-repeat center center/cover;
+            color: black;
+            padding: 20px;
+            font-size: 0.9em;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome, Manager</h1>
+        <button onclick="navigate('add_product.html')">➕ Add Product</button>
+        <button onclick="navigate('delete_product.html')">🗑️ Delete Product</button>
+        <button onclick="navigate('update_product.html')">✏️ Update Product</button>
+        <button onclick="navigate('sales.html')">📊 View Sales</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
+        <img src="images/img4.jpg" alt="Fresh Picks Logo" style="width: 60px; border-radius: 50%; margin-top: 10px;">
+    </footer>
+
+    <script>
+        function navigate(page) {
+            window.location.href = page;
+        }
+    </script>
+
+</body>
+</html>
