@@ -7,45 +7,38 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Order {
-    private int id;
-    private Map<Product, Integer> productQuantities; // Products and their quantities
+    private String id;
+    private Map<String, Integer> productQuantities; // Product IDs → Quantity
     private double totalPrice;
     private Payment payment;
-    private String status; // e.g., "Pending", "Ready for Pickup", "Delivered", "Canceled"
+    private String status; // "Pending", "Ready for Pickup", "Delivered", "Canceled"
     private boolean isReadyForPickup;
     private boolean isDelivered;
 
-    // Timestamp fields
-    private final Date createdAt; // Order creation timestamp (final since it won't change)
+    private final String createdAt; // Timestamp in String format
 
-    // Constructors
-    public Order(int id, Map<Product, Integer> productQuantities, Payment payment) {
+    // Constructor
+    public Order(String id, Map<String, Integer> productQuantities, Payment payment) {
         this.id = id;
-        this.productQuantities = new HashMap<>(productQuantities); // Create a copy to ensure immutability
+        this.productQuantities = new HashMap<>(productQuantities);
         this.payment = payment;
         this.totalPrice = calculateTotalPrice();
         this.status = "Pending";
         this.isReadyForPickup = false;
         this.isDelivered = false;
-        this.createdAt = new Date(); // Set creation timestamp
+
+        // Store formatted date instead of Date object for Firestore compatibility
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        this.createdAt = dateFormat.format(new Date());
     }
 
-    // Getters and Setters
-    public int getId() {
+    // Getters
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Map<Product, Integer> getProductQuantities() {
-        return new HashMap<>(productQuantities); // Return a copy to ensure immutability
-    }
-
-    public void setProductQuantities(Map<Product, Integer> productQuantities) {
-        this.productQuantities = new HashMap<>(productQuantities); // Create a copy to ensure immutability
-        this.totalPrice = calculateTotalPrice(); // Recalculate total price
+    public Map<String, Integer> getProductQuantities() {
+        return new HashMap<>(productQuantities);
     }
 
     public double getTotalPrice() {
@@ -56,20 +49,25 @@ public class Order {
         return payment;
     }
 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public boolean isReadyForPickup() {
         return isReadyForPickup;
+    }
+
+    public boolean isDelivered() {
+        return isDelivered;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    // Setters
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setReadyForPickup(boolean readyForPickup) {
@@ -79,10 +77,6 @@ public class Order {
         }
     }
 
-    public boolean isDelivered() {
-        return isDelivered;
-    }
-
     public void setDelivered(boolean delivered) {
         isDelivered = delivered;
         if (delivered) {
@@ -90,25 +84,11 @@ public class Order {
         }
     }
 
-    public String getOrderDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        return dateFormat.format(createdAt); // Return the date portion
-    }
-
-    public String getOrderHour() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return timeFormat.format(createdAt); // Return the hour in HH:mm format
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
     // Calculate total price
     private double calculateTotalPrice() {
         double total = 0;
-        for (Map.Entry<Product, Integer> entry : productQuantities.entrySet()) {
-            total += entry.getKey().getPrice() * entry.getValue(); // Product price * quantity
+        for (int quantity : productQuantities.values()) {
+            total += quantity; // You should update this with actual product prices
         }
         return total;
     }
@@ -116,14 +96,14 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", productQuantities=" + productQuantities +
                 ", totalPrice=" + totalPrice +
                 ", payment=" + payment +
                 ", status='" + status + '\'' +
                 ", isReadyForPickup=" + isReadyForPickup +
                 ", isDelivered=" + isDelivered +
-                ", createdAt=" + getOrderDate() + " " + getOrderHour() +
+                ", createdAt='" + createdAt + '\'' +
                 '}';
     }
 }

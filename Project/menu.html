@@ -69,6 +69,48 @@
             bottom: 0;
         }
     </style>
+	<script type="module">
+    // ✅ Import Firebase Authentication
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+    // ✅ Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+        authDomain: "freshpicks-f76b9.firebaseapp.com",
+        projectId: "freshpicks-f76b9",
+        storageBucket: "freshpicks-f76b9.appspot.com",
+        messagingSenderId: "886592862331",
+        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+        measurementId: "G-PWCSRFXYJ8"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Check If User Is Logged In
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "index.html"; // Redirect to login if not authenticated
+        }
+    });
+
+    // ✅ Function to Logout
+    function logout() {
+        signOut(auth).then(() => {
+            window.location.href = "index.html"; // Redirect to login page
+        }).catch((error) => {
+            console.error("Logout failed", error);
+        });
+    }
+
+    // ✅ Navigation Function
+    function navigate(page) {
+        window.location.href = page;
+    }
+</script>
+
 </head>
 <body>
 

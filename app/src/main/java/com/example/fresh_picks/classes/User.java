@@ -141,17 +141,17 @@ public class User {
     }
 
     // Methods for managing orders
-    public Order getOrderById(int orderId) {
+    public Order getOrderById(String orderId) {  // ✅ Change int to String
         for (Order order : orders) {
-            if (order.getId() == orderId) {
+            if (order.getId().equals(orderId)) { // ✅ Use .equals() for String comparison
                 return order;
             }
         }
         return null;
     }
 
-    public void cancelOrder(int orderId) {
-        orders.removeIf(order -> order.getId() == orderId);
+    public void cancelOrder(String orderId) {  // ✅ Change int to String
+        orders.removeIf(order -> order.getId().equals(orderId)); // ✅ Use .equals() for String comparison
     }
 
     // Utility Methods

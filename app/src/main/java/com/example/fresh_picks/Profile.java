@@ -46,7 +46,7 @@ public class Profile extends Fragment {
         tvUserName = view.findViewById(R.id.tv_user_name);
         tvUserPhone = view.findViewById(R.id.tv_user_phone);
         btnMyLocation = view.findViewById(R.id.btn_my_location);
-        btnCoupons = view.findViewById(R.id.btn_coupons);
+        btnCoupons = view.findViewById(R.id.btn_contat_us);
         btnCards = view.findViewById(R.id.btn_cards);
         logoutIcon = view.findViewById(R.id.logout);
 

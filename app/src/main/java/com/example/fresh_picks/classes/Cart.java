@@ -1,5 +1,7 @@
 package com.example.fresh_picks.classes;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -18,6 +20,27 @@ public class Cart {
         this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
         updateCartInFirestore(); // Save cart immediately in Firestore
     }
+    public Cart(Map<String, Integer> items){
+        this.cartId = UUID.randomUUID().toString(); // Generate unique cart ID
+        this.items = items != null ? new HashMap<>(items) : new HashMap<>();
+        this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
+        updateCartInFirestore(); // Save cart immediately in Firestore
+    }
+    // ✅ Update constructor to store cartId in Firestore under user
+    public Cart(String userId) {
+        this.cartId = UUID.randomUUID().toString();
+        this.items = new HashMap<>();
+        this.db = FirebaseFirestore.getInstance();
+
+        // ✅ Store cart ID in user document
+        db.collection("users").document(userId)
+                .update("cartId", cartId)
+                .addOnSuccessListener(aVoid -> Log.d("Cart", "Cart ID linked to user: " + userId))
+                .addOnFailureListener(e -> Log.e("Cart", "Error linking cart ID: " + e.getMessage()));
+
+        updateCartInFirestore();
+    }
+
 
     // Getter for cartId
     public String getCartId() {

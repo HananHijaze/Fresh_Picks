@@ -127,6 +127,78 @@
             width: 100%;
         }
     </style>
+	<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+    // ✅ Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+        authDomain: "freshpicks-f76b9.firebaseapp.com",
+        projectId: "freshpicks-f76b9",
+        storageBucket: "freshpicks-f76b9.appspot.com",
+        messagingSenderId: "886592862331",
+        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+        measurementId: "G-PWCSRFXYJ8"
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ✅ Function to Apply Discounts
+    async function setDiscount() {
+        const minPrice = parseFloat(document.getElementById("minPrice").value);
+        const discountPercent = parseFloat(document.getElementById("discountPercent").value);
+
+        if (isNaN(minPrice) || isNaN(discountPercent) || minPrice <= 0 || discountPercent <= 0 || discountPercent > 100) {
+            alert("Please enter valid discount values.");
+            return;
+        }
+
+        try {
+            const productsRef = collection(db, "products");
+            const q = query(productsRef, where("price", ">=", minPrice));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
+                document.getElementById("status").textContent = "No products qualify for the discount.";
+                document.getElementById("status").style.color = "red";
+                document.getElementById("status").style.display = "block";
+                return;
+            }
+
+            querySnapshot.forEach(async (docItem) => {
+                const productData = docItem.data();
+                const newPrice = productData.price - (productData.price * (discountPercent / 100));
+
+                // ✅ Update product price in Firestore
+                await updateDoc(doc(db, "products", docItem.id), {
+                    discountedPrice: parseFloat(newPrice.toFixed(2)) // Ensure two decimal places
+                });
+            });
+
+            // ✅ Show success message
+            document.getElementById("status").textContent = "Discount applied successfully!";
+            document.getElementById("status").style.color = "green";
+            document.getElementById("status").style.display = "block";
+
+            // ✅ Reset Form
+            document.getElementById("discountForm").reset();
+        } catch (error) {
+            console.error("Error applying discount:", error);
+            document.getElementById("status").textContent = "Error applying discount. Try again.";
+            document.getElementById("status").style.color = "red";
+            document.getElementById("status").style.display = "block";
+        }
+    }
+
+    // ✅ Navigation Function
+    function navigate(page) {
+        window.location.href = page;
+    }
+</script>
+
 </head>
 <body>
     <div class="header-buttons">

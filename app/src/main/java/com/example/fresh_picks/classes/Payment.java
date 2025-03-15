@@ -1,15 +1,15 @@
 package com.example.fresh_picks.classes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Payment {
+    private String userId; // Associate payment with a user
     private String paymentMethod; // "Cash" or "CreditCard"
     private boolean isPaid;
-    private Cart cart; // Link to the Cart
-    private Coupon appliedCoupon; // Add Coupon field
+    private Order order; // ✅ Associates Payment with an Order
+    private Coupon appliedCoupon; // Optional Coupon field
 
     // Credit Card Details
     private String cardNumber;
@@ -17,31 +17,86 @@ public class Payment {
     private String expirationDate; // Format: MM/YY
     private String cvv;
 
-    // Constructor for Cash Payment
-    public Payment(String paymentMethod, boolean isPaid, Cart cart) {
-        if (!"Cash".equalsIgnoreCase(paymentMethod) && !"CreditCard".equalsIgnoreCase(paymentMethod)) {
-            throw new IllegalArgumentException("Payment method must be 'Cash' or 'CreditCard'.");
-        }
+    // 🔹 Constructor for Cash Payment
+    public Payment(String userId, String paymentMethod, boolean isPaid, Order order) {
+        validateUserId(userId);
+        validatePaymentMethod(paymentMethod);
+
+        this.userId = userId;
         this.paymentMethod = paymentMethod;
         this.isPaid = isPaid;
-        this.cart = cart;
+        this.order = order;
     }
 
-    // Constructor for Credit Card Payment
-    public Payment(String paymentMethod, boolean isPaid, Cart cart, String cardNumber, String cardHolderName, String expirationDate, String cvv) {
+    // 🔹 Constructor for Credit Card Payment
+    public Payment(String userId, String paymentMethod, boolean isPaid, Order order,
+                   String cardNumber, String cardHolderName, String expirationDate, String cvv) {
+        validateUserId(userId);
+        validatePaymentMethod(paymentMethod);
+
         if (!"CreditCard".equalsIgnoreCase(paymentMethod)) {
             throw new IllegalArgumentException("This constructor is only for CreditCard payments.");
         }
+
+        validateCardDetails(cardNumber, expirationDate, cvv);
+
+        this.userId = userId;
         this.paymentMethod = paymentMethod;
         this.isPaid = isPaid;
-        this.cart = cart;
+        this.order = order;
         this.cardNumber = cardNumber;
         this.cardHolderName = cardHolderName;
         this.expirationDate = expirationDate;
         this.cvv = cvv;
     }
 
-    // Getter and Setter for Coupon
+    // 🔹 Validate user ID
+    private void validateUserId(String userId) {
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty.");
+        }
+    }
+
+    // 🔹 Validate payment method
+    private void validatePaymentMethod(String paymentMethod) {
+        if (!"Cash".equalsIgnoreCase(paymentMethod) && !"CreditCard".equalsIgnoreCase(paymentMethod)) {
+            throw new IllegalArgumentException("Payment method must be 'Cash' or 'CreditCard'.");
+        }
+    }
+
+    // 🔹 Validate credit card details
+    private void validateCardDetails(String cardNumber, String expirationDate, String cvv) {
+        if (cardNumber == null || cardNumber.length() != 16 || !cardNumber.matches("\\d+")) {
+            throw new IllegalArgumentException("Invalid card number. It must be 16 digits.");
+        }
+        if (expirationDate == null || !expirationDate.matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
+            throw new IllegalArgumentException("Invalid expiration date. Use MM/YY format.");
+        }
+        if (cvv == null || cvv.length() != 3 || !cvv.matches("\\d{3}")) {
+            throw new IllegalArgumentException("Invalid CVV. It must be 3 digits.");
+        }
+    }
+
+    // 🔹 Getter and Setter for `userId`
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        validateUserId(userId);
+        this.userId = userId;
+    }
+
+    // 🔹 Getter and Setter for Order
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    // 🔹 Getter and Setter for Coupon
     public Coupon getAppliedCoupon() {
         return appliedCoupon;
     }
@@ -50,16 +105,17 @@ public class Payment {
         this.appliedCoupon = appliedCoupon;
     }
 
-    // Getter and Setter for Payment Method
+    // 🔹 Getter and Setter for Payment Method
     public String getPaymentMethod() {
         return paymentMethod;
     }
 
     public void setPaymentMethod(String paymentMethod) {
+        validatePaymentMethod(paymentMethod);
         this.paymentMethod = paymentMethod;
     }
 
-    // Getter and Setter for isPaid
+    // 🔹 Getter and Setter for isPaid
     public boolean isPaid() {
         return isPaid;
     }
@@ -68,16 +124,7 @@ public class Payment {
         isPaid = paid;
     }
 
-    // Getter and Setter for Cart
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    // Credit Card Getters and Setters
+    // 🔹 Credit Card Getters and Setters
     public String getCardNumber() {
         return cardNumber;
     }
@@ -86,6 +133,7 @@ public class Payment {
         if (!"CreditCard".equalsIgnoreCase(paymentMethod)) {
             throw new UnsupportedOperationException("Card details can only be set for CreditCard payments.");
         }
+        validateCardDetails(cardNumber, expirationDate, cvv);
         this.cardNumber = cardNumber;
     }
 
@@ -108,6 +156,7 @@ public class Payment {
         if (!"CreditCard".equalsIgnoreCase(paymentMethod)) {
             throw new UnsupportedOperationException("Card details can only be set for CreditCard payments.");
         }
+        validateCardDetails(cardNumber, expirationDate, cvv);
         this.expirationDate = expirationDate;
     }
 
@@ -119,32 +168,34 @@ public class Payment {
         if (!"CreditCard".equalsIgnoreCase(paymentMethod)) {
             throw new UnsupportedOperationException("Card details can only be set for CreditCard payments.");
         }
+        validateCardDetails(cardNumber, expirationDate, cvv);
         this.cvv = cvv;
     }
 
-    // ✅ Calculate total amount with coupon
     public double calculateTotalAmount(Map<String, Product> productMap) {
-        double total = cart.calculateTotalPrice(productMap); // ✅ Pass productMap
+        if (order == null) {
+            throw new IllegalStateException("Order is not set.");
+        }
 
-        // ✅ Convert cart items to a List<Product> for coupon validation
+        double total = order.getTotalPrice();
+
+        // ✅ Convert product ID → Product list for coupon validation
         List<Product> cartProductList = getCartProductList(productMap);
 
-        // Check if a coupon is applied and valid
+        // ✅ Check if a coupon is applied and valid
         if (appliedCoupon != null && appliedCoupon.isValid(total, cartProductList)) {
-            // Subtract the discount amount calculated by the coupon
             total -= appliedCoupon.calculateDiscount(total, cartProductList);
         }
 
-        return Math.max(total, 0); // Ensure the total is not negative
+        return Math.max(total, 0); // Ensure total is not negative
     }
 
-    // ✅ Helper method to convert Map<String, Integer> to List<Product>
+    // 🔹 Helper method: Convert product IDs into a List<Product>
     private List<Product> getCartProductList(Map<String, Product> productMap) {
         List<Product> productList = new ArrayList<>();
-        for (String productId : cart.getItems().keySet()) {
-            Product product = productMap.get(productId);
-            if (product != null) {
-                productList.add(product);
+        for (String productId : order.getProductQuantities().keySet()) {
+            if (productMap.containsKey(productId)) {
+                productList.add(productMap.get(productId));
             }
         }
         return productList;
@@ -153,11 +204,15 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "paymentMethod='" + paymentMethod + '\'' +
+                "userId='" + userId + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
                 ", isPaid=" + isPaid +
-                ", totalAmount=" + calculateTotalAmount(new HashMap<>()) + // Provide an empty productMap for now
-                ", appliedCoupon=" + (appliedCoupon != null ? appliedCoupon.getCode() : "None") +
-                ", cart=" + cart +
+                ", order=" + order +
+                ", appliedCoupon=" + appliedCoupon +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", cardHolderName='" + cardHolderName + '\'' +
+                ", expirationDate='" + expirationDate + '\'' +
+                ", cvv='" + cvv + '\'' +
                 '}';
     }
 }
