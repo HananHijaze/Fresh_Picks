@@ -34,7 +34,7 @@ public class ListsView extends Fragment {
     private GridView gridView;
     private ProductAdapter productAdapter;
     private FirebaseFirestore firestore;
-
+    private TextView no_results_text;
     public ListsView() {
         // Required empty public constructor
     }
@@ -66,6 +66,7 @@ public class ListsView extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             title = getArguments().getString(ARG_TITLE);
             category = getArguments().getString(ARG_CATEGORY);
@@ -96,14 +97,11 @@ public class ListsView extends Fragment {
 
         // Initialize GridView
         gridView = view.findViewById(R.id.grid_view);
-
+        no_results_text=view.findViewById(R.id.no_results_text);
         // 🔹 Ensure `products` is not null before passing to the adapter
-        if (products == null) {
-            products = new ArrayList<>();
-        }
+        // If products list is empty, show "No products found"
+        updateUI();
 
-        productAdapter = new ProductAdapter(requireContext(), products);
-        gridView.setAdapter(productAdapter);
 
         // Fetch products if needed
         if (category != null) {
@@ -132,15 +130,15 @@ public class ListsView extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
-                        if (querySnapshot != null) {
-                            products.clear(); // Clear the previous list
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            products.clear();
                             for (QueryDocumentSnapshot document : querySnapshot) {
                                 Product product = document.toObject(Product.class);
                                 products.add(product);
-                                Log.d("ListsView", "Product fetched: " + product.toString());
                             }
-                            productAdapter.notifyDataSetChanged(); // Notify adapter
                         }
+                        updateUI(); // 🔹 Update UI after fetching data
+
                     } else {
                         Log.e("ListsView", "Error fetching products", task.getException());
                         Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
@@ -154,6 +152,20 @@ public class ListsView extends Fragment {
         args.putParcelableArrayList("products", new ArrayList<>(products)); // Ensure correct type
         fragment.setArguments(args);
         return fragment;
+    }
+    /**
+     * 🔹 Updates UI based on products availability.
+     */
+    private void updateUI() {
+        if (products == null || products.isEmpty()) {
+            no_results_text.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
+        } else {
+            no_results_text.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
+            productAdapter = new ProductAdapter(requireContext(), products);
+            gridView.setAdapter(productAdapter);
+        }
     }
 
 }

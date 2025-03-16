@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.SearchView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +31,7 @@ public class Home extends Fragment {
     private SearchView searchView;
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
+
     public Home() {
         // Required empty public constructor
     }
@@ -86,75 +89,80 @@ public class Home extends Fragment {
     }
 
     private void setupSearchView() {
+        searchView.setIconifiedByDefault(false); // 🔹 Keeps the search bar always expanded
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                performSearch(query);
-                return true;
+                if (!query.trim().isEmpty()) {
+                    performSearch(query.trim()); // Perform search only on submit
+                }
+                return false; // Keeps keyboard open after search
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.trim().isEmpty()) {
-                    return false; // Don't search if the query is empty
-                }
+                return false; // Do nothing on text change (ensures search only happens on Enter)
+            }
+        });
 
-                // Cancel any previously scheduled searches
-                if (searchRunnable != null) {
-                    searchHandler.removeCallbacks(searchRunnable);
-                }
+        // 🔹 Ensure clicking anywhere in the search bar works (not just the magnifying glass)
+        searchView.setOnClickListener(v -> {
+            searchView.setIconified(false);
+            searchView.requestFocus();
+        });
 
-                // Schedule a new search after 500ms
-                searchRunnable = () -> performSearch(newText);
-                searchHandler.postDelayed(searchRunnable, 500);
-
-                return true;
+        // 🔹 Prevent collapse when losing focus
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                searchView.setIconified(false); // Keep it expanded
             }
         });
     }
+
+
     private void performSearch(String query) {
-        final String searchQuery = query.trim();
-        if (searchQuery.isEmpty()) {
-            return; // Skip empty queries
-        }
+        String formattedQuery = query.trim().toLowerCase(); // 🔹 Convert query to lowercase
 
         db.collection("products")
-                .orderBy("name")
-                .startAt(searchQuery)
-                .endAt(searchQuery + "\uf8ff")
-                .get()
+                .get() // 🔹 Get all products first
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        displaySearchResults(queryDocumentSnapshots);
+                    List<Product> filteredResults = new ArrayList<>();
+
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Product product = document.toObject(Product.class);
+                        if (product != null) {
+                            // 🔹 Convert product name to lowercase for case-insensitive search
+                            String productName = product.getName().toLowerCase();
+                            if (productName.contains(formattedQuery)) {
+                                filteredResults.add(product);
+                            }
+                        }
+                    }
+
+                    if (!filteredResults.isEmpty()) {
+                        displaySearchResults(filteredResults);
                     } else {
-                        db.collection("products")
-                                .orderBy("name_ar")
-                                .startAt(searchQuery)
-                                .endAt(searchQuery + "\uf8ff")
-                                .get()
-                                .addOnSuccessListener(this::displaySearchResults) // ✅ Fixed reference
-                                .addOnFailureListener(e -> Log.e("Search", "Error searching Arabic: " + e.getMessage()));
+                        Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> Log.e("Search", "Error searching English: " + e.getMessage()));
+                .addOnFailureListener(e -> Log.e("Search", "Error fetching products: " + e.getMessage()));
     }
 
-    private void displaySearchResults(QuerySnapshot queryDocumentSnapshots) {
-        List<Product> searchResults = new ArrayList<>();
 
-        for (DocumentSnapshot document : queryDocumentSnapshots) {
-            Product product = document.toObject(Product.class);
-            if (product != null) {
-                searchResults.add(product);
-            }
+    private void displaySearchResults(List<Product> searchResults) {
+        if (searchResults == null || searchResults.isEmpty()) {
+            Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // 🔹 Navigate to ListsView with search results
-        ListsView listsViewFragment = ListsView.newInstance("Search Results", searchResults); // ✅ Ensure ListsView supports this method
+        // 🔹 Navigate to ListsView with search results (or empty state)
+        ListsView listsViewFragment = ListsView.newInstance("Search Results", searchResults);
 
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, listsViewFragment)
                 .addToBackStack(null)
                 .commit();
     }
+
 }
