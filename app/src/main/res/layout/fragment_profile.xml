@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/contact_us"
-            android:drawableLeft="@drawable/ic_coupon"
+            android:drawableLeft="@drawable/contactus_ic"
             android:padding="25dp"
             android:paddingTop="20dp"
             android:backgroundTint="@color/white"
