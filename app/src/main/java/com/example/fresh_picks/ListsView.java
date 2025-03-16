@@ -25,13 +25,14 @@ public class ListsView extends Fragment {
 
     private static final String ARG_TITLE = "title";
     private static final String ARG_CATEGORY = "category";
+    private static final String ARG_PRODUCTS = "products";  // 🔹 Added to accept search results
 
     private String title;
     private String category;
+    private List<Product> products = new ArrayList<>();
 
     private GridView gridView;
     private ProductAdapter productAdapter;
-    private List<Product> products = new ArrayList<>();
     private FirebaseFirestore firestore;
 
     public ListsView() {
@@ -39,11 +40,7 @@ public class ListsView extends Fragment {
     }
 
     /**
-     * Factory method to create a new instance of this fragment.
-     *
-     * @param title    The title to display in the fragment.
-     * @param category The category to fetch products for.
-     * @return A new instance of fragment ListsView.
+     * 🔹 Method to create `ListsView` with a category filter.
      */
     public static ListsView newInstance(String title, String category) {
         ListsView fragment = new ListsView();
@@ -54,13 +51,33 @@ public class ListsView extends Fragment {
         return fragment;
     }
 
+    /**
+     * 🔹 Method to create `ListsView` with search results.
+     */
+    public static ListsView newInstance(String title, List<Product> products) {
+        ListsView fragment = new ListsView();
+        Bundle args = new Bundle();
+        args.putString(ARG_TITLE, title);
+        args.putParcelableArrayList(ARG_PRODUCTS, new ArrayList<>(products));  // Convert list to ArrayList
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             title = getArguments().getString(ARG_TITLE);
             category = getArguments().getString(ARG_CATEGORY);
-            Log.d("ListsView", "Title: " + title + ", Category: " + category);
+            products = getArguments().getParcelableArrayList(ARG_PRODUCTS);
+
+            if (products == null) {
+                products = new ArrayList<>();  // 🔹 Ensure products is never null
+            }
+
+            Log.d("ListsView", "Title: " + title + ", Category: " + category + ", Products: " + products.size());
+        } else {
+            products = new ArrayList<>();  // 🔹 Ensure products is never null
         }
 
         // Initialize Firestore
@@ -71,25 +88,36 @@ public class ListsView extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lists_view, container, false);
 
-        // Set the title in the TextView
+        // Set the title
         TextView textView = view.findViewById(R.id.textView);
         if (title != null) {
             textView.setText(title);
         }
 
-        // Initialize the GridView and Adapter
+        // Initialize GridView
         gridView = view.findViewById(R.id.grid_view);
+
+        // 🔹 Ensure `products` is not null before passing to the adapter
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+
         productAdapter = new ProductAdapter(requireContext(), products);
         gridView.setAdapter(productAdapter);
 
-        // Fetch and display products based on the selected category
-        fetchProductsByCategory();
+        // Fetch products if needed
+        if (category != null) {
+            fetchProductsByCategory();
+        } else {
+            productAdapter.notifyDataSetChanged();  // Update UI if search results are used
+        }
 
         return view;
     }
 
+
     /**
-     * Fetches products from Firestore based on the selected category.
+     * 🔹 Fetches products from Firestore based on the selected category.
      */
     private void fetchProductsByCategory() {
         if (category == null || category.isEmpty()) {
@@ -99,7 +127,7 @@ public class ListsView extends Fragment {
 
         firestore.collection("products")
                 .whereArrayContains("category", category) // Check if the category matches
-                .whereEqualTo("inStock", true) // Filter for products that are in stock
+                .whereEqualTo("inStock", true) // Filter for products in stock
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -111,13 +139,21 @@ public class ListsView extends Fragment {
                                 products.add(product);
                                 Log.d("ListsView", "Product fetched: " + product.toString());
                             }
-                            productAdapter.notifyDataSetChanged(); // Notify adapter of data change
+                            productAdapter.notifyDataSetChanged(); // Notify adapter
                         }
                     } else {
                         Log.e("ListsView", "Error fetching products", task.getException());
                         Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    public static ListsView newInstanceWithProducts(String title, List<Product> products) {
+        ListsView fragment = new ListsView();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putParcelableArrayList("products", new ArrayList<>(products)); // Ensure correct type
+        fragment.setArguments(args);
+        return fragment;
     }
 
 }

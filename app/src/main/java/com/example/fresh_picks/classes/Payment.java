@@ -3,6 +3,7 @@ package com.example.fresh_picks.classes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Payment {
     private String userId; // Associate payment with a user
@@ -10,6 +11,8 @@ public class Payment {
     private boolean isPaid;
     private Order order; // ✅ Associates Payment with an Order
     private Coupon appliedCoupon; // Optional Coupon field
+
+    private String transactionId; // ✅ Unique transaction ID for each payment
 
     // Credit Card Details
     private String cardNumber;
@@ -26,6 +29,7 @@ public class Payment {
         this.paymentMethod = paymentMethod;
         this.isPaid = isPaid;
         this.order = order;
+        this.transactionId = UUID.randomUUID().toString(); // ✅ Generate unique transaction ID
     }
 
     // 🔹 Constructor for Credit Card Payment
@@ -48,6 +52,11 @@ public class Payment {
         this.cardHolderName = cardHolderName;
         this.expirationDate = expirationDate;
         this.cvv = cvv;
+        this.transactionId = UUID.randomUUID().toString(); // ✅ Generate unique transaction ID
+    }
+
+    public Payment() {
+        this.transactionId = UUID.randomUUID().toString(); // Ensure transactionId is always set
     }
 
     // 🔹 Validate user ID
@@ -75,6 +84,11 @@ public class Payment {
         if (cvv == null || cvv.length() != 3 || !cvv.matches("\\d{3}")) {
             throw new IllegalArgumentException("Invalid CVV. It must be 3 digits.");
         }
+    }
+
+    // ✅ Getter for transaction ID
+    public String getTransactionId() {
+        return transactionId;
     }
 
     // 🔹 Getter and Setter for `userId`
@@ -207,12 +221,9 @@ public class Payment {
                 "userId='" + userId + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", isPaid=" + isPaid +
+                ", transactionId='" + transactionId + '\'' + // ✅ Now included in the toString() method
                 ", order=" + order +
                 ", appliedCoupon=" + appliedCoupon +
-                ", cardNumber='" + cardNumber + '\'' +
-                ", cardHolderName='" + cardHolderName + '\'' +
-                ", expirationDate='" + expirationDate + '\'' +
-                ", cvv='" + cvv + '\'' +
                 '}';
     }
 }

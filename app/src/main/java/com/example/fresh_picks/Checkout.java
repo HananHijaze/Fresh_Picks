@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class Checkout extends AppCompatActivity {
@@ -42,6 +43,7 @@ public class Checkout extends AppCompatActivity {
     private String selectedShippingMethod = "Shop Pickup"; // Default selection
     private CardView locationSelectionLayout, cardViewCardDetails;
     private String selectedPaymentMethod = "Credit Card"; // Default selection
+    private String userId;
 
     private final String STORE_LOCATION = "אל שריף, Tamra, North District";
     private final String STORE_MAP_LINK = "https://maps.app.goo.gl/8nAKwTJDPuoiSd9A9";
@@ -50,6 +52,18 @@ public class Checkout extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+        AppDatabase dbInstance = AppDatabase.getInstance(this);
+        userDao = dbInstance.userDao();
+        getCurrentUserId(result -> {
+            if (result != null) {
+                userId = result;
+                fetchCartItemsAndCalculateTotal(); // ✅ Now it has a valid userId
+                loadUserAddresses(); // ✅ Load addresses only after userId is set
+            } else {
+                Log.e("Checkout", "Failed to retrieve userId");
+            }
+        });
+
 
         // Initialize UI components
         locationSpinner = findViewById(R.id.location_spinner);
@@ -72,7 +86,8 @@ public class Checkout extends AppCompatActivity {
         // Hide address selection layout by default
         locationSelectionLayout.setVisibility(View.GONE);
         locationSelectionInnerLayout.setVisibility(View.GONE);
-
+        // ✅ Set Default Selections on Load
+        setDefaultSelections();
         // Setup click listeners for shipping method selection
         pickupOption.setOnClickListener(v -> selectShippingMethod("Shop Pickup"));
         courierOption.setOnClickListener(v -> selectShippingMethod("Courier"));
@@ -89,7 +104,7 @@ public class Checkout extends AppCompatActivity {
 
         // ✅ If total price is still 0, fetch from Firebase
         if (totalPrice == 0.0) {
-            fetchCartItemsAndCalculateTotal(userId);
+            fetchCartItemsAndCalculateTotal();
         } else {
             updateTotalPriceText(totalPrice);
         }
@@ -137,13 +152,17 @@ public class Checkout extends AppCompatActivity {
     }
 
 
-    // Setup location spinner (for courier option)
     private void setupLocationSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, userAddresses);
         locationSpinner.setAdapter(adapter);
+
+        // ✅ Auto-select the first address (excluding "Add New Address...")
+        if (!userAddresses.isEmpty() && !userAddresses.get(0).equals("Add New Address...")) {
+            locationSpinner.setSelection(0);
+            selectedLocation = userAddresses.get(0);
+        }
     }
 
-    // Proceed to Checkout2 (Final Step)
     private void proceedToCheckout() {
         // ✅ Check if total price is valid
         if (totalPrice <= 0.0) {
@@ -173,14 +192,26 @@ public class Checkout extends AppCompatActivity {
     }
 
 
-    // Retrieve the current user ID from Room Database
     private void getCurrentUserId(Callback<String> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
+            if (userDao == null) { // Ensure userDao is initialized
+                Log.e("Checkout", "UserDao is null!");
+                runOnUiThread(() -> callback.onResult(null));
+                return;
+            }
+
             List<UserEntity> users = userDao.getAllUsers();
-            final String userId = (!users.isEmpty()) ? users.get(0).getId() : null;
-            runOnUiThread(() -> callback.onResult(userId));
+            String userId = (!users.isEmpty()) ? users.get(0).getId() : null;
+
+            runOnUiThread(() -> {
+                if (userId == null) {
+                    Log.e("Checkout", "User ID is null. Cannot fetch cart items.");
+                }
+                callback.onResult(userId);
+            });
         });
     }
+
 
     // Show store location when "Shop Pickup" is selected
     private void showStoreLocation() {
@@ -193,7 +224,6 @@ public class Checkout extends AppCompatActivity {
         });
     }
 
-    // Show dialog to add a new address
     private void showAddAddressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add New Address");
@@ -202,14 +232,17 @@ public class Checkout extends AppCompatActivity {
         builder.setPositiveButton("Add", (dialog, which) -> {
             String newAddress = input.getText().toString().trim();
             if (!newAddress.isEmpty()) {
-                userAddresses.add(0, newAddress);
+                userAddresses.add(0, newAddress); // ✅ Add at the top
                 setupLocationSpinner();
+                locationSpinner.setSelection(0); // ✅ Automatically select the new address
+                selectedLocation = newAddress;  // ✅ Update selection
                 saveAddressToFirebase(newAddress);
             }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
+
 
     // Save new address to Firestore
     private void saveAddressToFirebase(String newAddress) {
@@ -234,11 +267,7 @@ public class Checkout extends AppCompatActivity {
             storeLocationLayout.setVisibility(View.VISIBLE);
             locationSelectionLayout.setVisibility(View.GONE);
             showStoreLocation();
-
-            // ✅ Automatically set the store location when Shop Pickup is selected
-            selectedLocation = STORE_LOCATION;
-            Log.d("Checkout", "Shop Pickup selected, location set to: " + selectedLocation);
-
+            selectedLocation = STORE_LOCATION; // ✅ Default location
         } else {
             courierOption.setBackgroundResource(R.drawable.selected_background);
             pickupOption.setBackgroundResource(R.drawable.unselected_background);
@@ -246,9 +275,13 @@ public class Checkout extends AppCompatActivity {
             locationSelectionLayout.setVisibility(View.VISIBLE);
             findViewById(R.id.location_selection_layout1).setVisibility(View.VISIBLE);
 
-            // ✅ Reset selected location to force the user to pick one
-            selectedLocation = "";
-            loadUserAddresses();
+            // ✅ Auto-select the first saved address if available
+            if (!userAddresses.isEmpty() && !userAddresses.get(0).equals("Add New Address...")) {
+                selectedLocation = userAddresses.get(0);
+                locationSpinner.setSelection(0);
+            } else {
+                selectedLocation = ""; // Reset selection if no address is available
+            }
         }
     }
 
@@ -276,33 +309,105 @@ public class Checkout extends AppCompatActivity {
         });
     }
 
+    private void fetchCartItemsAndCalculateTotal() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Step 1: Retrieve the user ID from the Room database (UserDao)
+            List<UserEntity> users = userDao.getAllUsers();
+            if (users.isEmpty()) {
+                runOnUiThread(() -> Log.e("Checkout", "No user found in Room Database"));
+                return;
+            }
 
-    private void fetchCartItemsAndCalculateTotal(String userId) {
-        if (userId == null) {
-            Log.e("Checkout", "User ID is null. Cannot fetch cart items.");
-            return;
-        }
+            String userId = users.get(0).getId(); // Fetch the single user's ID
+            Log.d("Checkout", "User ID from Room: " + userId);
 
-        db.collection("users").document(userId).collection("cart")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    double total = 0.0;
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        if (document.exists()) {
-                            Double price = document.getDouble("price");
-                            Long quantity = document.getLong("quantity");
+            if (userId == null || userId.isEmpty()) {
+                runOnUiThread(() -> Log.e("Checkout", "User ID is null or empty"));
+                return;
+            }
 
-                            if (price != null && quantity != null) {
-                                total += price * quantity;
-                            }
+            // Step 2: Retrieve the user's document from Firestore to get the cart ID
+            db.collection("users").document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (!documentSnapshot.exists()) {
+                            Log.e("Checkout", "User document not found in Firestore.");
+                            return;
                         }
+
+                        if (!documentSnapshot.contains("cartId")) {
+                            Log.e("Checkout", "Cart ID not found in user document.");
+                            return;
+                        }
+
+                        String cartId = documentSnapshot.getString("cartId"); // Get cart ID from Firestore
+                        Log.d("Checkout", "Cart ID retrieved: " + cartId);
+
+                        if (cartId == null || cartId.isEmpty()) {
+                            Log.e("Checkout", "Cart ID is null or empty.");
+                            return;
+                        }
+
+                        // Step 3: Fetch products from Firestore using the cart ID
+                        fetchCartProducts(cartId);
+                    })
+                    .addOnFailureListener(e -> Log.e("Checkout", "Error fetching user document", e));
+        });
+    }
+
+    private void fetchCartProducts(String cartId) {
+        db.collection("carts").document(cartId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        Log.e("Checkout", "Cart document does not exist.");
+                        return;
                     }
 
-                    Log.d("Checkout", "Fetched Total Price from Firebase: " + total);
-                    updateTotalPriceText(total);
+                    Object itemsObject = documentSnapshot.get("items");
+                    if (itemsObject == null) {
+                        Log.e("Checkout", "Cart items field is empty or missing.");
+                        return;
+                    }
+
+                    Map<String, Map<String, Object>> firestoreItems =
+                            (Map<String, Map<String, Object>>) itemsObject;
+
+                    Log.d("Checkout", "Retrieved cart data from Firestore: " + firestoreItems);
+
+                    if (firestoreItems.isEmpty()) {
+                        Log.e("Checkout", "Cart is empty.");
+                        return;
+                    }
+
+                    double total = 0.0;
+
+                    for (Map.Entry<String, Map<String, Object>> entry : firestoreItems.entrySet()) {
+                        Map<String, Object> productData = entry.getValue();
+
+                        if (productData == null) continue; // Avoid NullPointerException
+
+                        String productId = (String) productData.get("productId");
+                        String name = (String) productData.get("name");
+                        double price = productData.containsKey("price") ? ((Number) productData.get("price")).doubleValue() : 0.0;
+                        int quantity = productData.containsKey("quantity") && productData.get("quantity") != null
+                                ? ((Number) productData.get("quantity")).intValue()
+                                : 1;
+
+                        total += price * quantity;
+
+                        Log.d("Checkout", "Product retrieved: " + name + " - Quantity: " + quantity + " - Price: " + price);
+                    }
+
+                    Log.d("Checkout", "✅ Total Price calculated: " + total);
+                    totalPrice = total;
+
+                    // ✅ Update UI with the total price
+                    runOnUiThread(() -> updateTotalPriceText(totalPrice));
                 })
-                .addOnFailureListener(e -> Log.e("Checkout", "Error fetching cart items", e));
+                .addOnFailureListener(e -> Log.e("Checkout", "Failed to fetch cart products", e));
     }
+
 
     private void getCurrentUserIdAsync(Callback<String> callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -372,5 +477,42 @@ public class Checkout extends AppCompatActivity {
             return false;
         }
     }
+    private void setDefaultSelections() {
+        // ✅ Set Default Shipping Method to "Shop Pickup"
+        selectedShippingMethod = "Shop Pickup";
+        pickupOption.setBackgroundResource(R.drawable.selected_background);
+        courierOption.setBackgroundResource(R.drawable.unselected_background);
+        storeLocationLayout.setVisibility(View.VISIBLE);
+        locationSelectionLayout.setVisibility(View.GONE);
+        showStoreLocation(); // Displays store location
+        selectedLocation = STORE_LOCATION; // Default location
+        Log.d("Checkout", "Default Shipping: Shop Pickup, Location: " + selectedLocation);
+
+        // ✅ Set Default Payment Method to "Credit Card"
+        selectedPaymentMethod = "Credit Card";
+        cardOption.setBackgroundResource(R.drawable.selected_background);
+        cashOption.setBackgroundResource(R.drawable.unselected_background);
+        cardViewCardDetails.setVisibility(View.VISIBLE); // Show credit card details
+        Log.d("Checkout", "Default Payment: Credit Card");
+    }
+
+    private void fetchCartId(String userId) {
+        db.collection("users").document(userId)
+                .collection("cart")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        Log.e("Checkout", "No cart found for user: " + userId);
+                        return;
+                    }
+
+                    String cartId = queryDocumentSnapshots.getDocuments().get(0).getId(); // Get first cart document ID
+                    Log.d("Checkout", "Cart ID: " + cartId);
+
+                    fetchCartProducts(cartId);
+                })
+                .addOnFailureListener(e -> Log.e("Checkout", "Failed to fetch cart ID", e));
+    }
+
 
 }

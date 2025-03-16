@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -88,7 +89,6 @@ public class CartF extends Fragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Ensure 'items' is not null before proceeding
                         Object itemsObject = documentSnapshot.get("items");
                         if (itemsObject == null) {
                             Log.d("CartF", "Cart is empty from Firestore (items field is null)");
@@ -107,9 +107,8 @@ public class CartF extends Fragment {
                             return;
                         }
 
-                        cartItems.clear();
-                        final double[] totalPrice = {0.0}; // ✅ Workaround for non-final variable
-
+                        cartItems.clear(); // Reset list before adding new items
+                        double totalPrice = 0.0; // ✅ Use local variable instead of array
 
                         for (Map.Entry<String, Map<String, Object>> entry : firestoreItems.entrySet()) {
                             Map<String, Object> productData = entry.getValue();
@@ -119,25 +118,25 @@ public class CartF extends Fragment {
                             String productId = (String) productData.get("productId");
                             String name = (String) productData.get("name");
                             double price = productData.containsKey("price") ? ((Number) productData.get("price")).doubleValue() : 0.0;
-                            int stockQuantity = productData.containsKey("quantity") && productData.get("quantity") != null
+                            int quantity = productData.containsKey("quantity") && productData.get("quantity") != null
                                     ? ((Number) productData.get("quantity")).intValue()
                                     : 1;
 
                             String imageUrl = productData.containsKey("imageUrl") ? (String) productData.get("imageUrl") : null;
-                            totalPrice[0] += price * stockQuantity;
-                            Log.d("CartF", "Product retrieved: " + name + " - Quantity: " + stockQuantity + " - Price: " + price);
-                            updateTotalPrice(totalPrice[0]);
-                            Product product = new Product(productId, name, null, null, price, null, stockQuantity, null,
+                            totalPrice += price * quantity; // ✅ Correct calculation
+                            Log.d("CartF", "Product: " + name + " - Quantity: " + quantity + " - Price: " + price);
+
+                            Product product = new Product(productId, name, null, null, price, null, quantity, null,
                                     null, null, false, false, null, null, imageUrl, 0);
 
                             cartItems.add(product);
-                            totalPrice[0] += price * stockQuantity; // ✅ Correct
                         }
 
                         Log.d("CartF", "Total products loaded: " + cartItems.size());
-                        Log.d("CartF", "Total price: ₪" + totalPrice);
+                        Log.d("CartF", "✅ Total price calculated correctly: ₪" + totalPrice);
 
-                        this.updateTotalPrice(totalPrice[0]); // ✅ Correct
+                        // ✅ Update total price only once
+                        updateTotalPrice(totalPrice);
                         cartAdapter.notifyDataSetChanged();
                         showCartItems();
                     } else {
@@ -151,6 +150,7 @@ public class CartF extends Fragment {
                     Toast.makeText(getActivity(), "Error loading cart", Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 
     public void updateTotalPrice(double totalPrice) { // ✅ Accept total price
@@ -224,21 +224,29 @@ public class CartF extends Fragment {
     private void showCartItems() {
         Log.d("CartF", "Showing cart items, count: " + cartItems.size());
 
-        getActivity().runOnUiThread(() -> {
+        // ✅ Check if the fragment is still attached to an activity
+        FragmentActivity activity = getActivity();
+        if (activity == null || !isAdded()) {
+            Log.e("CartF", "Fragment is not attached! Skipping UI update.");
+            return;
+        }
+
+        activity.runOnUiThread(() -> {
             if (cartItems.isEmpty()) {
                 showEmptyCart(); // ✅ If no items, show empty cart UI
             } else {
                 // ✅ Hide Empty Cart Image and Message
-                emptyCartImage.setVisibility(View.GONE);
-                emptyCartText.setVisibility(View.GONE);
+                if (emptyCartImage != null) emptyCartImage.setVisibility(View.GONE);
+                if (emptyCartText != null) emptyCartText.setVisibility(View.GONE);
 
                 // ✅ Show RecyclerView, Checkout Button, and Total Price
-                recyclerViewCart.setVisibility(View.VISIBLE);
-                cartItemsLayout.setVisibility(View.VISIBLE);
-                checkoutLayout.setVisibility(View.VISIBLE);
-                buttonCheckout.setVisibility(View.VISIBLE);
-                textTotalPrice.setVisibility(View.VISIBLE);
+                if (recyclerViewCart != null) recyclerViewCart.setVisibility(View.VISIBLE);
+                if (cartItemsLayout != null) cartItemsLayout.setVisibility(View.VISIBLE);
+                if (checkoutLayout != null) checkoutLayout.setVisibility(View.VISIBLE);
+                if (buttonCheckout != null) buttonCheckout.setVisibility(View.VISIBLE);
+                if (textTotalPrice != null) textTotalPrice.setVisibility(View.VISIBLE);
             }
         });
     }
+
 }

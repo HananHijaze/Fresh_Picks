@@ -1,22 +1,34 @@
 package com.example.fresh_picks;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.appcompat.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.example.fresh_picks.classes.Product;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Home extends Fragment {
-
+    private FirebaseFirestore db;
+    private SearchView searchView;
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
     public Home() {
         // Required empty public constructor
     }
@@ -26,6 +38,11 @@ public class Home extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Initialize Firestore and search view
+        db = FirebaseFirestore.getInstance();
+        searchView = view.findViewById(R.id.searchView);
+        setupSearchView();
+
         // Set up CardView click listeners using a Map
         setupCardViewClickListeners(view);
 
@@ -33,7 +50,6 @@ public class Home extends Fragment {
     }
 
     private void setupCardViewClickListeners(View view) {
-        // Map each CardView ID to its title and category
         Map<Integer, String[]> cardViewMap = new HashMap<>();
         cardViewMap.put(R.id.cardView1, new String[]{"Seasonal", "seasonal"});
         cardViewMap.put(R.id.cardView2, new String[]{"Fruits", "fruits"});
@@ -48,31 +64,97 @@ public class Home extends Fragment {
         cardViewMap.put(R.id.cardView11, new String[]{"Support Super 👸", "handmade"});
         cardViewMap.put(R.id.cardView12, new String[]{"Super Deals", "super_deals"});
 
-        // Loop through the Map and set click listeners for each CardView
         for (Map.Entry<Integer, String[]> entry : cardViewMap.entrySet()) {
             int cardViewId = entry.getKey();
-            String title = entry.getValue()[0]; // Display title
-            String category = entry.getValue()[1]; // Firebase category
+            String title = entry.getValue()[0];
+            String category = entry.getValue()[1];
 
             CardView cardView = view.findViewById(cardViewId);
-            if (cardView != null) { // Ensure the CardView exists in the layout
-                cardView.setOnClickListener(v -> {
-                    Log.d("Home", "Navigating to ListsView with title: " + title + " and category: " + category);
-                    navigateToListsView(title, category);
-                });
+            if (cardView != null) {
+                cardView.setOnClickListener(v -> navigateToListsView(title, category));
             }
         }
     }
 
     private void navigateToListsView(String title, String category) {
-        // Create a new instance of ListsView with the selected title and category
         ListsView listsViewFragment = ListsView.newInstance(title, category);
 
-        // Navigate to the ListsView fragment
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, listsViewFragment)
                 .addToBackStack(null)
                 .commit();
     }
 
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                performSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.trim().isEmpty()) {
+                    return false; // Don't search if the query is empty
+                }
+
+                // Cancel any previously scheduled searches
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+
+                // Schedule a new search after 500ms
+                searchRunnable = () -> performSearch(newText);
+                searchHandler.postDelayed(searchRunnable, 500);
+
+                return true;
+            }
+        });
+    }
+    private void performSearch(String query) {
+        final String searchQuery = query.trim();
+        if (searchQuery.isEmpty()) {
+            return; // Skip empty queries
+        }
+
+        db.collection("products")
+                .orderBy("name")
+                .startAt(searchQuery)
+                .endAt(searchQuery + "\uf8ff")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        displaySearchResults(queryDocumentSnapshots);
+                    } else {
+                        db.collection("products")
+                                .orderBy("name_ar")
+                                .startAt(searchQuery)
+                                .endAt(searchQuery + "\uf8ff")
+                                .get()
+                                .addOnSuccessListener(this::displaySearchResults) // ✅ Fixed reference
+                                .addOnFailureListener(e -> Log.e("Search", "Error searching Arabic: " + e.getMessage()));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Search", "Error searching English: " + e.getMessage()));
+    }
+
+    private void displaySearchResults(QuerySnapshot queryDocumentSnapshots) {
+        List<Product> searchResults = new ArrayList<>();
+
+        for (DocumentSnapshot document : queryDocumentSnapshots) {
+            Product product = document.toObject(Product.class);
+            if (product != null) {
+                searchResults.add(product);
+            }
+        }
+
+        // 🔹 Navigate to ListsView with search results
+        ListsView listsViewFragment = ListsView.newInstance("Search Results", searchResults); // ✅ Ensure ListsView supports this method
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, listsViewFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

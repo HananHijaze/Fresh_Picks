@@ -96,19 +96,23 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
             // Handle quantity selection
             final int[] quantity = {1};
-            quantityText.setText(String.valueOf(quantity[0]));
+// Display quantity along with unit (e.g., "3 kg" or "2 pcs")
+            final String unitText = (product.getUnit() != null) ? product.getUnit() : ""; // Handle null cases
+            quantityText.setText(quantity[0] + " " + unitText);
+// Ensure unit is always displayed correctly
 
             minusButton.setOnClickListener(v -> {
                 if (quantity[0] > 1) {
                     quantity[0]--;
-                    quantityText.setText(String.valueOf(quantity[0]));
+                    quantityText.setText(quantity[0] + " " + unitText);
                 }
             });
 
             plusButton.setOnClickListener(v -> {
                 quantity[0]++;
-                quantityText.setText(String.valueOf(quantity[0]));
+                quantityText.setText(quantity[0] + " " + unitText);
             });
+
 
             // ✅ Fix: Properly set OnClickListener for addToCartButton
             addToCartButton.setOnClickListener(v -> {

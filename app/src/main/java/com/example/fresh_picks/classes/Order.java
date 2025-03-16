@@ -17,7 +17,7 @@ public class Order {
 
     private final String createdAt; // Timestamp in String format
 
-    // Constructor
+    // ✅ Constructor with parameters
     public Order(String id, Map<String, Integer> productQuantities, Payment payment) {
         this.id = id;
         this.productQuantities = new HashMap<>(productQuantities);
@@ -27,7 +27,19 @@ public class Order {
         this.isReadyForPickup = false;
         this.isDelivered = false;
 
-        // Store formatted date instead of Date object for Firestore compatibility
+        // ✅ Always initialize createdAt
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        this.createdAt = dateFormat.format(new Date());
+    }
+
+    // ✅ No-argument constructor (Firestore needs this)
+    public Order() {
+        this.productQuantities = new HashMap<>();
+        this.status = "Pending";
+        this.isReadyForPickup = false;
+        this.isDelivered = false;
+
+        // ✅ Always initialize createdAt
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         this.createdAt = dateFormat.format(new Date());
     }
@@ -84,11 +96,11 @@ public class Order {
         }
     }
 
-    // Calculate total price
+    // Calculate total price (You need to update this with actual product prices)
     private double calculateTotalPrice() {
         double total = 0;
         for (int quantity : productQuantities.values()) {
-            total += quantity; // You should update this with actual product prices
+            total += quantity; // Update this logic with actual product price fetching
         }
         return total;
     }

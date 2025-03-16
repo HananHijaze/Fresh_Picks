@@ -1,8 +1,12 @@
 package com.example.fresh_picks.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Product {
+public class Product implements Parcelable {
 
     // Basic Information
     private String id; // Product ID
@@ -37,11 +41,22 @@ public class Product {
     private int popularityScore; // Popularity Score of the product
 
     // Constructors
-    public Product() {}
+    // Default constructor required for Firebase Firestore
+    public Product() {
+        // Initialize lists to prevent NullPointerException
+        this.category = new ArrayList<>();
+        this.dietaryInfo = new ArrayList<>();
+        this.cuisineTags = new ArrayList<>();
+        this.foodPairings = new ArrayList<>();
+        this.recipeSuggestions = new ArrayList<>();
+    }
 
-    public Product(String id, String name, String nameAr, List<String> category, double price, String packSize, int stockQuantity,
-                   String unit, List<String> dietaryInfo, List<String> cuisineTags, boolean inStock, boolean seasonal,
-                   List<String> foodPairings, List<String> recipeSuggestions, String imageUrl, int popularityScore) {
+    // 🔹 **✅ Regular Constructor**
+    public Product(String id, String name, String nameAr, List<String> category, double price,
+                   String packSize, int stockQuantity, String unit, List<String> dietaryInfo,
+                   List<String> cuisineTags, boolean inStock, boolean seasonal,
+                   List<String> foodPairings, List<String> recipeSuggestions,
+                   String imageUrl, int popularityScore) {
         this.id = id;
         this.name = name;
         this.nameAr = nameAr;
@@ -58,6 +73,62 @@ public class Product {
         this.recipeSuggestions = recipeSuggestions;
         this.imageUrl = imageUrl;
         this.popularityScore = popularityScore;
+    }
+    // Parcelable Constructor
+    protected Product(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        nameAr = in.readString();
+        category = in.createStringArrayList();
+        price = in.readDouble();
+        packSize = in.readString();
+        stockQuantity = in.readInt();
+        unit = in.readString();
+        dietaryInfo = in.createStringArrayList();
+        cuisineTags = in.createStringArrayList();
+        inStock = in.readByte() != 0;
+        seasonal = in.readByte() != 0;
+        foodPairings = in.createStringArrayList();
+        recipeSuggestions = in.createStringArrayList();
+        imageUrl = in.readString();
+        popularityScore = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(nameAr);
+        dest.writeStringList(category);
+        dest.writeDouble(price);
+        dest.writeString(packSize);
+        dest.writeInt(stockQuantity);
+        dest.writeString(unit);
+        dest.writeStringList(dietaryInfo);
+        dest.writeStringList(cuisineTags);
+        dest.writeByte((byte) (inStock ? 1 : 0));
+        dest.writeByte((byte) (seasonal ? 1 : 0));
+        dest.writeStringList(foodPairings);
+        dest.writeStringList(recipeSuggestions);
+        dest.writeString(imageUrl);
+        dest.writeInt(popularityScore);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     // Getters and Setters
