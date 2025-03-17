@@ -67,22 +67,26 @@ public class ListsView extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 🔹 Initialize Firestore first to avoid null reference
+        firestore = FirebaseFirestore.getInstance();
+
         if (getArguments() != null) {
             title = getArguments().getString(ARG_TITLE);
             category = getArguments().getString(ARG_CATEGORY);
             products = getArguments().getParcelableArrayList(ARG_PRODUCTS);
+            boolean isSearch = getArguments().getBoolean("isSearch", false);
 
             if (products == null) {
-                products = new ArrayList<>();  // 🔹 Ensure products is never null
+                products = new ArrayList<>();
             }
 
-            Log.d("ListsView", "Title: " + title + ", Category: " + category + ", Products: " + products.size());
+            // 🔹 Ensure `fetchProductsByCategory()` is only called when needed
+            if (!isSearch && category != null) {
+                fetchProductsByCategory();
+            }
         } else {
-            products = new ArrayList<>();  // 🔹 Ensure products is never null
+            products = new ArrayList<>();
         }
-
-        // Initialize Firestore
-        firestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -106,8 +110,10 @@ public class ListsView extends Fragment {
         // Fetch products if needed
         if (category != null) {
             fetchProductsByCategory();
-        } else {
+        } else if(productAdapter != null){
             productAdapter.notifyDataSetChanged();  // Update UI if search results are used
+        }else {
+            Log.e("ListsView", "productAdapter is null");
         }
 
         return view;
@@ -118,14 +124,19 @@ public class ListsView extends Fragment {
      * 🔹 Fetches products from Firestore based on the selected category.
      */
     private void fetchProductsByCategory() {
+        if (firestore == null) {  // 🔹 Check if Firestore is properly initialized
+            Log.e("ListsView", "Firestore is not initialized");
+            return;
+        }
+
         if (category == null || category.isEmpty()) {
             Toast.makeText(requireContext(), "Category is not valid!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         firestore.collection("products")
-                .whereArrayContains("category", category) // Check if the category matches
-                .whereEqualTo("inStock", true) // Filter for products in stock
+                .whereArrayContains("category", category)
+                .whereEqualTo("inStock", true)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -137,35 +148,49 @@ public class ListsView extends Fragment {
                                 products.add(product);
                             }
                         }
-                        updateUI(); // 🔹 Update UI after fetching data
-
+                        updateUI();
                     } else {
                         Log.e("ListsView", "Error fetching products", task.getException());
                         Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    public static ListsView newInstanceWithProducts(String title, List<Product> products) {
+
+    public static ListsView newInstanceWithProducts(String title, List<Product> products, boolean isSearch) {
         ListsView fragment = new ListsView();
         Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putParcelableArrayList("products", new ArrayList<>(products)); // Ensure correct type
+        args.putString(ARG_TITLE, title);
+        args.putParcelableArrayList(ARG_PRODUCTS, new ArrayList<>(products));
+        args.putBoolean("isSearch", isSearch); // Mark if it's a search
         fragment.setArguments(args);
         return fragment;
     }
+
     /**
      * 🔹 Updates UI based on products availability.
      */
     private void updateUI() {
-        if (products == null || products.isEmpty()) {
+        boolean isSearch = getArguments().getBoolean("isSearch", false);
+
+        if (products == null) {
+            products = new ArrayList<>();
+        }
+
+        if (products.isEmpty()) {
             no_results_text.setVisibility(View.VISIBLE);
+            no_results_text.setText(isSearch ? "No products found." : "No items available.");
             gridView.setVisibility(View.GONE);
         } else {
             no_results_text.setVisibility(View.GONE);
             gridView.setVisibility(View.VISIBLE);
-            productAdapter = new ProductAdapter(requireContext(), products);
-            gridView.setAdapter(productAdapter);
+            if (productAdapter == null) {
+                productAdapter = new ProductAdapter(requireContext(), products);
+                gridView.setAdapter(productAdapter);
+            } else {
+                productAdapter.notifyDataSetChanged();
+            }
         }
     }
+
 
 }

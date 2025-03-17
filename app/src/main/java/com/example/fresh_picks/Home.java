@@ -88,6 +88,18 @@ public class Home extends Fragment {
                 .commit();
     }
 
+    private void navigateToListsView(String title, List<Product> products, boolean isSearch) {
+        ListsView listsViewFragment = ListsView.newInstanceWithProducts(title, products, isSearch);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, listsViewFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+
+
     private void setupSearchView() {
         searchView.setIconifiedByDefault(false); // 🔹 Keeps the search bar always expanded
 
@@ -120,33 +132,28 @@ public class Home extends Fragment {
         });
     }
 
-
     private void performSearch(String query) {
-        String formattedQuery = query.trim().toLowerCase(); // 🔹 Convert query to lowercase
-
         db.collection("products")
-                .get() // 🔹 Get all products first
+                .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Product> filteredResults = new ArrayList<>();
-
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Product product = document.toObject(Product.class);
                         if (product != null) {
-                            // 🔹 Convert product name to lowercase for case-insensitive search
                             String productName = product.getName().toLowerCase();
-                            if (productName.contains(formattedQuery)) {
+                            if (productName.contains(query.toLowerCase())) {
                                 filteredResults.add(product);
                             }
                         }
                     }
 
-                    if (!filteredResults.isEmpty()) {
-                        displaySearchResults(filteredResults);
-                    } else {
-                        Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Search", "Error fetching products: " + e.getMessage()));
+                    // Navigate to search results
+                    navigateToListsView("Search Results", filteredResults, true);
+
+                    // 🔹 Clear the search bar input
+                    searchView.setQuery("", false);
+                    searchView.clearFocus(); // Hide keyboard
+                });
     }
 
 
