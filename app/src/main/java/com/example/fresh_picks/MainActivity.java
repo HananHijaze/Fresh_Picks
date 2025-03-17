@@ -20,13 +20,15 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private UserDao userDao; // Declare userDao
+    private DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
-
+        databaseManager = new DatabaseManager();
+        databaseManager.startSuperSaleListener(); // ✅ Start listening for super deals
         // Adjust padding for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -57,4 +59,11 @@ public class MainActivity extends AppCompatActivity {
             }, 3000); // 3-second delay
         });
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (databaseManager != null) {
+            databaseManager.stopSuperSaleListener(); // ✅ Stop listener when activity is destroyed
+        }
+        }
 }
