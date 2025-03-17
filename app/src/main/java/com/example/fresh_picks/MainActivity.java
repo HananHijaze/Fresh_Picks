@@ -27,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
+
+        // Initialize database manager and start listening for super sales
         databaseManager = new DatabaseManager();
         databaseManager.startSuperSaleListener(); // ✅ Start listening for super deals
+
         // Adjust padding for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -59,11 +62,12 @@ public class MainActivity extends AppCompatActivity {
             }, 3000); // 3-second delay
         });
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (databaseManager != null) {
-            databaseManager.stopSuperSaleListener(); // ✅ Stop listener when activity is destroyed
+            databaseManager.stopListeners(); // ✅ Stop listener when activity is destroyed
         }
-        }
+    }
 }
