@@ -47,5 +47,7 @@
     <string name="track">تتبع طلبك</string>
     <string name="address">العنوان</string>
     <string name="contact_us">تواصل معنا</string>
+    <string name="orders_history">تاريخ الطلبات </string>
+
 
 </resources>

@@ -1,9 +1,9 @@
 package com.example.fresh_picks.classes;
 
 import android.util.Log;
-
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,26 +13,30 @@ public class Cart {
     private Map<String, Integer> items; // Store productId → quantity
     private FirebaseFirestore db; // Firestore instance
 
-    // Constructor
-    public Cart() {
-        this.cartId = UUID.randomUUID().toString(); // Generate unique cart ID
-        this.items = new HashMap<>();
-        this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
-        updateCartInFirestore(); // Save cart immediately in Firestore
-    }
-    public Cart(Map<String, Integer> items){
-        this.cartId = UUID.randomUUID().toString(); // Generate unique cart ID
-        this.items = items != null ? new HashMap<>(items) : new HashMap<>();
-        this.db = FirebaseFirestore.getInstance(); // Initialize Firestore
-        updateCartInFirestore(); // Save cart immediately in Firestore
-    }
-    // ✅ Update constructor to store cartId in Firestore under user
+    // Constructor: Load existing cart if available, otherwise create a new one
     public Cart(String userId) {
-        this.cartId = UUID.randomUUID().toString();
-        this.items = new HashMap<>();
         this.db = FirebaseFirestore.getInstance();
+        this.items = new HashMap<>();
 
-        // ✅ Store cart ID in user document
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("cartId")) {
+                        this.cartId = documentSnapshot.getString("cartId");
+                        if (cartId != null) {
+                            loadCartFromFirestore();
+                        } else {
+                            createNewCart(userId);
+                        }
+                    } else {
+                        createNewCart(userId);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Cart", "Error fetching user cart ID: " + e.getMessage()));
+    }
+
+    // Create new cart and save to Firestore
+    private void createNewCart(String userId) {
+        this.cartId = UUID.randomUUID().toString();
         db.collection("users").document(userId)
                 .update("cartId", cartId)
                 .addOnSuccessListener(aVoid -> Log.d("Cart", "Cart ID linked to user: " + userId))
@@ -41,57 +45,49 @@ public class Cart {
         updateCartInFirestore();
     }
 
-
-    // Getter for cartId
-    public String getCartId() {
-        return cartId;
+    // Load cart data from Firestore
+    private void loadCartFromFirestore() {
+        db.collection("carts").document(cartId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("items")) {
+                        this.items = (Map<String, Integer>) documentSnapshot.get("items");
+                        if (this.items == null) {
+                            this.items = new HashMap<>();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Cart", "Error loading cart: " + e.getMessage()));
     }
 
-    // Get all cart items
+    // Get cart items
     public Map<String, Integer> getItems() {
         return items;
     }
 
-    // Set cart items and update Firestore
-    public void setItems(Map<String, Integer> items) {
-        this.items = items;
-        updateCartInFirestore(); // Update Firestore when setting new items
-    }
-
-    // Add item and update quantity in Firestore immediately
+    // Add item and update Firestore
     public void addItem(Product product, int quantity) {
         String productId = product.getId();
-        if (items.containsKey(productId)) {
-            items.put(productId, items.get(productId) + quantity);
-        } else {
-            items.put(productId, quantity);
-        }
-        updateCartInFirestore(); // Instantly update Firestore
+        items.put(productId, items.getOrDefault(productId, 0) + quantity);
+        updateCartInFirestore();
     }
 
-    // Remove item and update Firestore immediately
+    // Remove item from cart
     public void removeItem(Product product) {
-        String productId = product.getId();
-        if (items.containsKey(productId)) {
-            items.remove(productId);
-            updateCartInFirestore();
-        }
+        items.remove(product.getId());
+        updateCartInFirestore();
     }
 
-    // Update quantity of an item in Firestore
+    // Update item quantity
     public void updateQuantity(Product product, int quantity) {
-        String productId = product.getId();
-        if (items.containsKey(productId)) {
-            if (quantity > 0) {
-                items.put(productId, quantity);
-            } else {
-                items.remove(productId);
-            }
-            updateCartInFirestore();
+        if (quantity > 0) {
+            items.put(product.getId(), quantity);
+        } else {
+            items.remove(product.getId());
         }
+        updateCartInFirestore();
     }
 
-    // Clear cart and update Firestore
+    // Clear cart
     public void clearCart() {
         items.clear();
         updateCartInFirestore();
@@ -101,7 +97,7 @@ public class Cart {
     public double calculateTotalPrice(Map<String, Product> productMap) {
         double total = 0;
         for (Map.Entry<String, Integer> entry : items.entrySet()) {
-            Product product = productMap.get(entry.getKey()); // Fetch product details
+            Product product = productMap.get(entry.getKey());
             if (product != null) {
                 total += product.getPrice() * entry.getValue();
             }
@@ -109,16 +105,19 @@ public class Cart {
         return total;
     }
 
-    // **🔥 Immediate Firestore Update**
+    // ✅ **Optimized Firestore Update**
     private void updateCartInFirestore() {
-        Map<String, Object> cartMap = new HashMap<>();
-        cartMap.put("cartId", cartId);
-        cartMap.put("items", items); // Store products list with quantities
+        if (cartId == null) {
+            Log.e("Cart", "Cart ID is null, cannot update Firestore.");
+            return;
+        }
 
-        db.collection("carts")
-                .document(cartId)
-                .set(cartMap)
-                .addOnSuccessListener(aVoid -> System.out.println("Cart updated successfully!"))
-                .addOnFailureListener(e -> System.err.println("Error updating cart: " + e.getMessage()));
+        Map<String, Object> cartMap = new HashMap<>();
+        cartMap.put("items", items);
+
+        db.collection("carts").document(cartId)
+                .set(cartMap, SetOptions.merge()) // Use merge to avoid overwriting cart ID
+                .addOnSuccessListener(aVoid -> Log.d("Cart", "Cart updated successfully!"))
+                .addOnFailureListener(e -> Log.e("Cart", "Error updating cart: " + e.getMessage()));
     }
 }

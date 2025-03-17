@@ -25,7 +25,11 @@ public class User {
         this.orders = new ArrayList<>();
         this.bulkSaleBuyer = false;
     }
-
+    public User() {
+        this.addresses = new ArrayList<>();
+        this.orders = new ArrayList<>();
+        this.bulkSaleBuyer = false;
+    }
 
     public User(String name, String email, String password, List<String> addresses, String phoneNumber) {
         this.name = name;

@@ -189,6 +189,7 @@ public class Checkout extends AppCompatActivity {
         intent.putExtra("paymentMethod", selectedPaymentMethod);
         intent.putExtra("totalPrice", totalPrice);
         startActivity(intent);
+        finish();
     }
 
 

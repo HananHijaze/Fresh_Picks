@@ -18,7 +18,12 @@ public class MainActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main2);
-
+        if (getIntent().hasExtra("navigateTo")) {
+            String targetFragment = getIntent().getStringExtra("navigateTo");
+            if ("OrdersH".equals(targetFragment)) {
+                loadFragment(new OrdersH());
+            }
+        }
         // Handle window insets for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
