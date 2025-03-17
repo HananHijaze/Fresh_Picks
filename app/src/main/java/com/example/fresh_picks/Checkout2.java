@@ -210,6 +210,7 @@ public class Checkout2 extends AppCompatActivity {
                     .set(orderMap)
                     .addOnSuccessListener(aVoid -> {
                         updateUserOrders(orderId);
+                        checkAndUpdateBulkSaleStatus();
                         clearUserCart();
                         runOnUiThread(() -> {
                             Toast.makeText(this, "🎉 Order placed successfully!", Toast.LENGTH_LONG).show();
@@ -280,6 +281,50 @@ public class Checkout2 extends AppCompatActivity {
                             .addOnFailureListener(e -> Log.e("Checkout2", "❌ Error checking cart existence!", e));
                 })
                 .addOnFailureListener(e -> Log.e("Checkout2", "❌ Failed to retrieve user document!", e));
+    }
+    private void checkAndUpdateBulkSaleStatus() {
+        AtomicBoolean hasSuperDealItem = new AtomicBoolean(false);
+        AtomicInteger counter = new AtomicInteger(cartItems.size());
+
+        // Step 1: First, check if the user is already a bulk sale buyer
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("bulkSaleBuyer")) {
+                        boolean isAlreadyBulkBuyer = Boolean.TRUE.equals(documentSnapshot.getBoolean("bulkSaleBuyer"));
+                        if (isAlreadyBulkBuyer) {
+                            Log.d("Checkout2", "✅ User is already a bulk sale buyer. No update needed.");
+                            return; // Exit early, no need to check further
+                        }
+                    }
+
+                    // Step 2: Check if the user bought from 'super_deals' category
+                    for (String productId : cartItems.keySet()) {
+                        db.collection("products").document(productId).get()
+                                .addOnSuccessListener(productSnapshot -> {
+                                    if (productSnapshot.exists() && productSnapshot.contains("category")) {
+                                        String category = productSnapshot.getString("category");
+                                        if ("super_deals".equalsIgnoreCase(category)) {
+                                            hasSuperDealItem.set(true);
+                                        }
+                                    }
+
+                                    // Step 3: After checking all products, update Firestore if necessary
+                                    if (counter.decrementAndGet() == 0 && hasSuperDealItem.get()) {
+                                        db.collection("users").document(userId)
+                                                .update("bulkSaleBuyer", true)
+                                                .addOnSuccessListener(v -> Log.d("Checkout2", "✅ User is now a bulk sale buyer!"))
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("Checkout2", "❌ Failed to update bulkSaleBuyer status: " + e.getMessage());
+                                                    runOnUiThread(() ->
+                                                            Toast.makeText(this, "Failed to update user status", Toast.LENGTH_SHORT).show()
+                                                    );
+                                                });
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.e("Checkout2", "❌ Error fetching product category: " + e.getMessage()));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Checkout2", "❌ Failed to check bulkSaleBuyer status: " + e.getMessage()));
     }
 
 }
