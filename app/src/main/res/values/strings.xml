@@ -67,7 +67,7 @@
     <string name="retry_button_text">OK!</string>
     <string name="no_connection_description">No connection dialog</string>
     <string name="order_date_time">Order Date: %1$s, %2$s</string>
-    <string name="total_price">Total Price: %1$s</string>
+    <string name="total_price">Total Price: ₪%s</string>
     <string name="payment_method">Payment: %1$s</string>
     <string name="shipping_method">Shipping: %1$s</string>
     <string name="add_to_cart">Add to Cart</string>
