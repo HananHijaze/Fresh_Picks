@@ -167,10 +167,10 @@ input[type="password"], input[type="text"] {
 
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
-            eyeIcon.src = "images/eye_open.png"; // Show open eye icon
+            eyeIcon.src = "images/eye_closed.png"; // Show open eye icon
         } else {
             passwordInput.type = "password";
-            eyeIcon.src = "images/eye_closed.png"; // Show closed eye icon
+            eyeIcon.src = "images/eye_open.png"; // Show closed eye icon
         }
     }
 </script>
@@ -186,7 +186,7 @@ input[type="password"], input[type="text"] {
             <div class="form-group">
                 <img src="images/managerPassword.jpg" alt="Manager Password Icon">
                 <input type="password" id="password" placeholder="Enter Manager Password" required>
-                <img src="images/eye_closed.png" alt="Toggle Password" class="toggle-password" onclick="togglePassword()">
+                <img src="images/eye_open.png" alt="Toggle Password" class="toggle-password" onclick="togglePassword()">
 
             </div>
             <button type="submit">Login</button>
@@ -215,10 +215,10 @@ input[type="password"], input[type="text"] {
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                eyeIcon.src = "images/eye_open.png"; // Change to an open eye image
+                eyeIcon.src = "images/eye_closed.png"; // Change to an open eye image
             } else {
                 passwordInput.type = "password";
-                eyeIcon.src = "images/eye_closed.png"; // Change to a closed eye image
+                eyeIcon.src = "images/eye_open.png"; // Change to a closed eye image
             }
         }
         function closePage() {
