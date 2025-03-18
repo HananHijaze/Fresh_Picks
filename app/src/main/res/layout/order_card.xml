@@ -20,7 +20,7 @@
             android:id="@+id/tv_order_date_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Order Date: 12/03/2025, 14:30"
+            android:text="@string/order_date_time"
             android:textColor="@android:color/black"
             android:textStyle="bold"
             android:textSize="16sp" />
@@ -56,7 +56,7 @@
                 android:id="@+id/tv_total_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Price: $50.00"
+                android:text="@string/total_price"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"/>
@@ -65,7 +65,7 @@
                 android:id="@+id/tv_payment_method"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payment: Credit Card"
+                android:text="@string/payment_method"
                 android:textSize="14sp"
                 android:textColor="@android:color/darker_gray"/>
 
@@ -73,7 +73,7 @@
                 android:id="@+id/tv_shipping_method"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shipping: Standard Delivery"
+                android:text="@string/shipping_method"
                 android:textSize="14sp"
                 android:textColor="@android:color/darker_gray"/>
 

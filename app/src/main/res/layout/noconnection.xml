@@ -25,14 +25,14 @@
                 android:layout_height="100dp"
                 android:src="@drawable/noconnection3"
                 android:layout_centerHorizontal="true"
-                android:contentDescription="no connectio dialog" />
+                android:contentDescription="@string/no_connection_description" />
 
             <!-- Title Text -->
             <TextView
                 android:id="@+id/connection_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="   Check your Internet Connection  "
+                android:text="@string/no_connection_message"
                 android:textSize="24dp"
                 android:textStyle="bold"
                 android:layout_below="@id/connection_icon"
@@ -46,7 +46,7 @@
                 android:id="@+id/retry_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OK!"
+                android:text="@string/retry_button_text"
                 android:layout_below="@id/connection_message"
                 android:layout_marginTop="24dp"
                 android:paddingHorizontal="24dp"

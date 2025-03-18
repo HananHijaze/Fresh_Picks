@@ -1,6 +1,7 @@
 package com.example.fresh_picks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -32,18 +34,23 @@ public class ProductAdapter extends ArrayAdapter<Product> {
     private final Context context;
     private final List<Product> products;
     private final UserDao userDao;
+    private final String appLanguage;
 
     public ProductAdapter(Context context, List<Product> products) {
         super(context, 0, products);
         this.context = context;
         this.products = products;
         this.userDao = AppDatabase.getInstance(context).userDao();
-    }
 
+        // 🔹 Get the app language preference
+        SharedPreferences prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        this.appLanguage = prefs.getString("language", Locale.getDefault().getLanguage());
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.listcard, parent, false);
+
         }
 
         // Get the product at the current position
@@ -60,8 +67,11 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 .placeholder(R.drawable.logo)
                 .into(productImage);
 
-        productTitle.setText(product.getName());
-        productPrice.setText(String.format("₪%.2f", product.getPrice()));
+        String productName = "ar".equals(appLanguage) && product.getNameAr() != null
+                ? product.getNameAr()
+                : product.getName();
+        productTitle.setText(productName);
+        productPrice.setText(String.format(context.getString(R.string.currency_format), product.getPrice()));
 
         // Set click listener to show the bottom sheet
         convertView.setOnClickListener(v -> showProductDetails(product));
@@ -91,14 +101,17 @@ public class ProductAdapter extends ArrayAdapter<Product> {
             Glide.with(context).load(product.getImageUrl()).into(productImage);
 
             // Set product details
-            productName.setText(product.getName());
-            productPrice.setText(String.format("₪%.2f", product.getPrice()));
+            String localizedProductName = "ar".equals(appLanguage) && product.getNameAr() != null
+                    ? product.getNameAr()
+                    : product.getName();
+            productName.setText(localizedProductName);
+            productPrice.setText(String.format(context.getString(R.string.currency_format), product.getPrice()));
 
             // Handle quantity selection
             final int[] quantity = {1};
 // Display quantity along with unit (e.g., "3 kg" or "2 pcs")
             final String unitText = (product.getUnit() != null) ? product.getUnit() : ""; // Handle null cases
-            quantityText.setText(quantity[0] + " " + unitText);
+            quantityText.setText(String.format(context.getString(R.string.quantity_format), quantity[0], unitText));
 // Ensure unit is always displayed correctly
 
             minusButton.setOnClickListener(v -> {
@@ -121,7 +134,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                 getCurrentUserId(userId -> {
                     if (userId == null) {
                         Log.e("ProductAdapter", "User ID is null. Cannot proceed.");
-                        Toast.makeText(context, "User not logged in!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.not_logged_in), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -159,7 +172,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                                                                 })
                                                                 .addOnFailureListener(e -> Log.e("ProductAdapter", "Error updating cart: " + e.getMessage()));
                                                     } else {
-                                                        Toast.makeText(context, "Not enough stock available!", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, context.getString(R.string.stock_limit), Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                             } else {
@@ -178,12 +191,12 @@ public class ProductAdapter extends ArrayAdapter<Product> {
                                                                 .update("items." + product.getId(), cartItem)
                                                                 .addOnSuccessListener(aVoid -> {
                                                                     Log.d("ProductAdapter", "Added to cart successfully!");
-                                                                    Toast.makeText(context, "Added to cart!", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(context, context.getString(R.string.cart_added), Toast.LENGTH_SHORT).show();
                                                                     bottomSheetDialog.dismiss();
                                                                 })
                                                                 .addOnFailureListener(e -> Log.e("ProductAdapter", "Error adding to cart: " + e.getMessage()));
                                                     } else {
-                                                        Toast.makeText(context, "Not enough stock available!", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, context.getString(R.string.stock_limit), Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                             }

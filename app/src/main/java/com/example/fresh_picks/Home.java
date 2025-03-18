@@ -54,18 +54,18 @@ public class Home extends Fragment {
 
     private void setupCardViewClickListeners(View view) {
         Map<Integer, String[]> cardViewMap = new HashMap<>();
-        cardViewMap.put(R.id.cardView1, new String[]{"Seasonal", "seasonal"});
-        cardViewMap.put(R.id.cardView2, new String[]{"Fruits", "fruits"});
-        cardViewMap.put(R.id.cardView3, new String[]{"Vegetables", "vegetables"});
-        cardViewMap.put(R.id.cardView4, new String[]{"Bread and Pastries", "bread and pastries"});
-        cardViewMap.put(R.id.cardView5, new String[]{"Dairy", "dairy"});
-        cardViewMap.put(R.id.cardView6, new String[]{"Grocery Essentials", "grocery essentials"});
-        cardViewMap.put(R.id.cardView7, new String[]{"Frozen Food", "frozen food"});
-        cardViewMap.put(R.id.cardView8, new String[]{"Snacks", "snacks"});
-        cardViewMap.put(R.id.cardView9, new String[]{"Drinks", "drinks"});
-        cardViewMap.put(R.id.cardView10, new String[]{"Spices", "spices"});
-        cardViewMap.put(R.id.cardView11, new String[]{"Support Super 👸", "handmade"});
-        cardViewMap.put(R.id.cardView12, new String[]{"Super Deals", "super_deals"});
+        cardViewMap.put(R.id.cardView1, new String[]{getString(R.string.seasonal_fruits), "seasonal"});
+        cardViewMap.put(R.id.cardView2, new String[]{getString(R.string.fruits), "fruits"});
+        cardViewMap.put(R.id.cardView3, new String[]{getString(R.string.vegetables), "vegetables"});
+        cardViewMap.put(R.id.cardView4, new String[]{getString(R.string.bread_and_pastries), "bread and pastries"});
+        cardViewMap.put(R.id.cardView5, new String[]{getString(R.string.dairy), "dairy"});
+        cardViewMap.put(R.id.cardView6, new String[]{getString(R.string.grocery_essentials), "grocery essentials"});
+        cardViewMap.put(R.id.cardView7, new String[]{getString(R.string.frozen_foods), "frozen food"});
+        cardViewMap.put(R.id.cardView8, new String[]{getString(R.string.snacks), "snacks"});
+        cardViewMap.put(R.id.cardView9, new String[]{getString(R.string.drinks), "drinks"});
+        cardViewMap.put(R.id.cardView10, new String[]{getString(R.string.spices), "spices"});
+        cardViewMap.put(R.id.cardView11, new String[]{getString(R.string.support_super), "handmade"});
+        cardViewMap.put(R.id.cardView12, new String[]{getString(R.string.min_90_deals), "super_deals"});
 
         for (Map.Entry<Integer, String[]> entry : cardViewMap.entrySet()) {
             int cardViewId = entry.getKey();
@@ -137,29 +137,43 @@ public class Home extends Fragment {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Product> filteredResults = new ArrayList<>();
+                    String lowerCaseQuery = query.toLowerCase();
+
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Product product = document.toObject(Product.class);
                         if (product != null) {
-                            String productName = product.getName().toLowerCase();
-                            if (productName.contains(query.toLowerCase())) {
+                            // 🔹 Retrieve both English and Arabic names
+                            String productNameEn = document.getString("name");
+                            String productNameAr = document.getString("nameAr");
+
+                            // 🔹 Convert names to lowercase for case-insensitive search
+                            boolean matchesEn = productNameEn != null && productNameEn.toLowerCase().contains(lowerCaseQuery);
+                            boolean matchesAr = productNameAr != null && productNameAr.toLowerCase().contains(lowerCaseQuery);
+
+                            // 🔹 Add to results if the query matches either language
+                            if (matchesEn || matchesAr) {
                                 filteredResults.add(product);
                             }
                         }
                     }
 
                     // Navigate to search results
-                    navigateToListsView("Search Results", filteredResults, true);
+                    navigateToListsView(getString(R.string.search_results), filteredResults, true);
 
                     // 🔹 Clear the search bar input
                     searchView.setQuery("", false);
                     searchView.clearFocus(); // Hide keyboard
-                });
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(), getString(R.string.search_error), Toast.LENGTH_SHORT).show()
+                );
     }
+
 
 
     private void displaySearchResults(List<Product> searchResults) {
         if (searchResults == null || searchResults.isEmpty()) {
-            Toast.makeText(requireContext(), "No products found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.no_products_found), Toast.LENGTH_SHORT).show();
             return;
         }
 

@@ -279,4 +279,10 @@ public class Product implements Parcelable {
                 ", popularityScore=" + popularityScore +
                 '}';
     }
+    public String getDisplayName(String languageCode) {
+        if ("ar".equals(languageCode) && nameAr != null && !nameAr.trim().isEmpty()) {
+            return nameAr; // Return Arabic name if the app language is Arabic
+        }
+        return name; // Default to English name
+    }
 }

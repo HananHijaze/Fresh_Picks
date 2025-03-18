@@ -24,6 +24,7 @@ public class MainActivity2 extends AppCompatActivity {
                 loadFragment(new OrdersH());
             }
         }
+
         // Handle window insets for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

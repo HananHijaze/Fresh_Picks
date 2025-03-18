@@ -47,7 +47,7 @@
         android:id="@+id/empty_cart_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your cart is empty"
+        android:text="@string/cart_empty"
         android:textColor="@color/grey"
         android:textSize="24dp"
         android:textStyle="bold"

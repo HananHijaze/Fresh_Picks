@@ -78,7 +78,7 @@ public class CartF extends Fragment {
                 Intent intent = new Intent(getActivity(), Checkout.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(getActivity(), "Your cart is empty!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.cart_empty_message), Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -147,17 +147,20 @@ public class CartF extends Fragment {
                 .addOnFailureListener(e -> {
                     Log.e("CartF", "Error loading cart", e);
                     showEmptyCart();
-                    Toast.makeText(getActivity(), "Error loading cart", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.cart_error_loading), Toast.LENGTH_SHORT).show();
                 });
     }
 
 
 
-    public void updateTotalPrice(double totalPrice) { // ✅ Accept total price
+    public void updateTotalPrice(double totalPrice) {
         if (getActivity() != null) {
-            getActivity().runOnUiThread(() -> textTotalPrice.setText("Total: ₪" + String.format("%.2f", totalPrice)));
+            getActivity().runOnUiThread(() ->
+                    textTotalPrice.setText(String.format(getString(R.string.total_price1), totalPrice))
+            );
         }
     }
+
 
 
 

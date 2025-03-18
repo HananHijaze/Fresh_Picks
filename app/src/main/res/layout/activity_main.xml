@@ -19,4 +19,19 @@
         app:layout_constraintVertical_bias="0.6"
         app:srcCompat="@drawable/main" />
 
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:outlineAmbientShadowColor="@color/grey"
+        android:outlineSpotShadowColor="@color/grey"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.833"
+        android:visibility="gone"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

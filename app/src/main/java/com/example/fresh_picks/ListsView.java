@@ -130,10 +130,9 @@ public class ListsView extends Fragment {
         }
 
         if (category == null || category.isEmpty()) {
-            Toast.makeText(requireContext(), "Category is not valid!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.category_invalid), Toast.LENGTH_SHORT).show();
             return;
         }
-
         firestore.collection("products")
                 .whereArrayContains("category", category)
                 .whereEqualTo("inStock", true)
@@ -151,7 +150,6 @@ public class ListsView extends Fragment {
                         updateUI();
                     } else {
                         Log.e("ListsView", "Error fetching products", task.getException());
-                        Toast.makeText(requireContext(), "Error fetching products!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -178,7 +176,7 @@ public class ListsView extends Fragment {
 
         if (products.isEmpty()) {
             no_results_text.setVisibility(View.VISIBLE);
-            no_results_text.setText(isSearch ? "No products found." : "No items available.");
+            no_results_text.setText(isSearch ? getString(R.string.no_products_found) : getString(R.string.no_items_available));
             gridView.setVisibility(View.GONE);
         } else {
             no_results_text.setVisibility(View.GONE);
@@ -190,6 +188,7 @@ public class ListsView extends Fragment {
                 productAdapter.notifyDataSetChanged();
             }
         }
+
     }
 
 

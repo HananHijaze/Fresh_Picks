@@ -45,7 +45,7 @@ public class Checkout extends AppCompatActivity {
     private String selectedPaymentMethod = "Credit Card"; // Default selection
     private String userId;
 
-    private final String STORE_LOCATION = "אל שריף, Tamra, North District";
+    private  String STORE_LOCATION ;
     private final String STORE_MAP_LINK = "https://maps.app.goo.gl/8nAKwTJDPuoiSd9A9";
 
     @Override
@@ -54,6 +54,7 @@ public class Checkout extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
         AppDatabase dbInstance = AppDatabase.getInstance(this);
         userDao = dbInstance.userDao();
+        STORE_LOCATION = getString(R.string.store_location);
         getCurrentUserId(result -> {
             if (result != null) {
                 userId = result;
@@ -142,9 +143,10 @@ public class Checkout extends AppCompatActivity {
                 }
 
                 // ✅ Prevent duplicate "Add New Address..." entries
-                if (!userAddresses.contains("Add New Address...")) {
-                    userAddresses.add("Add New Address...");
+                if (!userAddresses.contains(getString(R.string.add_new_address))) {
+                    userAddresses.add(getString(R.string.add_new_address));
                 }
+
 
                 setupLocationSpinner();
             }).addOnFailureListener(e -> Log.e("Checkout", "Error loading addresses", e));
@@ -166,19 +168,19 @@ public class Checkout extends AppCompatActivity {
     private void proceedToCheckout() {
         // ✅ Check if total price is valid
         if (totalPrice <= 0.0) {
-            Toast.makeText(this, "Cart is empty! Please add items before checkout.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.cart_empty_message), Toast.LENGTH_SHORT).show();
             return;
         }
 
         // ✅ Validate selected location
         if (selectedShippingMethod.equals("Courier") && (selectedLocation == null || selectedLocation.isEmpty())) {
-            Toast.makeText(this, "Select a shipping location!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.select_shipping_location), Toast.LENGTH_SHORT).show();
             return;
         }
 
         // ✅ Validate Credit Card details if payment method is "Credit Card"
         if (selectedPaymentMethod.equals("Credit Card") && !isCreditCardValid()) {
-            Toast.makeText(this, "Please enter valid credit card details!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.enter_valid_card_card), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -206,7 +208,7 @@ public class Checkout extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 if (userId == null) {
-                    Log.e("Checkout", "User ID is null. Cannot fetch cart items.");
+                    Log.e("Checkout", "R.string.user_id_null");
                 }
                 callback.onResult(userId);
             });
@@ -217,8 +219,8 @@ public class Checkout extends AppCompatActivity {
     // Show store location when "Shop Pickup" is selected
     private void showStoreLocation() {
         storeLocationLayout.setVisibility(View.VISIBLE);
-        tvStoreLocation.setText("Store Location:\n" + STORE_LOCATION);
-        tvStoreLocationLink.setText("Open in Google Maps");
+        tvStoreLocation.setText(getString(R.string.store_location_label) + "\n" + STORE_LOCATION);
+        tvStoreLocationLink.setText(getString(R.string.open_google_maps));
         tvStoreLocationLink.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(STORE_MAP_LINK));
             startActivity(intent);
@@ -227,10 +229,10 @@ public class Checkout extends AppCompatActivity {
 
     private void showAddAddressDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Add New Address");
+        builder.setTitle(getString(R.string.add_new_address));
         final EditText input = new EditText(this);
         builder.setView(input);
-        builder.setPositiveButton("Add", (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.add), (dialog, which) -> {
             String newAddress = input.getText().toString().trim();
             if (!newAddress.isEmpty()) {
                 userAddresses.add(0, newAddress); // ✅ Add at the top
@@ -240,7 +242,7 @@ public class Checkout extends AppCompatActivity {
                 saveAddressToFirebase(newAddress);
             }
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 
@@ -262,7 +264,7 @@ public class Checkout extends AppCompatActivity {
     private void selectShippingMethod(String method) {
         selectedShippingMethod = method;
 
-        if (method.equals("Shop Pickup")) {
+        if (method.equals(getString(R.string.shop_pickup))) {
             pickupOption.setBackgroundResource(R.drawable.selected_background);
             courierOption.setBackgroundResource(R.drawable.unselected_background);
             storeLocationLayout.setVisibility(View.VISIBLE);
@@ -304,7 +306,7 @@ public class Checkout extends AppCompatActivity {
     // ✅ Method to update the total price text
     private void updateTotalPriceText(double totalPrice) {
         runOnUiThread(() -> {
-            String formattedPrice = String.format("Total Price: ILS %.2f", totalPrice);
+            String formattedPrice = String.format(getString(R.string.total_price_label), totalPrice);
             tvTotalPrice.setText(formattedPrice);
             Log.d("Checkout", "Updated UI Total Price: " + formattedPrice); // Debugging Log
         });
@@ -431,25 +433,25 @@ public class Checkout extends AppCompatActivity {
 
         // ✅ Validate Cardholder Name
         if (cardholderName.isEmpty()) {
-            etCardholderName.setError("Enter Cardholder Name");
+            etCardholderName.setError(getString(R.string.enter_cardholder_name));
             return false;
         }
 
         // ✅ Validate Card Number (16 digits)
         if (!cardNumber.matches("\\d{16}")) {
-            etCardNumber.setError("Enter a valid 16-digit card number");
+            etCardNumber.setError(getString(R.string.enter_valid_card_number));
             return false;
         }
 
         // ✅ Validate Expiry Date (Format MM/YY and not expired)
         if (!expiryDate.matches("\\d{2}/\\d{2}") || !isExpiryDateValid(expiryDate)) {
-            etExpiryDate.setError("Enter a valid expiry date (MM/YY)");
+            etExpiryDate.setError(getString(R.string.enter_valid_expiry_date));
             return false;
         }
 
         // ✅ Validate CVV (3 digits)
         if (!cvv.matches("\\d{3}")) {
-            etCvv.setError("Enter a valid 3-digit CVV");
+            etCvv.setError(getString(R.string.enter_valid_cvv));
             return false;
         }
 

@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ViewHolder> {
@@ -56,9 +57,29 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         Log.d("ShoppingCartAdapter", "Binding product: " + product.getName() + " with quantity: " + product.getStockQuantity());
 
-        holder.productName.setText(product.getName());
+        // 🔹 Retrieve saved language preference
+        String appLanguage = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                .getString("language", Locale.getDefault().getLanguage());
 
-        // 🔹 Ensure the unit is fetched **only once** and stored
+        // 🔹 Fetch localized name from Firestore
+        db.collection("products").document(product.getId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String nameEn = documentSnapshot.getString("name");
+                        String nameAr = documentSnapshot.getString("nameAr");
+
+                        // ✅ Set product name based on the selected language
+                        String productName = "ar".equals(appLanguage) && nameAr != null && !nameAr.trim().isEmpty()
+                                ? nameAr
+                                : nameEn;
+
+                        holder.productName.setText(productName != null ? productName : context.getString(R.string.product_not_found));
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("ShoppingCartAdapter", "Error fetching product name: " + e.getMessage()));
+
+        // 🔹 Fetch and update unit
         if (product.getUnit() == null || product.getUnit().isEmpty()) {
             db.collection("products").document(product.getId())
                     .get()
@@ -67,11 +88,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                             String fetchedUnit = documentSnapshot.contains("unit") ? documentSnapshot.getString("unit") : product.getPackSize();
                             product.setUnit(fetchedUnit != null ? fetchedUnit.trim() : "unit");
 
-                            // ✅ **Update only the unit TextView to avoid unnecessary re-rendering**
-                            String formattedPrice = String.format("₪%.2f per %s", product.getPrice(), product.getUnit());
+                            // ✅ Update selling price and quantity UI
+                            String formattedPrice = String.format(context.getString(R.string.total_price_format), product.getPrice(), product.getUnit());
                             holder.sellingPrice.setText(formattedPrice);
-
-                            // ✅ **Update quantity UI with unit**
                             holder.quantity.setText(product.getStockQuantity() + " " + product.getUnit());
                         }
                     })
@@ -80,11 +99,16 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         // ✅ **Instant UI update before waiting for Firestore response**
         holder.quantity.setText(product.getStockQuantity() + " " + (product.getUnit() != null ? product.getUnit() : "unit"));
-        holder.sellingPrice.setText(String.format("₪%.2f per %s", product.getPrice(), product.getUnit()));
+        holder.sellingPrice.setText(String.format(context.getString(R.string.total_price_format), product.getPrice(), product.getUnit()));
 
-        // 🔹 Load image using Glide
+        // 🔹 Load product image using Glide
         if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-            Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
+            Glide.with(context)
+                    .load(product.getImageUrl())
+                    .placeholder(R.drawable.noconnection3) // ✅ Placeholder for loading
+                    .error(R.drawable.logo) // ✅ Default image on error
+                    .fitCenter() // ✅ Ensures proper image fit
+                    .into(holder.productImage);
         } else {
             holder.productImage.setImageResource(R.drawable.logo);
         }
@@ -122,6 +146,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         // ✅ **Delete Item when Trash Can is Clicked**
         holder.buttonClose.setOnClickListener(v -> showDeleteConfirmationDialog(product, holder));
     }
+
 
 
     @Override
@@ -177,19 +202,19 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     // ✅ **Show Stock Limit Dialog**
     private void showStockLimitDialog(Product product, int availableStock) {
         new AlertDialog.Builder(context)
-                .setTitle("Stock Limit Reached")
-                .setMessage("Sorry, only " + availableStock + " " + product.getUnit() + " of " + product.getName() + " are available.")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setTitle(context.getString(R.string.stock_limit))
+                .setMessage(String.format(context.getString(R.string.stock_message), availableStock, product.getUnit(), product.getName()))
+                .setPositiveButton(context.getString(R.string.ok), (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
-    // ✅ **Show Confirmation Before Deleting Item**
+
     private void showDeleteConfirmationDialog(Product product, ViewHolder holder) {
         new AlertDialog.Builder(context)
-                .setTitle("Remove Item")
-                .setMessage("You have reached 0 quantity. Do you want to remove " + product.getName() + " from your cart?")
-                .setPositiveButton("Yes", (dialog, which) -> removeItemFromCart(product))
-                .setNegativeButton("Cancel", (dialog, which) -> holder.quantity.setText("1"))
+                .setTitle(context.getString(R.string.remove_item))
+                .setMessage(String.format(context.getString(R.string.remove_message), product.getName()))
+                .setPositiveButton(context.getString(R.string.yes), (dialog, which) -> removeItemFromCart(product))
+                .setNegativeButton(context.getString(R.string.cancel), (dialog, which) -> holder.quantity.setText("1"))
                 .show();
     }
 

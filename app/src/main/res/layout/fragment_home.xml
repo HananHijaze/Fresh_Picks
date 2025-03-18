@@ -23,6 +23,7 @@
         android:elevation="6dp"
         android:iconifiedByDefault="false"
         android:padding="8dp"
+        android:hint="@string/search_here"
         android:queryHint="@string/search_here" />
 
     <ScrollView

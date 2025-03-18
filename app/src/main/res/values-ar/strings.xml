@@ -48,6 +48,113 @@
     <string name="address">العنوان</string>
     <string name="contact_us">تواصل معنا</string>
     <string name="orders_history">تاريخ الطلبات </string>
+    <string name="cart_empty">سلة التسوق فارغة</string>
+    <string name="view_addresses">عرض العناوين</string>
+    <string name="no_addresses_available">لا توجد عناوين متاحة</string>
+    <string name="view_cards">عرض البطاقات</string>
+    <string name="not_available">غير متوفر</string>
+    <string name="your_addresses">عناوينك</string>
+    <string name="facebook_page">📘 صفحة الفيسبوك</string>
+    <string name="instagram_page">📸 صفحة الإنستغرام</string>
+    <string name="more_info">🔗 المزيد من المعلومات</string>
+    <string name="no_cards_available">لا توجد بطاقات متاحة</string>
+    <string name="your_cards">بطاقاتك</string>
+    <string name="logged_out_success">تم تسجيل الخروج بنجاح!</string>
+    <string name="cancel">إلغاء</string>
+    <string name="close">أغلق</string>
+    <string name="no_orders_found">لم يتم العثور على أي طلبات</string>
+    <string name="no_connection_message">تحقق من اتصالك بالإنترنت</string>
+    <string name="retry_button_text">حسنًا</string>
+    <string name="no_connection_description">لا يوجد اتصال</string>
+    <string name="order_date_time">تاريخ الطلب:</string>
+    <string name="total_price">السعر الإجمالي: </string>
+    <string name="payment_method">طريقة الدفع:</string>
+    <string name="shipping_method">طريقة الشحن:</string>
+    <string name="add_to_cart">أضف إلى السلة</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="login_button">تسجيل الدخول</string>
+    <string name="signup_prompt">ليس لديك حساب؟ سجل الآن</string>
 
+    <string name="shipping_and_payment">الشحن والدفع</string>
+
+    <string name="shop_pickup">استلام من المتجر</string>
+    <string name="courier">شركة الشحن</string>
+    <string name="store_location"> אל שריף, Tamra, North District</string>
+    <string name="open_in_maps">افتح في خرائط جوجل (اضغط هنا)</string>
+    <string name="select_location">اختر الموقع</string>
+    <string name="credit_card">بطاقة ائتمان</string>
+    <string name="cash">نقدًا</string>
+    <string name="card_details">تفاصيل البطاقة</string>
+    <string name="cardholder_name">اسم حامل البطاقة</string>
+    <string name="card_number">رقم البطاقة</string>
+    <string name="expiry_date">MM/YY</string>
+    <string name="cvv">رمز الحماية CVV</string>
+    <string name="next">التالي</string>
+    <string name="error_user_not_found">خطأ: المستخدم غير موجود!</string>
+    <string name="stock_issue_adjust_cart">مشكلة في المخزون! يرجى تعديل السلة.</string>
+    <string name="order_placed_successfully">🎉 تم تقديم الطلب بنجاح!</string>
+    <string name="cart_empty_error">السلة فارغة. لا يمكن إتمام الدفع!</string>
+    <string name="payment_failed">فشل الدفع</string>
+    <string name="payment_failed_message">تعذر معالجة الدفع. يرجى المحاولة مرة أخرى.</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="user_bulk_sale_updated">✅ أصبح المستخدم الآن مشتري جملة!</string>
+    <string name="failed_update_user_status">فشل تحديث حالة المستخدم</string>
+    <string name="fetching_user_id">تم استرداد معرف المستخدم:</string>
+
+    <string name="select_shipping_location">حدد موقع الشحن!</string>
+    <string name="enter_valid_credit_card">يرجى إدخال تفاصيل بطاقة ائتمان صالحة!</string>
+    <string name="enter_cardholder_name">أدخل اسم حامل البطاقة</string>
+    <string name="enter_valid_card_number">أدخل رقم بطاقة صالح مكون من 16 رقمًا</string>
+    <string name="enter_valid_expiry_date">أدخل تاريخ انتهاء صالح (MM/YY)</string>
+    <string name="enter_valid_cvv">أدخل رمز CVV صالح مكون من 3 أرقام</string>
+
+    <string name="store_location_label">موقع المتجر:</string>
+    <string name="open_google_maps">(اضغط)افتح في خرائط جوجل</string>
+    <string name="add_new_address">إضافة عنوان جديد...</string>
+    <string name="add_new_address_title">إضافة عنوان جديد</string>
+    <string name="add">إضافة</string>
+    <string name="failed_to_fetch_cart">فشل في جلب منتجات السلة</string>
+    <string name="all_fields_required">جميع الحقول مطلوبة!</string>
+    <string name="passwords_do_not_match">كلمات المرور غير متطابقة!</string>
+    <string name="user_registered_success">تم تسجيل المستخدم بنجاح!</string>
+    <string name="error_saving_user">خطأ في حفظ المستخدم: </string>
+    <string name="error_creating_cart">خطأ في إنشاء السلة:</string>
+    <string name="cart_empty_message">سلة التسوق فارغة. يرجى إضافة العناصر قبل المتابعة!</string>
+    <string name="enter_valid_card_card">يرجى إدخال تفاصيل بطاقة ائتمان صالحة!</string>
+    <string name="total_price_label">السعر الإجمالي: %.2f شيكل</string>
+    <string name="search_results">نتائج البحث</string>
+    <string name="no_products_found">لم يتم العثور على منتجات</string>
+
+    <string name="order_date">تاريخ الطلب:</string>
+
+    <string name="error_loading_product">خطأ في تحميل المنتج.</string>
+    <string name="product_not_found">لم يتم العثور على المنتج.</string>
+    <string name="fetching_orders_error">حدث خطأ أثناء جلب الطلبات.</string>
+    <string name="fetching_product_error">حدث خطأ أثناء جلب تفاصيل المنتج.</string>
+    <string name="is_delivered">تم التوصيل</string>
+    <string name="is_not_delivered">لم يتم التوصيل</string>
+    <string name="cart_error_loading">حدث خطأ أثناء تحميل السلة</string>
+    <string name="cart_loading">جاري تحميل عناصر السلة...</string>
+    <string name="stock_limit">Stock Limit Reached</string>
+    <string name="stock_message">Sorry, only %d %s of %s are available.</string>
+    <string name="remove_item">Remove Item</string>
+    <string name="remove_message">You have reached 0 quantity. Do you want to remove %s from your cart?</string>
+    <string name="yes">Yes</string>
+    <string name="removed_from_cart">Removed from cart</string>
+    <string name="total_price_format">₪%.2f per %s</string>
+    <string name="ok">حسناً</string>
+    <string name="total_price1">الإجمالي: ₪%.2f</string>
+    <string name="search_error">حدث خطأ أثناء البحث. الرجاء المحاولة مرة أخرى.</string>
+    <string name="category_invalid">الفئة غير صالحة!</string>
+    <string name="fetch_products_error">حدث خطأ أثناء جلب المنتجات!</string>
+    <string name="no_items_available">لا توجد عناصر متاحة.</string>
+    <string name="currency_format">₪%.2f</string>
+    <string name="not_logged_in">المستخدم غير مسجل الدخول!</string>
+    <string name="cart_updated">تم تحديث الكمية في السلة!</string>
+    <string name="cart_added">تمت الإضافة إلى السلة!</string>
+    <string name="cart_error">خطأ في استرجاع السلة!</string>
+    <string name="stock_unavailable">لا توجد كمية كافية في المخزون!</string>
+    <string name="quantity_format">%d %s</string>
 
 </resources>

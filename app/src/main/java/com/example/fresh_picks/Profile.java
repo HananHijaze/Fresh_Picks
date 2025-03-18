@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
 public class Profile extends Fragment {
 
     private TextView tvUserName, tvUserPhone;
-    private Button btnMyLocation, btncontact, btnCards;
+    private Button btnMyLocation, btncontact, btnCards,btnLanguage;
     private ImageView logoutIcon;
     private static final String TAG = "ProfileFragment";
     private FirebaseFirestore db;
@@ -56,6 +56,9 @@ public class Profile extends Fragment {
         btncontact = view.findViewById(R.id.btn_contat_us);
         btnCards = view.findViewById(R.id.btn_cards);
         logoutIcon = view.findViewById(R.id.logout);
+        btnLanguage = view.findViewById(R.id.btn_change_language);
+
+        btnLanguage.setOnClickListener(v -> showLanguageSelectionDialog());
 
         // Initialize Firebase Firestore and Room Database
         db = FirebaseFirestore.getInstance();
@@ -107,9 +110,14 @@ public class Profile extends Fragment {
                             requireActivity().runOnUiThread(() -> {
                                 tvUserName.setText(name != null ? name : "N/A");
                                 tvUserPhone.setText(phone != null ? phone : "N/A");
-                                btnMyLocation.setText(userAddresses != null && !userAddresses.isEmpty() ? "View Addresses" : "No addresses available");
-                                btncontact.setText("Contact Us");
-                                btnCards.setText(userCards != null && !userCards.isEmpty() ? "View Cards" : "No cards available");
+                                btnMyLocation.setText(userAddresses != null && !userAddresses.isEmpty()
+                                        ? getString(R.string.view_addresses)
+                                        : getString(R.string.no_addresses_available));
+
+                                btncontact.setText(getString(R.string.contact_us));
+                                btnCards.setText(userCards != null && !userCards.isEmpty()
+                                        ? getString(R.string.view_cards)
+                                        : getString(R.string.no_cards_available));
                             });
                         }
                     } else {
@@ -120,19 +128,18 @@ public class Profile extends Fragment {
 
     private void showAddressDialog() {
         if (userAddresses == null || userAddresses.isEmpty()) {
-            Toast.makeText(requireContext(), "No addresses available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.no_addresses_available, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String[] addressArray = userAddresses.toArray(new String[0]);
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Your Addresses")
-                .setItems(addressArray, (dialog, which) -> {
-                    // Handle item click if needed
-                })
-                .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                .setTitle(getString(R.string.your_addresses))
+                .setItems(addressArray, (dialog, which) -> { /* Handle click */ })
+                .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
                 .show();
+
     }
 
     private void showContactDialog() {
@@ -144,7 +151,7 @@ public class Profile extends Fragment {
 
         // Title: "Contact Us"
         TextView titleTextView = new TextView(requireContext());
-        titleTextView.setText("Contact Us");
+        titleTextView.setText(getString(R.string.contact_us));
         titleTextView.setTextSize(20);
         titleTextView.setTypeface(null, Typeface.BOLD);
         titleTextView.setGravity(Gravity.CENTER);
@@ -153,7 +160,7 @@ public class Profile extends Fragment {
 
         // Phone Number
         TextView phoneTextView = new TextView(requireContext());
-        phoneTextView.setText("📞 049595512"); // Added phone icon
+        phoneTextView.setText("📞 049595512");
         phoneTextView.setTextSize(18);
         phoneTextView.setTypeface(null, Typeface.BOLD);
         phoneTextView.setGravity(Gravity.CENTER);
@@ -162,7 +169,7 @@ public class Profile extends Fragment {
 
         // Facebook Page Label
         TextView facebookLabel = new TextView(requireContext());
-        facebookLabel.setText("📘 Facebook Page");
+        facebookLabel.setText(getString(R.string.facebook_page));
         facebookLabel.setTextSize(16);
         facebookLabel.setTypeface(null, Typeface.BOLD);
         facebookLabel.setGravity(Gravity.CENTER);
@@ -175,7 +182,7 @@ public class Profile extends Fragment {
             ImageView qrCode1 = new ImageView(requireContext());
             qrCode1.setImageDrawable(qrDrawable1);
             LinearLayout.LayoutParams qrParams = new LinearLayout.LayoutParams(
-                    300, 300 // Set fixed size for QR codes
+                    300, 300
             );
             qrParams.setMargins(0, 5, 0, 10);
             qrCode1.setLayoutParams(qrParams);
@@ -184,7 +191,7 @@ public class Profile extends Fragment {
 
         // Instagram Page Label
         TextView instagramLabel = new TextView(requireContext());
-        instagramLabel.setText("📸 Instagram Page");
+        instagramLabel.setText(getString(R.string.instagram_page));
         instagramLabel.setTextSize(16);
         instagramLabel.setTypeface(null, Typeface.BOLD);
         instagramLabel.setGravity(Gravity.CENTER);
@@ -197,7 +204,7 @@ public class Profile extends Fragment {
             ImageView qrCode2 = new ImageView(requireContext());
             qrCode2.setImageDrawable(qrDrawable2);
             LinearLayout.LayoutParams qrParams = new LinearLayout.LayoutParams(
-                    300, 300 // Set fixed size for QR codes
+                    300, 300
             );
             qrParams.setMargins(0, 5, 0, 10);
             qrCode2.setLayoutParams(qrParams);
@@ -206,43 +213,48 @@ public class Profile extends Fragment {
 
         // Link to more information
         TextView linkTextView = new TextView(requireContext());
-        linkTextView.setText("🔗 More Info");
+        linkTextView.setText(getString(R.string.more_info));
         linkTextView.setTextSize(16);
         linkTextView.setTextColor(Color.BLUE);
         linkTextView.setTypeface(null, Typeface.BOLD);
         linkTextView.setPadding(0, 10, 0, 10);
         linkTextView.setGravity(Gravity.CENTER);
+
         linkTextView.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://vcard.alifalif.co/stocks/6"));
             requireContext().startActivity(browserIntent);
         });
+
         layout.addView(linkTextView);
 
-        // ScrollView to accommodate long content
+        // **Fix: Prevent Duplicate Parent Issue**
         ScrollView scrollView = new ScrollView(requireContext());
+        if (layout.getParent() != null) {
+            ((ViewGroup) layout.getParent()).removeView(layout);
+        }
         scrollView.addView(layout);
 
         // Show Dialog
         new AlertDialog.Builder(requireContext())
                 .setView(scrollView)
-                .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.close, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
     private void showCardsDialog() {
         if (userCards == null || userCards.isEmpty()) {
-            Toast.makeText(requireContext(), "No cards available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.no_cards_available, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String[] cardsArray = userCards.toArray(new String[0]);
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("Your Cards")
+                .setTitle(R.string.your_cards)
                 .setItems(cardsArray, (dialog, which) -> {
                     // Handle item click if needed
                 })
-                .setNegativeButton("Close", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.close, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -252,7 +264,7 @@ public class Profile extends Fragment {
 
             if (isAdded()) {
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Logged out successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), R.string.logged_out_success, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(requireContext(), LogIn.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -260,4 +272,29 @@ public class Profile extends Fragment {
             }
         });
     }
+    private void showLanguageSelectionDialog() {
+        String[] languages = {"English", "العربية"};
+        String[] languageCodes = {"en", "ar"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.lang))
+                .setItems(languages, (dialog, which) -> {
+                    changeLanguage(languageCodes[which]);
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+    private void changeLanguage(String langCode) {
+        LanguageManager languageManager = new LanguageManager(requireContext());
+        languageManager.setLanguage(langCode);
+
+        Intent intent = new Intent(requireActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
+
+
+
 }

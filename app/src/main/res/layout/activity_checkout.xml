@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Shipping and Payment"
+                android:text="@string/shipping_and_payment"
                 android:textSize="16sp"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -69,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Submit"
+                android:text="@string/submit"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -83,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="CHECKOUT"
+        android:text="@string/checkout"
         android:textColor="@color/grey"
         android:textSize="30dp"
         android:textStyle="bold"
@@ -127,7 +127,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="12dp"
-                        android:text="Shipping Method"
+                        android:text="@string/shipping_method"
                         android:textColor="@color/grey"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -157,7 +157,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Shop Pickup"
+                                android:text="@string/shop_pickup"
                                 android:textColor="@color/grey"
                                 android:textSize="16sp" />
                         </LinearLayout>
@@ -180,7 +180,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Courier"
+                                android:text="@string/courier"
                                 android:textColor="@color/grey"
                                 android:textSize="16sp" />
                         </LinearLayout>
@@ -201,7 +201,7 @@
                     android:id="@+id/tv_store_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Store Location: אל שריף, Tamra, North District"
+                    android:text="@string/store_location"
                     android:textSize="20dp"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
@@ -211,7 +211,7 @@
                     android:id="@+id/tv_store_location_link"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Open in Google Maps (click)"
+                    android:text="@string/open_in_maps"
                     android:textSize="18dp"
                     android:textColor="@color/grey"
                     android:textStyle="bold"
@@ -242,7 +242,7 @@
                         android:id="@+id/tv_location_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Location"
+                        android:text="@string/select_location"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/grey" />
@@ -283,7 +283,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="12dp"
-                        android:text="Payment Method"
+                        android:text="@string/payment_method"
                         android:textColor="@color/grey"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -313,7 +313,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Credit Card"
+                                android:text="@string/credit_card"
                                 android:textColor="@color/grey"
                                 android:textSize="16sp" />
                         </LinearLayout>
@@ -336,7 +336,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Cash"
+                                android:text="@string/cash"
                                 android:textColor="@color/grey"
                                 android:textSize="16sp" />
                         </LinearLayout>
@@ -368,7 +368,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingBottom="12dp"
-                        android:text="Card Details"
+                        android:text="@string/card_details"
                         android:textColor="@color/grey"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -378,7 +378,7 @@
                         android:id="@+id/et_cardholder_name"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:hint="Cardholder Name"
+                        android:hint="@string/cardholder_name"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -389,7 +389,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginTop="12dp"
-                        android:hint="Card Number"
+                        android:hint="@string/card_number"
                         android:inputType="number"
                         android:maxLength="16"
                         android:padding="8dp"
@@ -409,7 +409,7 @@
                             android:layout_width="0dp"
                             android:layout_height="50dp"
                             android:layout_weight="1"
-                            android:hint="MM/YY"
+                            android:hint="@string/expiry_date"
                             android:maxLength="5"
                             android:padding="8dp"
                             android:textColor="@color/black"
@@ -422,7 +422,7 @@
                             android:layout_height="50dp"
                             android:layout_weight="1"
                             android:layout_marginStart="12dp"
-                            android:hint="CVV"
+                            android:hint="@string/cvv"
                             android:inputType="numberPassword"
                             android:maxLength="3"
                             android:padding="8dp"
@@ -465,7 +465,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/grey"
-                        android:text="Next"
+                        android:text="@string/next"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

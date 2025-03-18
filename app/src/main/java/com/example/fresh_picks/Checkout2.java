@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class Checkout2 extends AppCompatActivity {
                 Log.d("Checkout2", "User ID retrieved: " + userId);
                 fetchCartItemsAndProcessOrder();
             } else {
-                Toast.makeText(this, "Error: User not found!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.error_user_not_found, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -174,7 +175,7 @@ public class Checkout2 extends AppCompatActivity {
 
                         if (hasInsufficientStock.get()) {
                             runOnUiThread(() -> {
-                                Toast.makeText(this, "Stock issue! Adjust cart.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this,R.string.stock_issue_adjust_cart, Toast.LENGTH_SHORT).show();
                             });
                             return; // 🚀 Stops execution if stock is insufficient
                         }
@@ -213,7 +214,7 @@ public class Checkout2 extends AppCompatActivity {
                         checkAndUpdateBulkSaleStatus();
                         clearUserCart();
                         runOnUiThread(() -> {
-                            Toast.makeText(this, "🎉 Order placed successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, R.string.order_placed_successfully, Toast.LENGTH_LONG).show();
                             redirectToMainActivity();
                         });
                     })
@@ -230,21 +231,25 @@ public class Checkout2 extends AppCompatActivity {
     }
 
     private void redirectToMainActivity() {
-        Intent intent = new Intent(Checkout2.this, MainActivity2.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+        Toast.makeText(this, R.string.order_placed_successfully, Toast.LENGTH_LONG).show();
+
+        new android.os.Handler().postDelayed(() -> {
+            Intent intent = new Intent(Checkout2.this, MainActivity2.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }, 3000); // Delay for 3 seconds (3000 milliseconds)
     }
 
     private void showCartEmptyError() {
-        Toast.makeText(this, "Cart is empty. Cannot complete payment!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.cart_empty_error, Toast.LENGTH_LONG).show();
     }
 
     private void showPaymentFailureDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Payment Failed")
-                .setMessage("Your payment could not be processed. Please try again.")
-                .setPositiveButton("Retry", (dialog, which) -> recreate())
+                .setTitle(R.string.payment_failed)
+                .setMessage(R.string.payment_failed_message)
+                .setPositiveButton(R.string.retry, (dialog, which) -> recreate())
                 .show();
     }
     private void clearUserCart() {
@@ -302,8 +307,19 @@ public class Checkout2 extends AppCompatActivity {
                         db.collection("products").document(productId).get()
                                 .addOnSuccessListener(productSnapshot -> {
                                     if (productSnapshot.exists() && productSnapshot.contains("category")) {
-                                        String category = productSnapshot.getString("category");
-                                        if ("super_deals".equalsIgnoreCase(category)) {
+                                        Object categoryObj = productSnapshot.get("category");
+
+                                        List<String> categories;
+                                        if (categoryObj instanceof List) {
+                                            categories = (List<String>) categoryObj;
+                                        } else if (categoryObj instanceof String) {
+                                            categories = new ArrayList<>();
+                                            categories.add((String) categoryObj);
+                                        } else {
+                                            categories = new ArrayList<>();
+                                        }
+
+                                        if (categories.contains("super_deals")) {
                                             hasSuperDealItem.set(true);
                                         }
                                     }
@@ -316,7 +332,7 @@ public class Checkout2 extends AppCompatActivity {
                                                 .addOnFailureListener(e -> {
                                                     Log.e("Checkout2", "❌ Failed to update bulkSaleBuyer status: " + e.getMessage());
                                                     runOnUiThread(() ->
-                                                            Toast.makeText(this, "Failed to update user status", Toast.LENGTH_SHORT).show()
+                                                            Toast.makeText(this, R.string.failed_update_user_status, Toast.LENGTH_SHORT).show()
                                                     );
                                                 });
                                     }
@@ -326,5 +342,6 @@ public class Checkout2 extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("Checkout2", "❌ Failed to check bulkSaleBuyer status: " + e.getMessage()));
     }
+
 
 }

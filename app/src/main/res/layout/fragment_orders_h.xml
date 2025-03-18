@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:gravity="center"
-            android:text="No orders found"
+            android:text="@string/no_orders_found"
             android:textSize="18sp"
             android:visibility="gone" />
 

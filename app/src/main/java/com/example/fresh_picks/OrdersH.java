@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
+import java.util.Locale;
 import com.bumptech.glide.Glide;
 import com.example.fresh_picks.DAO.AppDatabase;
 import com.example.fresh_picks.DAO.UserDao;
@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -130,7 +131,7 @@ public class OrdersH extends Fragment {
     // ✅ Helper Method to Show "No Orders Found" Message
     private void showNoOrdersMessage() {
         requireActivity().runOnUiThread(() -> {
-            tvNoOrders.setText("No orders found.");
+            tvNoOrders.setText(getString(R.string.no_orders_found));
             tvNoOrders.setVisibility(View.VISIBLE);
             scrollOrderHistory.setVisibility(View.GONE);
         });
@@ -157,6 +158,7 @@ public class OrdersH extends Fragment {
         }
     }
 
+
     private void addOrderToUI(Order order) {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         CardView orderCardView = (CardView) inflater.inflate(R.layout.order_card, orderContainer, false);
@@ -168,17 +170,17 @@ public class OrdersH extends Fragment {
         LinearLayout productContainer = orderCardView.findViewById(R.id.product_container);
 
         // Set order details
-        tvOrderDate.setText("Order Date: " + order.getCreatedAt());
-        tvTotalPrice.setText("Total Price: ILS " + order.getTotalPrice());
-        tvPaymentMethod.setText("Payment: " + order.getPaymentMethod());
-        tvShippingMethod.setText("Shipping: " + order.getShippingMethod());
+        tvOrderDate.setText(getString(R.string.order_date) + " " + order.getCreatedAt());
+        tvTotalPrice.setText(getString(R.string.total_price) + " " + order.getTotalPrice());
+        tvPaymentMethod.setText(getString(R.string.payment_method) + " " + order.getPaymentMethod());
+        tvShippingMethod.setText(getString(R.string.shipping_method) + " " + order.getShippingMethod());
 
         // ✅ Ensure product container is cleared before adding new items
         productContainer.removeAllViews();
 
         if (order.getProductQuantities().isEmpty()) {
             TextView noProductsText = new TextView(requireContext());
-            noProductsText.setText("No products found for this order.");
+            noProductsText.setText(getString(R.string.no_products_found));
             noProductsText.setTextSize(16);
             noProductsText.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray));
             noProductsText.setPadding(20, 10, 20, 10);
@@ -196,50 +198,59 @@ public class OrdersH extends Fragment {
                 String productId = entry.getKey();
                 int quantity = entry.getValue(); // Fetch quantity
 
-                // ✅ Fetch Product Details from Firestore
                 db.collection("products").document(productId)
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
                             if (documentSnapshot.exists()) {
-                                String productName = documentSnapshot.contains("name") ? documentSnapshot.getString("name") : "Unknown";
+                                LanguageManager languageManager = new LanguageManager(requireContext());
+                                String appLanguage = languageManager.getLanguage(); // Get saved language
+
+                                String nameEn = documentSnapshot.getString("name");
+                                String nameAr = documentSnapshot.getString("nameAr");
+
+                                Log.d("OrdersH", "Product ID: " + productId + " | English Name: " + nameEn + " | Arabic Name: " + nameAr + " | Language: " + appLanguage);
+
+                                // Select the correct name based on the selected language
+                                String productName = ("ar".equals(appLanguage) && nameAr != null && !nameAr.trim().isEmpty()) ? nameAr : nameEn;
+                                if (productName == null || productName.trim().isEmpty()) {
+                                    productName = getString(R.string.product_not_found);
+                                }
+
                                 String unitSize = documentSnapshot.contains("unit") ? documentSnapshot.getString("unit") : "unit";
                                 double price = documentSnapshot.contains("price") ? documentSnapshot.getDouble("price") : 0.0;
 
-                                // 🔹 Format the text correctly: "Cumin\n1kg * 13.2"
-                                String formattedText = productName + "\n" + quantity + unitSize + " * " + price;
+                                // 🔹 Format text properly
+                                String formattedText = productName + "\n" + quantity + " " + unitSize + " * " + price;
                                 productTitle.setText(formattedText);
-
-                                // ✅ Load product image using Glide
                                 if (documentSnapshot.contains("imageUrl")) {
                                     String imageUrl = documentSnapshot.getString("imageUrl");
                                     Glide.with(requireContext())
                                             .load(imageUrl)
                                             .placeholder(R.drawable.noconnection3)
                                             .error(R.drawable.logo)
+                                            .fitCenter()  // Ensures image fits inside the ImageView properly
                                             .into(productImage);
                                 } else {
                                     productImage.setImageResource(R.drawable.logo);
                                 }
                             } else {
-                                productTitle.setText("Product not found.");
-                                productImage.setImageResource(R.drawable.logo);
+                                Log.e("OrdersH", "Product document does not exist for ID: " + productId);
+                                productTitle.setText(getString(R.string.product_not_found));
                             }
                         })
-                        .addOnFailureListener(e -> {
-                            Log.e("OrdersH", "Error loading product details for " + productId + ": " + e.getMessage());
-                            productTitle.setText("Error loading product.");
-                            productImage.setImageResource(R.drawable.logo);
-                        });
+                        .addOnFailureListener(e -> Log.e("OrdersH", "Error fetching product details", e));
 
                 // Add product card to the container
                 productContainer.addView(productCard);
             }
         }
 
-
         // ✅ Add order card to main order container
         orderContainer.addView(orderCardView);
     }
+
+
+
 
     /**
      * ✅ Helper Method to Map Product Names to Drawable Images
