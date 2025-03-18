@@ -156,5 +156,15 @@
     <string name="cart_error">Error retrieving cart!</string>
     <string name="stock_unavailable">Not enough stock available!</string>
     <string name="quantity_format">%d %s</string>
-
+    <string name="order_ready_pickup">📦 Your order #</string>
+    <string name="order_pickup_message"> is ready for pickup!</string>
+    <string name="order_out_for_delivery">🚚 Your order #</string>
+    <string name="order_delivery_message"> is out for delivery!</string>
+    <string name="new_super_sale">🔥 New Super Sale: </string>
+    <string name="super_sale_available"> is now available!</string>
+    <string name="notification_added">✅ Notification added for user: </string>
+    <string name="notification_failed">❌ Failed to send notification: </string>
+    <string name="error_super_deals">Error listening for super deals: </string>
+    <string name="error_order_updates">Error listening for order updates: </string>
+    <string name="error_fetch_bulk_buyers">Error fetching bulk buyers: </string>
 </resources>

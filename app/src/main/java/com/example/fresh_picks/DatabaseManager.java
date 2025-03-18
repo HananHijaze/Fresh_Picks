@@ -1,13 +1,14 @@
 package com.example.fresh_picks;
 
+import android.content.Context;
 import android.util.Log;
 import com.example.fresh_picks.classes.Notification;
 import com.google.firebase.firestore.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class DatabaseManager {
@@ -15,9 +16,11 @@ public class DatabaseManager {
     private FirebaseFirestore db;
     private ListenerRegistration productListener;
     private ListenerRegistration orderListener;
+    private Context context; // ✅ Added context reference
 
-    public DatabaseManager() {
-        db = FirebaseFirestore.getInstance();
+    public DatabaseManager(Context context) {
+        this.db = FirebaseFirestore.getInstance();
+        this.context = context; // ✅ Initialize context
     }
 
     // ✅ Start listening for new super sales
@@ -44,7 +47,7 @@ public class DatabaseManager {
     }
 
     // ✅ Start listening for order status updates
-    public void startOrderStatusListener() {
+    public void startOrderStatusListener(String currentUserId) { // 🔥 Pass current user ID
         orderListener = db.collection("orders")
                 .addSnapshotListener((queryDocumentSnapshots, error) -> {
                     if (error != null) {
@@ -61,7 +64,7 @@ public class DatabaseManager {
                                 Boolean isDelivered = change.getDocument().getBoolean("isDelivered");
 
                                 if (userId != null) {
-                                    handleOrderStatusChange(userId, orderId, shippingMethod, isDelivered);
+                                    handleOrderStatusChange(userId, orderId, shippingMethod, isDelivered, currentUserId);
                                 }
                             }
                         }
@@ -70,22 +73,21 @@ public class DatabaseManager {
     }
 
     // ✅ Handle order status changes
-    private void handleOrderStatusChange(String userId, String orderId, String shippingMethod, Boolean isDelivered) {
+    private void handleOrderStatusChange(String userId, String orderId, String shippingMethod, Boolean isDelivered, String currentUserId) {
         String message = null;
 
         if ("pickup".equalsIgnoreCase(shippingMethod)) {
-            message = "📦 Your order #" + orderId + " is ready for pickup!";
+            message = context.getString(R.string.order_ready_pickup) + orderId + context.getString(R.string.order_pickup_message);
         } else if (Boolean.TRUE.equals(isDelivered)) {
-            message = "🚚 Your order #" + orderId + " is out for delivery!";
+            message = context.getString(R.string.order_out_for_delivery) + orderId + context.getString(R.string.order_delivery_message);
         }
 
         if (message != null) {
             Notification notification = new Notification(message);
-            saveNotificationToFirestore(userId, notification);
+            saveNotificationToFirestore(userId, notification, currentUserId);
         }
     }
 
-    // ✅ Send a notification to users with bulkSaleBuyer = true
     private void sendNotificationToBulkBuyers(String productName) {
         db.collection("users")
                 .whereEqualTo("bulkSaleBuyer", true) // ✅ Only bulk buyers
@@ -98,25 +100,33 @@ public class DatabaseManager {
                     }
 
                     for (String userId : userIds) {
-                        Notification notification = new Notification("🔥 New Super Sale: " + productName + " is now available!");
-                        saveNotificationToFirestore(userId, notification);
+                        String message = context.getString(R.string.new_super_sale) + productName + context.getString(R.string.super_sale_available);
+                        Notification notification = new Notification(message);
+                        saveNotificationToFirestore(userId, notification, null);
                     }
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "Error fetching bulk buyers: ", e));
+                .addOnFailureListener(e -> Log.e(TAG, context.getString(R.string.error_fetch_bulk_buyers), e));
     }
 
-    // ✅ Save the notification in Firestore under each user's notifications collection
-    private void saveNotificationToFirestore(String userId, Notification notification) {
-        // Generate a timestamp-based unique notification ID
+
+    private void saveNotificationToFirestore(String userId, Notification notification, String currentUserId) {
         String timestampId = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
 
         db.collection("users").document(userId)
                 .collection("notifications") // 🔥 Store notifications under each user
                 .document(timestampId) // ✅ Unique timestamp ID to prevent duplicates
                 .set(notification)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "✅ Notification added for user: " + userId))
-                .addOnFailureListener(e -> Log.e(TAG, "❌ Failed to send notification: ", e));
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, context.getString(R.string.notification_added) + userId);
+
+                    // ✅ Send system notification to logged-in user only
+                    if (currentUserId != null && userId.equals(currentUserId)) {
+                        ((MainActivity) context).showNotification("Fresh Picks", notification.getMessage());
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, context.getString(R.string.notification_failed), e));
     }
+
 
     // ✅ Stop all listeners when not needed
     public void stopListeners() {

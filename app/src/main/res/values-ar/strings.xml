@@ -156,5 +156,15 @@
     <string name="cart_error">خطأ في استرجاع السلة!</string>
     <string name="stock_unavailable">لا توجد كمية كافية في المخزون!</string>
     <string name="quantity_format">%d %s</string>
-
+    <string name="order_ready_pickup">📦 طلبك رقم </string>
+    <string name="order_pickup_message"> جاهز للاستلام!</string>
+    <string name="order_out_for_delivery">🚚 طلبك رقم </string>
+    <string name="order_delivery_message"> في طريقه إليك!</string>
+    <string name="new_super_sale">🔥 عرض جديد: </string>
+    <string name="super_sale_available"> متاح الآن!</string>
+    <string name="notification_added">✅ تم إضافة إشعار للمستخدم: </string>
+    <string name="notification_failed">❌ فشل في إرسال الإشعار: </string>
+    <string name="error_super_deals">خطأ أثناء جلب العروض الخاصة: </string>
+    <string name="error_order_updates">خطأ أثناء تحديث الطلبات: </string>
+    <string name="error_fetch_bulk_buyers">خطأ أثناء جلب المشترين بالجملة: </string>
 </resources>

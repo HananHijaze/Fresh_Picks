@@ -9,12 +9,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.WindowInsetsCompat;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import android.content.Context;
 
 import com.example.fresh_picks.DAO.AppDatabase;
 import com.example.fresh_picks.DAO.UserDao;
@@ -38,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
         LanguageManager languageManager = new LanguageManager(this);
         setAppLocale(languageManager.getLanguage());
         super.onCreate(savedInstanceState);
-
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
 
@@ -50,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
         if (!isLanguageChange) {
             loadingIndicator.setVisibility(View.GONE);
         }
+        createNotificationChannel();
 
         // ✅ Initialize database manager and start listening for super sales
-        databaseManager = new DatabaseManager();
+        databaseManager = new DatabaseManager(this);
         databaseManager.startSuperSaleListener();
 
         // ✅ Adjust padding for system bars dynamically
@@ -86,9 +101,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (databaseManager != null) {
-            databaseManager.stopListeners(); // ✅ Stop Firestore listener when activity is destroyed
+            databaseManager.stopListeners();
         }
     }
+
 
     private void setAppLocale(String langCode) {
         Locale locale = new Locale(langCode);
@@ -121,5 +137,51 @@ public class MainActivity extends AppCompatActivity {
         }, 500); // Smooth transition
     }
 
+    private void createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = "Fresh Picks Notifications";
+            String description = "Alerts for new sales and order updates";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("fresh_picks_channel", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+    public void showNotification(String title, String message) {
+        // Check if notification permission is granted before proceeding
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                Log.w(TAG, "❌ Notification permission not granted. Cannot show notification.");
+                return; // Stop execution if permission is not granted
+            }
+        }
+
+        Intent intent = new Intent(this, MainActivity2.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "fresh_picks_channel")
+                .setSmallIcon(R.drawable.logo) // Change to your actual notification icon
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        try {
+            notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+        } catch (SecurityException e) {
+            Log.e(TAG, "❌ SecurityException: Missing POST_NOTIFICATIONS permission.", e);
+        }
+    }
 
 }
