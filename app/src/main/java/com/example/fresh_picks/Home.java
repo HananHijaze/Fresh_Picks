@@ -1,13 +1,17 @@
 package com.example.fresh_picks;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.app.Dialog;
+import android.widget.Button;
 
 import androidx.appcompat.widget.SearchView;
 
@@ -19,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import com.example.fresh_picks.classes.Product;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +34,8 @@ public class Home extends Fragment {
     private SearchView searchView;
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
+    private Dialog noConnectionDialog;
+    private boolean isDialogShowing = false;
 
     public Home() {
         // Required empty public constructor
@@ -44,12 +49,54 @@ public class Home extends Fragment {
         // Initialize Firestore and search view
         db = FirebaseFirestore.getInstance();
         searchView = view.findViewById(R.id.searchView);
+
+        // Check for internet connection
+        if (!isNetworkAvailable()) {
+            showNoConnectionDialog();
+        }
+
         setupSearchView();
 
         // Set up CardView click listeners using a Map
         setupCardViewClickListeners(view);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Check connectivity when fragment resumes
+        if (!isNetworkAvailable() && !isDialogShowing) {
+            showNoConnectionDialog();
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void showNoConnectionDialog() {
+        if (isDialogShowing) return;
+
+        isDialogShowing = true;
+        noConnectionDialog = new Dialog(requireContext());
+        noConnectionDialog.setContentView(R.layout.noconnection);
+        noConnectionDialog.setCancelable(false);
+
+        Button retryButton = noConnectionDialog.findViewById(R.id.retryButton);
+        retryButton.setOnClickListener(v -> {
+            if (isNetworkAvailable()) {
+                noConnectionDialog.dismiss();
+                isDialogShowing = false;
+            } else {
+                Toast.makeText(requireContext(), R.string.still_no_connection, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        noConnectionDialog.show();
     }
 
     private void setupCardViewClickListeners(View view) {
@@ -74,7 +121,14 @@ public class Home extends Fragment {
 
             CardView cardView = view.findViewById(cardViewId);
             if (cardView != null) {
-                cardView.setOnClickListener(v -> navigateToListsView(title, category));
+                cardView.setOnClickListener(v -> {
+                    // Check for internet connection before navigation
+                    if (!isNetworkAvailable()) {
+                        showNoConnectionDialog();
+                    } else {
+                        navigateToListsView(title, category);
+                    }
+                });
             }
         }
     }
@@ -97,9 +151,6 @@ public class Home extends Fragment {
                 .commit();
     }
 
-
-
-
     private void setupSearchView() {
         searchView.setIconifiedByDefault(false); // 🔹 Keeps the search bar always expanded
 
@@ -107,7 +158,12 @@ public class Home extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (!query.trim().isEmpty()) {
-                    performSearch(query.trim()); // Perform search only on submit
+                    // Check for internet connection before performing search
+                    if (!isNetworkAvailable()) {
+                        showNoConnectionDialog();
+                    } else {
+                        performSearch(query.trim());
+                    }
                 }
                 return false; // Keeps keyboard open after search
             }
@@ -164,26 +220,20 @@ public class Home extends Fragment {
                     searchView.setQuery("", false);
                     searchView.clearFocus(); // Hide keyboard
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(requireContext(), getString(R.string.search_error), Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    if (!isNetworkAvailable()) {
+                        showNoConnectionDialog();
+                    } else {
+                        Toast.makeText(requireContext(), getString(R.string.search_error), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-
-
-    private void displaySearchResults(List<Product> searchResults) {
-        if (searchResults == null || searchResults.isEmpty()) {
-            Toast.makeText(requireContext(), getString(R.string.no_products_found), Toast.LENGTH_SHORT).show();
-            return;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (noConnectionDialog != null && noConnectionDialog.isShowing()) {
+            noConnectionDialog.dismiss();
         }
-
-        // 🔹 Navigate to ListsView with search results (or empty state)
-        ListsView listsViewFragment = ListsView.newInstance("Search Results", searchResults);
-
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, listsViewFragment)
-                .addToBackStack(null)
-                .commit();
     }
-
 }

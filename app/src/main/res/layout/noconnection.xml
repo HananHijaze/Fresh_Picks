@@ -1,59 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp"
+    android:orientation="vertical"
+    android:minWidth="300dp"
+    android:layout_weight="1"
     android:padding="16dp"
-    app:cardCornerRadius="15dp"
-    android:background="@color/beige"
-    android:layout_centerInParent="true"
-    app:cardElevation="8dp"
-    android:backgroundTint="@color/beige">
+    android:background="@color/white">
 
-        <!-- Inner Content -->
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/noconnection3" />
 
-            <!-- Icon -->
-            <ImageView
-                android:id="@+id/connection_icon"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/noconnection3"
-                android:layout_centerHorizontal="true"
-                android:contentDescription="@string/no_connection_description" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/no_internet_connection"
+        android:textColor="@color/grey"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-            <!-- Title Text -->
-            <TextView
-                android:id="@+id/connection_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_connection_message"
-                android:textSize="24dp"
-                android:textStyle="bold"
-                android:layout_below="@id/connection_icon"
-                android:layout_marginTop="16dp"
-                android:textColor="@color/grey"
-                android:gravity="center"
-                android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/please_check_your_connection"
+        android:textColor="@color/grey" />
 
-            <!-- Retry Button -->
-            <Button
-                android:id="@+id/retry_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/retry_button_text"
-                android:layout_below="@id/connection_message"
-                android:layout_marginTop="24dp"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="12dp"
-                android:backgroundTint="@color/grey"
-                android:textSize="16dp"
-                android:textColor="@color/white"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    <Button
+        android:id="@+id/retryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/retry"
+        android:background="@color/grey"
+        android:textColor="@color/white" />
+
+</LinearLayout>

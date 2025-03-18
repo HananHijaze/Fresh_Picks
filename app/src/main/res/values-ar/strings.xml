@@ -167,4 +167,7 @@
     <string name="error_super_deals">خطأ أثناء جلب العروض الخاصة: </string>
     <string name="error_order_updates">خطأ أثناء تحديث الطلبات: </string>
     <string name="error_fetch_bulk_buyers">خطأ أثناء جلب المشترين بالجملة: </string>
+    <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
+    <string name="please_check_your_connection">يرجى التحقق من اتصالك بالإنترنت وحاول مرة أخرى</string>
+    <string name="still_no_connection">لا يزال الاتصال غير متاح</string>
 </resources>
