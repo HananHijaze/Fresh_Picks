@@ -1,6 +1,7 @@
 package com.example.fresh_picks;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.Dialog;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.fresh_picks.classes.Product;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,7 +62,14 @@ public class Home extends Fragment {
 
         // Set up CardView click listeners using a Map
         setupCardViewClickListeners(view);
+        // Chatbot Button (GIF)
+        ImageView chatbotButton = view.findViewById(R.id.chatbotButton);
+        Glide.with(this).asGif().load(R.drawable.gif2).into(chatbotButton);
 
+        chatbotButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), PickOrderActivity.class);
+            startActivity(intent);
+        });
         return view;
     }
 

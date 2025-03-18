@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/homebackground">
+
+    <TextView
+        android:id="@+id/selectOrderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_order"
+        android:layout_marginTop="80dp"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:paddingBottom="10dp"/>
+
+    <ListView
+        android:id="@+id/orderListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"/>
+</LinearLayout>

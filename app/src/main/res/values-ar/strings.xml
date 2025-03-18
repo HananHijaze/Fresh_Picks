@@ -170,4 +170,11 @@
     <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
     <string name="please_check_your_connection">يرجى التحقق من اتصالك بالإنترنت وحاول مرة أخرى</string>
     <string name="still_no_connection">لا يزال الاتصال غير متاح</string>
+    <string name="select_order">اختر طلبًا</string>
+    <string name="recipe_name">اسم الوصفة</string>
+    <string name="recipe_placeholder">ستظهر الوصفة هنا...</string>
+    <string name="generate_recipe">إنشاء وصفة أخرى</string>
+    <string name="huggingface_api_key">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</string>
+    <string name="gemini_api_key">AIzaSyA9gqTsEoQZzLS61YksnyQxFXabEy3dwFw</string>
+
 </resources>

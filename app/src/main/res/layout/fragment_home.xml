@@ -444,4 +444,15 @@
     </androidx.cardview.widget.CardView>
 </GridLayout>
     </ScrollView>
+    <ImageView
+        android:id="@+id/chatbotButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/gif2"
+        android:background="@drawable/rounded_card_background"
+        android:contentDescription="Chatbot - Recipe Magician"/>
 </RelativeLayout>

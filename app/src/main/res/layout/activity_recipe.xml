@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/homebackground">
+
+    <!-- Recipe Title -->
+    <TextView
+        android:id="@+id/recipeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recipe Generator"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/loadingProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!-- Scrollable Recipe Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/recipeResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:padding="8dp"/>
+    </ScrollView>
+
+    <!-- Button pinned to the bottom -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/generateRecipeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Generate Recipe" />
+    </FrameLayout>
+
+</LinearLayout>

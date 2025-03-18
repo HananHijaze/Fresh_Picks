@@ -170,4 +170,11 @@
     <string name="no_internet_connection">No Internet Connection</string>
     <string name="please_check_your_connection">Please check your internet connection and try again</string>
     <string name="still_no_connection">Still no connection available</string>
+    <string name="select_order">Select an Order</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="recipe_placeholder">Recipe will appear here...</string>
+    <string name="generate_recipe">Generate Another Recipe</string>
+    <string name="huggingface_api_key">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</string>
+    <string name="gemini_api_key">AIzaSyA9gqTsEoQZzLS61YksnyQxFXabEy3dwFw</string>
+
 </resources>
