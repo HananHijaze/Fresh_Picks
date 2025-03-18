@@ -126,6 +126,15 @@
             font-size: 0.9em;
             width: 100%;
         }
+        .profits-box {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
     </style>
 	<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
@@ -211,6 +220,11 @@
         <button onclick="navigate('sales.html')">View Sales</button>
     </div>
     <div class="container">
+         <!-- תצוגת הרווחים -->
+         <div class="profits-box">
+            Current Profits: <span id="profitsValue">Loading...</span> $
+        </div>
+        <br>
         <img src="images/discount.jpg" alt="Set Discount">
         <form id="discountForm">
             <h2>Set Discount Criteria</h2>
@@ -220,6 +234,21 @@
         </form>
         <p id="status">Discount applied successfully!</p>
     </div>
+    <script>
+        function calculateProfits() {
+            // כאן ניתן להוסיף שליפה מהשרת, לדוגמה AJAX או fetch לקבלת הרווחים מהמסד נתונים
+            const mockProfits = 12000; // נתון לדוגמה, ניתן להחליף בשליפה דינמית
+            document.getElementById("profitsValue").textContent = mockProfits;
+        }
+
+        function processSale() {
+            alert("Sale processed successfully!");
+            // כאן ניתן לעדכן גם את הרווחים בהתאם למכירה שנעשתה
+        }
+
+        // מחשב רווחים בעת טעינת הדף
+        window.onload = calculateProfits;
+    </script>
     <footer>
         <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
     </footer>
