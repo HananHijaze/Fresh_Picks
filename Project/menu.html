@@ -60,7 +60,6 @@
 
         footer {
             text-align: center;
-            background: url('images/img7.jpg') no-repeat center center/cover;
             color: black;
             padding: 20px;
             font-size: 0.9em;
@@ -89,21 +88,17 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // ✅ Check If User Is Logged In
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            window.location.href = "index.html"; // Redirect to login if not authenticated
-        }
-    });
+   // ✅ Check session storage instead of Firebase authentication
+if (sessionStorage.getItem("isManagerLoggedIn") !== "true") {
+    window.location.href = "index.html"; // 🔹 Redirect to login if not authenticated
+}
 
-    // ✅ Function to Logout
-    function logout() {
-        signOut(auth).then(() => {
-            window.location.href = "index.html"; // Redirect to login page
-        }).catch((error) => {
-            console.error("Logout failed", error);
-        });
-    }
+// ✅ Function to Logout
+function logout() {
+    sessionStorage.removeItem("isManagerLoggedIn"); // ✅ Clear session storage
+    window.location.href = "index.html"; // ✅ Redirect to login
+}
+
 
     // ✅ Navigation Function
     function navigate(page) {
@@ -117,14 +112,13 @@
     <div class="container">
         <h1>Welcome, Manager</h1>
         <button onclick="navigate('add_product.html')">➕ Add Product</button>
-        <button onclick="navigate('delete_product.html')">🗑️ Delete Product</button>
-        <button onclick="navigate('update_product.html')">✏️ Update Product</button>
+        <button onclick="navigate('delete_product.html')">🗑️ Delete Product & ✏️ Update Product</button>
+        <button onclick="navigate('update_product.html')">Manage Orders</button>
         <button onclick="navigate('sales.html')">📊 View Sales</button>
     </div>
 
     <footer>
         <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
-        <img src="images/img4.jpg" alt="Fresh Picks Logo" style="width: 60px; border-radius: 50%; margin-top: 10px;">
     </footer>
 
     <script>
