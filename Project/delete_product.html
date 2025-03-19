@@ -3,9 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Product</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Manage Products</title>
     <style>
+        header {
+    background: url('images/img10.jpg') no-repeat center center;
+    background-size: cover;
+    height: 200px;
+    padding: 20px;
+    text-align: center;
+    color: black;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    font-size: 1em;
+    width: 100%;
+}
+.header-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 10px;
+}
+.back-button {
+    background-color: #85929e;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.back-button:hover {
+    background-color: #2c3e50;
+}
+.options-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.options-container button {
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1;
+    margin: 5px;
+    max-width: 150px;
+    text-align: center;
+}
+.options-container button:hover {
+    background-color: #2980b9;
+}
+
+        .low-stock {
+            color: red;
+            font-weight: bold;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -20,60 +83,12 @@
             align-items: center;
             color: #fff;
         }
-        .header-buttons {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        .back-button {
-            background-color: #85929e;
-            padding: 10px 15px;
-            border-radius: 5px;
-            color: white;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .back-button:hover {
-            background-color: #2c3e50;
-        }
-        .options-container {
-            width: 80%;
-            max-width: 600px;
-            margin: 60px auto 20px;
-            padding: 10px 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-        .options-container button {
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            flex: 1;
-            margin: 5px;
-            max-width: 150px;
-            text-align: center;
-        }
-        .options-container button:hover {
-            background-color: #2980b9;
-        }
         .container {
             background: rgba(255, 255, 255, 0.8);
             padding: 40px;
             border-radius: 10px;
             width: 90%;
-            max-width: 500px;
+            max-width: 700px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-top: 20px;
@@ -81,151 +96,235 @@
         h2 {
             color: black;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: black;
         }
-        form input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1em;
-            outline: none;
-        }
-        form input:focus {
-            border-color: #f39c12;
-        }
-        button.submit-btn {
-            width: 80%;
+        th, td {
             padding: 12px;
-            margin-top: 20px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
+            border: 1px solid black;
+            text-align: left;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        button.submit-btn:hover {
-            background-color: #c0392b;
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
         }
         #status {
-            color: #e74c3c;
+            color: red;
             font-weight: bold;
             display: none;
             margin-top: 20px;
         }
-        footer {
-            text-align: center;
-            color: white;
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
             padding: 20px;
-            font-size: 0.9em;
-            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 300px;
+        }
+        .dialog button {
+            margin: 10px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-delete {
+            background-color: red;
+            color: white;
+        }
+        .btn-update {
+            background-color: green;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: gray;
+            color: white;
         }
     </style>
-	<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-    // ✅ Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
-        authDomain: "freshpicks-f76b9.firebaseapp.com",
-        projectId: "freshpicks-f76b9",
-        storageBucket: "freshpicks-f76b9.appspot.com",
-        messagingSenderId: "886592862331",
-        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
-        measurementId: "G-PWCSRFXYJ8"
-    };
-
-    // ✅ Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // ✅ Function to Delete Product
-    async function deleteProduct() {
-        const name = document.getElementById("productName").value.trim();
-
-        if (!name) {
-            alert("Please enter a product name.");
-            return;
-        }
-
-        try {
-            const productsRef = collection(db, "products");
-            const q = query(productsRef, where("name", "==", name));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                document.getElementById("status").textContent = "Product not found!";
-                document.getElementById("status").style.color = "red";
-                document.getElementById("status").style.display = "block";
-                return;
-            }
-
-            querySnapshot.forEach(async (docItem) => {
-                await deleteDoc(doc(db, "products", docItem.id));
-            });
-
-            // ✅ Show success message
-            document.getElementById("status").textContent = "Product deleted successfully!";
-            document.getElementById("status").style.color = "green";
-            document.getElementById("status").style.display = "block";
-
-            // ✅ Reset Form
-            document.getElementById("deleteProductForm").reset();
-        } catch (error) {
-            console.error("Error deleting product:", error);
-            document.getElementById("status").textContent = "Error deleting product. Try again.";
-            document.getElementById("status").style.color = "red";
-            document.getElementById("status").style.display = "block";
-        }
-    }
-
-    // ✅ Navigation Function
-    function navigate(page) {
-        window.location.href = page;
-    }
-</script>
-
 </head>
 <body>
     <div class="header-buttons">
         <button class="back-button" onclick="navigate('index.html')">Back to Login</button>
     </div>
+    
     <div class="options-container">
         <button onclick="navigate('add_product.html')">Add Product</button>
-        <button onclick="navigate('delete_product.html')">Delete Product</button>
-        <button onclick="navigate('update_product.html')">Update Product</button>
+        <button onclick="navigate('delete_product.html')">Delete & UpdateProduct </button>
+        <button onclick="navigate('update_product.html')">Orders</button>
         <button onclick="navigate('sales.html')">View Sales</button>
     </div>
+    
     <div class="container">
-        <img src="images/deleteProduct.jpg" alt="Delete Product">
-        <form id="deleteProductForm">
-            <h2>Enter Product Name to Delete</h2>
-            <input type="text" id="productName" placeholder="Product Name" required>
-            <button type="button" class="submit-btn" onclick="deleteProduct()">Delete Product</button>
-        </form>
-        <p id="status">Product deleted successfully!</p>
+        <h2>Manage Products</h2>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price (NIS)</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Products will be populated here -->
+            </tbody>
+        </table>
+        <p id="status"></p>
     </div>
+
+    <!-- Dialog Box for Actions -->
+    <div id="actionDialog" class="dialog">
+        <p>What do you want to do?</p>
+        <button class="btn-update" id="updateBtn">Update Product</button>
+        <button class="btn-delete" id="deleteBtn">Delete Product</button>
+        <button class="btn-cancel" onclick="closeDialog()">Cancel</button>
+    </div>
+
+    <!-- Dialog Box for Update -->
+    <div id="updateDialog" class="dialog">
+        <h3>Update Product</h3>
+        <label>New Price:</label>
+        <input type="number" id="newPrice" placeholder="Enter new price">
+        <label>New Stock Quantity:</label>
+        <input type="number" id="newStock" placeholder="Enter new stock">
+        <button class="btn-update" id="confirmUpdate">Save Changes</button>
+        <button class="btn-cancel" onclick="closeDialog()">Cancel</button>
+    </div>
+
     <footer>
-        <p>&copy; 2024 Fresh Picks,Taha Hijazi market. All rights reserved.</p>
+        <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
     </footer>
-    <script>
-        function deleteProduct() {
-            const name = document.getElementById("productName").value;
-            if (name) {
-                document.getElementById("status").style.display = "block";
-                document.getElementById("deleteProductForm").reset();
-            }
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+            authDomain: "freshpicks-f76b9.firebaseapp.com",
+            projectId: "freshpicks-f76b9",
+            storageBucket: "freshpicks-f76b9.appspot.com",
+            messagingSenderId: "886592862331",
+            appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+            measurementId: "G-PWCSRFXYJ8"
+        };
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let selectedProductId = null;
+        let selectedProductName = null;
+
+        // ✅ Fetch & Display Products in Table
+        async function fetchProducts() {
+            const tableBody = document.querySelector("#productTable tbody");
+            tableBody.innerHTML = ""; // Clear existing data
+
+            const productsSnapshot = await getDocs(collection(db, "products"));
+            productsSnapshot.forEach((doc) => {
+                const product = doc.data();
+                const row = document.createElement("tr");
+
+                const stockCell = document.createElement("td");
+                stockCell.textContent = product.stockQuantity;
+                if (product.stockQuantity <= 5) {
+                    stockCell.classList.add("low-stock");
+                }
+
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.category ? product.category.join(", ") : "N/A"}</td>
+                    <td>${product.price}</td>
+                `;
+
+                row.appendChild(stockCell);
+                row.onclick = () => openActionDialog(doc.id, product.name, product.price, product.stockQuantity);
+                tableBody.appendChild(row);
+            });
         }
+
+        // ✅ Open Action Dialog
+        function openActionDialog(productId, productName, productPrice, productStock) {
+            selectedProductId = productId;
+            selectedProductName = productName;
+            document.getElementById("actionDialog").style.display = "block";
+
+            document.getElementById("updateBtn").onclick = () => openUpdateDialog(productPrice, productStock);
+            document.getElementById("deleteBtn").onclick = confirmDelete;
+        }
+
+        // ✅ Open Update Dialog
+        function openUpdateDialog(currentPrice, currentStock) {
+            document.getElementById("actionDialog").style.display = "none";
+            document.getElementById("newPrice").value = currentPrice;
+            document.getElementById("newStock").value = currentStock;
+            document.getElementById("updateDialog").style.display = "block";
+
+            document.getElementById("confirmUpdate").onclick = updateProduct;
+        }
+
+        // ✅ Confirm & Delete Product
+        async function confirmDelete() {
+            if (confirm(`Are you sure you want to delete "${selectedProductName}"?`)) {
+                try {
+                    await deleteDoc(doc(db, "products", selectedProductId));
+                    alert(`✅ Product "${selectedProductName}" deleted successfully!`);
+                    fetchProducts();
+                } catch (error) {
+                    alert("❌ Error deleting product.");
+                }
+            }
+            closeDialog();
+        }
+
+        // ✅ Update Product Price & Stock
+        async function updateProduct() {
+            const newPrice = parseFloat(document.getElementById("newPrice").value);
+            const newStock = parseInt(document.getElementById("newStock").value);
+
+            await updateDoc(doc(db, "products", selectedProductId), { price: newPrice, stockQuantity: newStock });
+            alert(`✅ Product "${selectedProductName}" updated successfully!`);
+            closeDialog();
+            fetchProducts();
+        }
+
+    
+
+
+
+        fetchProducts();
+    </script>
+    <script>
+        function closeDialog() {
+            console.log("Closing dialog"); // Debugging message
+    
+            document.querySelectorAll(".dialog").forEach(dialog => {
+                dialog.style.display = "none";
+                console.log(`Hiding dialog: ${dialog.id}`);
+            });
+        }
+    </script>
+    <script>
         function navigate(page) {
             window.location.href = page;
         }
     </script>
+    
 </body>
 </html>
