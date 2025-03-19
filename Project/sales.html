@@ -202,10 +202,33 @@
         }
     }
 
+// ✅ Function to Calculate Profits
+async function calculateProfits() {
+            try {
+                const salesRef = collection(db, "sales"); // Assuming "sales" collection contains sales data
+                const querySnapshot = await getDocs(salesRef);
+
+                let totalProfits = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const saleData = doc.data();
+                    // Assuming each sale has a field `saleAmount` representing the sale value
+                    totalProfits += parseFloat(saleData.saleAmount);
+                });
+
+                // Display the total profits
+                document.getElementById("profitsValue").textContent = totalProfits.toFixed(2); // Show 2 decimal places
+            } catch (error) {
+                console.error("Error fetching profits data:", error);
+                document.getElementById("profitsValue").textContent = "Error fetching profits.";
+            }
+        }
     // ✅ Navigation Function
     function navigate(page) {
         window.location.href = page;
     }
+       // Calculate profits when the page loads
+       window.onload = calculateProfits;
 </script>
 
 </head>
@@ -232,38 +255,10 @@
             <input type="number" id="discountPercent" placeholder="Discount Percentage" required>
             <button type="button" class="submit-btn" onclick="setDiscount()">Apply Discount</button>
         </form>
-        <p id="status">Discount applied successfully!</p>
+        <div id="status"></div>
     </div>
-    <script>
-        function calculateProfits() {
-            // כאן ניתן להוסיף שליפה מהשרת, לדוגמה AJAX או fetch לקבלת הרווחים מהמסד נתונים
-            const mockProfits = 12000; // נתון לדוגמה, ניתן להחליף בשליפה דינמית
-            document.getElementById("profitsValue").textContent = mockProfits;
-        }
-
-        function processSale() {
-            alert("Sale processed successfully!");
-            // כאן ניתן לעדכן גם את הרווחים בהתאם למכירה שנעשתה
-        }
-
-        // מחשב רווחים בעת טעינת הדף
-        window.onload = calculateProfits;
-    </script>
     <footer>
-        <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
+        <p>2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
     </footer>
-    <script>
-        function setDiscount() {
-            const minPrice = document.getElementById("minPrice").value;
-            const discountPercent = document.getElementById("discountPercent").value;
-            if (minPrice && discountPercent) {
-                document.getElementById("status").style.display = "block";
-                document.getElementById("discountForm").reset();
-            }
-        }
-        function navigate(page) {
-            window.location.href = page;
-        }
-    </script>
 </body>
 </html>
