@@ -130,18 +130,20 @@
 </head>
 <body>
     <div class="header-buttons">
-        <button class="back-button" onclick="navigate('index.html')">Back to Login</button>
+        <button class="back-button" onclick="window.location.href='index.html'">Back to Dashboard</button>
     </div>
+    
     <div class="options-container">
-        <button onclick="navigate('add_product.html')">Add Product</button>
-        <button onclick="navigate('delete_product.html')">Delete Product</button>
-        <button onclick="navigate('update_product.html')">Update Product</button>
-        <button onclick="navigate('sales.html')">View Sales</button>
+        <button onclick="window.location.href='add_product.html'">Add Product</button>
+        <button onclick="window.location.href='delete_product.html'">Delete Product</button>
+        <button onclick="window.location.href='update_product.html'">Update Product</button>
+        <button onclick="window.location.href='sales.html'">View Sales</button>
     </div>
+    
     <div class="container">
         <img src="images/updateProduct.jpg" alt="Update Product">
+        <h2>Update Product Details</h2>
         <form id="updateProductForm">
-            <h2>Update Product Details</h2>
             <input type="text" id="productName" placeholder="Product Name (Existing)" required>
             <input type="text" id="newName" placeholder="New Name (Optional)">
             <input type="number" id="quantity" placeholder="New Quantity (Optional)">
@@ -149,19 +151,33 @@
             <input type="text" id="category" placeholder="New Category (Optional)">
             <button type="button" class="submit-btn" onclick="updateProduct()">Update Product</button>
         </form>
-        <p id="status">Product updated successfully!</p>
+        <p id="status"></p>
     </div>
+    
     <footer>
         <p>&copy; 2024 Fresh Picks, Taha Hijazi market. All rights reserved.</p>
     </footer>
-    <script>
-        function navigate(page) {
-            window.location.href = page;
-        }
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+            authDomain: "freshpicks-f76b9.firebaseapp.com",
+            projectId: "freshpicks-f76b9",
+            storageBucket: "freshpicks-f76b9.appspot.com",
+            messagingSenderId: "886592862331",
+            appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+            measurementId: "G-PWCSRFXYJ8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         async function updateProduct() {
-            const productName = document.getElementById("productName").value;
-            const newName = document.getElementById("newName").value;
+            const productName = document.getElementById("productName").value.trim();
+            const newName = document.getElementById("newName").value.trim();
             const quantity = document.getElementById("quantity").value;
             const price = document.getElementById("price").value;
             const category = document.getElementById("category").value;
@@ -171,35 +187,35 @@
                 return;
             }
 
-            const updateData = {
-                productName: productName,
-                newName: newName || null,
-                quantity: quantity ? parseInt(quantity) : null,
-                price: price ? parseFloat(price) : null,
-                category: category || null
-            };
+            // Validate and prepare data to update
+            const updates = {};
+            if (newName) updates.name = newName;
+            if (quantity) updates.quantity = parseInt(quantity);
+            if (price) updates.price = parseFloat(price);
+            if (category) updates.category = category;
 
             try {
-                const response = await fetch('/update_product', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updateData)
-                });
+                const q = query(collection(db, "products"), where("name", "==", productName));
+                const querySnapshot = await getDocs(q);
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    document.getElementById("status").textContent = data.message;
-                    document.getElementById("status").style.color = "green";
-                    document.getElementById("status").style.display = "block";
-                    document.getElementById("updateProductForm").reset();
-                } else {
-                    document.getElementById("status").textContent = data.error;
+                if (querySnapshot.empty) {
+                    document.getElementById("status").textContent = "Product not found.";
                     document.getElementById("status").style.color = "red";
                     document.getElementById("status").style.display = "block";
+                    return;
                 }
+
+                // Assume there is only one product with the same name
+                const docId = querySnapshot.docs[0].id;
+                const productDocRef = doc(db, "products", docId);
+
+                // Update product details
+                await updateDoc(productDocRef, updates);
+
+                document.getElementById("status").textContent = "Product updated successfully!";
+                document.getElementById("status").style.color = "green";
+                document.getElementById("status").style.display = "block";
+                document.getElementById("updateProductForm").reset();
             } catch (error) {
                 console.error("Error updating product:", error);
                 document.getElementById("status").textContent = "An error occurred. Please try again.";
