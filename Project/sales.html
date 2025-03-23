@@ -68,202 +68,166 @@
         .options-container button:hover {
             background-color: #2980b9;
         }
-        .container {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 40px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            margin-top: 20px;
-        }
-        h2 {
-            color: black;
-        }
-        form {
+        .dashboard-grid {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
-        form input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1em;
-            outline: none;
-        }
-        form input:focus {
-            border-color: #f39c12;
-        }
-        button.submit-btn {
-            width: 80%;
-            padding: 12px;
-            margin-top: 20px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button.submit-btn:hover {
-            background-color: #c0392b;
-        }
-        #status {
-            color: #e74c3c;
-            font-weight: bold;
-            display: none;
-            margin-top: 20px;
-        }
-        footer {
-            text-align: center;
-            color: white;
-            padding: 20px;
-            font-size: 0.9em;
-            width: 100%;
-        }
-        .profits-box {
+        .dashboard-box {
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 15px;
             border-radius: 10px;
             font-size: 1.2em;
-            margin-bottom: 20px;
-            display: inline-block;
+            text-align: center;
+            width: 30%;
+            min-width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: black;
+            text-align: center;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
         }
     </style>
-	<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-    // ✅ Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
-        authDomain: "freshpicks-f76b9.firebaseapp.com",
-        projectId: "freshpicks-f76b9",
-        storageBucket: "freshpicks-f76b9.appspot.com",
-        messagingSenderId: "886592862331",
-        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
-        measurementId: "G-PWCSRFXYJ8"
-    };
-
-    // ✅ Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // ✅ Function to Apply Discounts
-    async function setDiscount() {
-        const minPrice = parseFloat(document.getElementById("minPrice").value);
-        const discountPercent = parseFloat(document.getElementById("discountPercent").value);
-
-        if (isNaN(minPrice) || isNaN(discountPercent) || minPrice <= 0 || discountPercent <= 0 || discountPercent > 100) {
-            alert("Please enter valid discount values.");
-            return;
-        }
-
-        try {
-            const productsRef = collection(db, "products");
-            const q = query(productsRef, where("price", ">=", minPrice));
-            const querySnapshot = await getDocs(q);
-
-            if (querySnapshot.empty) {
-                document.getElementById("status").textContent = "No products qualify for the discount.";
-                document.getElementById("status").style.color = "red";
-                document.getElementById("status").style.display = "block";
-                return;
-            }
-
-            querySnapshot.forEach(async (docItem) => {
-                const productData = docItem.data();
-                const newPrice = productData.price - (productData.price * (discountPercent / 100));
-
-                // ✅ Update product price in Firestore
-                await updateDoc(doc(db, "products", docItem.id), {
-                    discountedPrice: parseFloat(newPrice.toFixed(2)) // Ensure two decimal places
-                });
-            });
-
-            // ✅ Show success message
-            document.getElementById("status").textContent = "Discount applied successfully!";
-            document.getElementById("status").style.color = "green";
-            document.getElementById("status").style.display = "block";
-
-            // ✅ Reset Form
-            document.getElementById("discountForm").reset();
-        } catch (error) {
-            console.error("Error applying discount:", error);
-            document.getElementById("status").textContent = "Error applying discount. Try again.";
-            document.getElementById("status").style.color = "red";
-            document.getElementById("status").style.display = "block";
-        }
-    }
-
-    // ✅ Navigation Function
-    function navigate(page) {
-        window.location.href = page;
-    }
-</script>
-
 </head>
 <body>
+
     <div class="header-buttons">
         <button class="back-button" onclick="navigate('index.html')">Back to Main</button>
     </div>
+    
     <div class="options-container">
         <button onclick="navigate('add_product.html')">Add Product</button>
         <button onclick="navigate('delete_product.html')">Delete Product</button>
         <button onclick="navigate('update_product.html')">Update Product</button>
         <button onclick="navigate('sales.html')">View Sales</button>
     </div>
+
     <div class="container">
-         <!-- תצוגת הרווחים -->
-         <div class="profits-box">
-            Current Profits: <span id="profitsValue">Loading...</span> $
+        <h2>Dashboard</h2>
+        
+        <!-- Dashboard Metrics -->
+        <div class="dashboard-grid">
+            <div class="dashboard-box">
+                <h3>Total Orders</h3>
+                <p id="totalOrders">Loading...</p>
+            </div>
+            <div class="dashboard-box">
+                <h3>Registered Users</h3>
+                <p id="totalUsers">Loading...</p>
+            </div>
+            <div class="dashboard-box">
+                <h3>Total Revenue</h3>
+                <p id="totalRevenue">Loading...</p>
+            </div>
         </div>
-        <br>
-        <img src="images/discount.jpg" alt="Set Discount">
-        <form id="discountForm">
-            <h2>Set Discount Criteria</h2>
-            <input type="number" id="minPrice" placeholder="Minimum Price for Discount" required>
-            <input type="number" id="discountPercent" placeholder="Discount Percentage" required>
-            <button type="button" class="submit-btn" onclick="setDiscount()">Apply Discount</button>
-        </form>
-        <p id="status">Discount applied successfully!</p>
+    
+        <!-- Top 10 Sold Products Table -->
+        <h2>Top 10 Sold Products</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Units Sold</th>
+                </tr>
+            </thead>
+            <tbody id="topProductsTable">
+                <tr><td colspan="2">Loading...</td></tr>
+            </tbody>
+        </table>
     </div>
-    <script>
-        function calculateProfits() {
-            // כאן ניתן להוסיף שליפה מהשרת, לדוגמה AJAX או fetch לקבלת הרווחים מהמסד נתונים
-            const mockProfits = 12000; // נתון לדוגמה, ניתן להחליף בשליפה דינמית
-            document.getElementById("profitsValue").textContent = mockProfits;
-        }
 
-        function processSale() {
-            alert("Sale processed successfully!");
-            // כאן ניתן לעדכן גם את הרווחים בהתאם למכירה שנעשתה
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+            authDomain: "freshpicks-f76b9.firebaseapp.com",
+            projectId: "freshpicks-f76b9",
+            storageBucket: "freshpicks-f76b9.appspot.com",
+            messagingSenderId: "886592862331",
+            appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+            measurementId: "G-PWCSRFXYJ8"
+        };
+        
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // ✅ Function to Fetch Dashboard Data
+        async function fetchDashboardData() {
+            try {
+                // 🔹 Fetch all orders
+                const ordersSnapshot = await getDocs(collection(db, "orders"));
+                const usersSnapshot = await getDocs(collection(db, "users"));
 
-        // מחשב רווחים בעת טעינת הדף
-        window.onload = calculateProfits;
-    </script>
-    <footer>
-        <p>&copy; 2024 Fresh Picks, Taha Hijazi Market. All rights reserved.</p>
-    </footer>
-    <script>
-        function setDiscount() {
-            const minPrice = document.getElementById("minPrice").value;
-            const discountPercent = document.getElementById("discountPercent").value;
-            if (minPrice && discountPercent) {
-                document.getElementById("status").style.display = "block";
-                document.getElementById("discountForm").reset();
+                let totalOrders = ordersSnapshot.size; // ✅ Count total orders
+                let totalUsers = usersSnapshot.size;   // ✅ Count total users
+                let totalRevenue = 0;                   // ✅ Initialize revenue
+                let productSales = {};
+
+                ordersSnapshot.forEach((doc) => {
+                    const order = doc.data();
+                    
+                    // ✅ Sum total revenue from orders
+                    if (order.totalPrice) {
+                        totalRevenue += order.totalPrice;
+                    }
+
+                    // ✅ Count sold products
+                    if (order.productQuantities) {
+                        for (const [productId, quantity] of Object.entries(order.productQuantities)) {
+                            if (!productSales[productId]) {
+                                productSales[productId] = 0;
+                            }
+                            productSales[productId] += quantity;
+                        }
+                    }
+                });
+
+                // ✅ Update UI with Orders, Users & Revenue
+                document.getElementById("totalOrders").textContent = totalOrders;
+                document.getElementById("totalUsers").textContent = totalUsers;
+                document.getElementById("totalRevenue").textContent = totalRevenue.toFixed(2) + " NIS";
+
+                // ✅ Fetch Product Names for Top 10 Sold Products
+                const sortedProducts = Object.entries(productSales)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
+
+                const topProductsTable = document.getElementById("topProductsTable");
+                topProductsTable.innerHTML = ""; // Clear existing data
+
+                for (const [productId, unitsSold] of sortedProducts) {
+                    const productDoc = await getDoc(doc(db, "products", productId));
+                    const productName = productDoc.exists() ? productDoc.data().name : "Unknown Product";
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td>${productName}</td><td>${unitsSold}</td>`;
+                    topProductsTable.appendChild(row);
+                }
+            } catch (error) {
+                console.error("❌ Error fetching dashboard data:", error);
             }
         }
-        function navigate(page) {
-            window.location.href = page;
-        }
+
+        // ✅ Call the function when the page loads
+        window.onload = function () {
+            fetchDashboardData();
+        };
     </script>
 </body>
 </html>

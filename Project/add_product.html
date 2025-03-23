@@ -4,9 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
-    <link rel="stylesheet" href="styles.css">
+    <div class="header-buttons">
+        <button class="back-button" onclick="navigate('index.html')">Back to Login</button>
+    </div>
+
+    <div class="options-container">
+        <button onclick="navigate('add_product.html')">Add Product</button>
+        <button onclick="navigate('delete_product.html')">Delete & Update Product</button>
+        <button onclick="navigate('update_product.html')">Orders</button>
+        <button onclick="navigate('sales.html')">View Sales</button>
+    </div>
     <style>
-        /* General Styles */
+        header {
+    background: url('images/img10.jpg') no-repeat center center;
+    background-size: cover;
+    height: 200px;
+    padding: 20px;
+    text-align: center;
+    color: black;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    font-size: 1em;
+    width: 100%;
+}
+
+.header-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.back-button {
+    background-color: #85929e;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #2c3e50;
+}
+
+.options-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 60px auto 20px;
+    padding: 10px 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.options-container button {
+    background-color: #2ecc71;
+    color: white;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex: 1;
+    margin: 5px;
+    max-width: 150px;
+    text-align: center;
+}
+
+.options-container button:hover {
+    background-color: #2980b9;
+}
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,95 +95,22 @@
             align-items: center;
             color: #fff;
         }
-        header {
-            background: url('images/img10.jpg') no-repeat center center;
-            background-size: cover;
-            height: 200px;
-            padding: 20 px;
-            text-align: center;
-            color: black;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            font-size: 0.9em;
-            width: 100%; /* Ensure the footer spans the full width */
-        }
-
-        .header-buttons {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .back-button {
-            background-color: #85929e;
-            padding: 10px 15px;
-            border-radius: 5px;
-            color: white;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: #2c3e50;
-        }
-
-        .options-container {
-            width: 80%; /* Spans the full row but leaves some margin */
-            max-width: 600px;
-            margin: 60px auto 20px; /* Centered on the page */
-            padding: 10px 0; /* Add spacing inside */
-            background-color: rgba(255, 255, 255, 0.2); /* Translucent background */
-            border-radius: 10px; /* Rounded edges */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Slight shadow for elevation */
-            display: flex;
-            justify-content: space-around; /* Space buttons evenly */
-            flex-wrap: wrap;
-        }
-
-        .options-container button {
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            flex: 1;
-            margin: 5px;
-            max-width: 150px; /* Prevents buttons from getting too wide */
-            text-align: center;
-        }
-
-        .options-container button:hover {
-            background-color: #2980b9;
-        }
-
         .container {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-top: 20px;
-        }
-
-        h2 {
             color: black;
         }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        h2 {
+            color: #2c3e50;
         }
-
-        form input {
-            width: 80%;
+        form input, form select {
+            width: 90%;
             padding: 10px;
             margin: 10px 0;
             border-radius: 5px;
@@ -117,15 +118,24 @@
             font-size: 1em;
             outline: none;
         }
-
-        form input:focus {
-            border-color: #f39c12;
+        .category-container {
+            width: 90%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            text-align: left;
         }
-
-        button.submit-btn {
-            width: 80%;
+        .category-container label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+            width: 45%;
+        }
+        .submit-btn {
+            width: 90%;
             padding: 12px;
-            margin-top: 20px;
             background-color: #2ecc71;
             color: white;
             border: none;
@@ -133,129 +143,164 @@
             font-size: 1.2em;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 15px;
         }
-
-        button.submit-btn:hover {
+        .submit-btn:hover {
             background-color: #27ae60;
         }
-
         #status {
-            color: #2ecc71;
             font-weight: bold;
             display: none;
             margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
         }
-        footer {
-    text-align: center;
-    color: white;
-    padding: 20px;
-    font-size: 0.9em;
-    width: 100%; /* Ensure the footer spans the full width */
-}
+        #status.success {
+            color: green;
+        }
+        #status.error {
+            color: red;
+        }
     </style>
-	<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-    // ✅ Corrected Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
-        authDomain: "freshpicks-f76b9.firebaseapp.com",
-        projectId: "freshpicks-f76b9",
-        storageBucket: "freshpicks-f76b9.appspot.com",  // ✅ Fixed URL
-        messagingSenderId: "886592862331",
-        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
-        measurementId: "G-PWCSRFXYJ8"
-    };
-
-    // ✅ Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // ✅ Function to Add Product
-    async function addProduct() {
-        const name = document.getElementById("productName").value.trim();
-        const category = document.getElementById("productCategory").value.trim();
-        const price = parseFloat(document.getElementById("productPrice").value);
-        const quantity = parseInt(document.getElementById("productQuantity").value);
-
-        // ✅ Validate Inputs
-        if (!name || !category || isNaN(price) || isNaN(quantity) || price <= 0 || quantity <= 0) {
-            alert("Please enter valid product details. Price & quantity must be greater than zero.");
-            return;
-        }
-
-        try {
-            // ✅ Save to Firestore
-            await addDoc(collection(db, "products"), {
-                name: name,
-                category: category,
-                price: price,  // ✅ Stores as a number
-                quantity: quantity // ✅ Stores as a number
-            });
-
-            // ✅ Display Success Message
-            document.getElementById("status").textContent = "Product added successfully!";
-            document.getElementById("status").style.color = "green";
-            document.getElementById("status").style.display = "block";
-
-            // ✅ Reset Form
-            document.getElementById("addProductForm").reset();
-        } catch (error) {
-            console.error("Error adding product: ", error);
-            document.getElementById("status").textContent = "Error adding product. Try again.";
-            document.getElementById("status").style.color = "red";
-            document.getElementById("status").style.display = "block";
-        }
-    }
-
-    // ✅ Navigation Function
-    function navigate(page) {
-        window.location.href = page;
-    }
-</script>
-
 </head>
 <body>
-    <div class="header-buttons">
-        <button class="back-button" onclick="navigate('index.html')">Back to Login</button>
-    </div>
-
-    <div class="options-container">
-        <button onclick="navigate('add_product.html')">Add Product</button>
-        <button onclick="navigate('delete_product.html')">Delete Product</button>
-        <button onclick="navigate('update_product.html')">Update Product</button>
-        <button onclick="navigate('sales.html')">View Sales</button>
-    </div>
-
     <div class="container">
-        <img src="images/addProducts2.jpg" alt="Add Product">
+        <h2>Add a New Product</h2>
         <form id="addProductForm">
-            <h2>Enter Product Details</h2>
-            <input type="text" id="productName" placeholder="Product Name" required>
-            <input type="text" id="productCategory" placeholder="Category" required>
-            <input type="number" id="productPrice" placeholder="Price" required>
-            <input type="number" id="productQuantity" placeholder="Quantity" required>
+            <input type="text" id="productId" placeholder="Product ID (Leave empty to auto-generate)">
+            <input type="text" id="productName" placeholder="Product Name (English)" required>
+            <input type="text" id="productNameAr" placeholder="Product Name (Arabic)">
+
+            <div class="category-container">
+                <label><input type="checkbox" name="category" value="vegetables"> Vegetables</label>
+                <label><input type="checkbox" name="category" value="fruits"> Fruits</label>
+                <label><input type="checkbox" name="category" value="dairy"> Dairy</label>
+                <label><input type="checkbox" name="category" value="grains"> Grains</label>
+                <label><input type="checkbox" name="category" value="seasonal"> Seasonal</label>
+                <label><input type="checkbox" name="category" value="snacks"> Snacks</label>
+                <label><input type="checkbox" name="category" value="drinks"> Drinks</label>
+                <label><input type="checkbox" name="category" value="grocery essentials"> Grocery Essentials</label>
+                <label><input type="checkbox" name="category" value="frozen food"> Frozen Food</label>
+                <label><input type="checkbox" name="category" value="bread and pastries"> Bread & Pastries</label>
+                <label><input type="checkbox" name="category" value="handmade"> Handmade</label>
+                <label><input type="checkbox" name="category" value="spices"> Spices</label>
+            </div>
+
+            <input type="number" id="productPrice" placeholder="Price (NIS)" required>
+            <input type="text" id="packSize" placeholder="Pack Size (e.g., '1 kg')">
+            <input type="number" id="productQuantity" placeholder="Stock Quantity" required>
+
+            <label>Select Unit:</label>
+            <select id="unit">
+                <option value="Kg">Kg</option>
+                <option value="Pcs">Pcs</option>
+                <option value="Pack">Pack</option>
+            </select>
+            <label>
+                <input type="checkbox" id="seasonal"> Seasonal Product
+            </label>
+            
+            <input type="text" id="dietaryInfo" placeholder="Dietary Info (comma-separated)">
+            <input type="text" id="cuisineTags" placeholder="Cuisine Tags (comma-separated)">
+            <input type="text" id="foodPairings" placeholder="Food Pairings (comma-separated)">
+            <input type="text" id="recipeSuggestions" placeholder="Recipe Suggestions (comma-separated)">
+
+            <input type="text" id="imageUrl" placeholder="Image URL">
+
             <button type="button" class="submit-btn" onclick="addProduct()">Add Product</button>
         </form>
-        <p id="status">Product added successfully!</p>
+        <p id="status"></p>
     </div>
-    <footer>
-        <p>&copy; 2024 Fresh Picks,Taha Hijazi market. All rights reserved.</p>
-    </footer>
-    <script>
-        function addProduct() {
-            const name = document.getElementById("productName").value;
-            const category = document.getElementById("productCategory").value;
-            const price = document.getElementById("productPrice").value;
-            const quantity = document.getElementById("productQuantity").value;
 
-            if (name && category && price && quantity) {
-                document.getElementById("status").style.display = "block";
-                document.getElementById("addProductForm").reset();
-            }
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+            authDomain: "freshpicks-f76b9.firebaseapp.com",
+            projectId: "freshpicks-f76b9",
+            storageBucket: "freshpicks-f76b9.appspot.com",
+            messagingSenderId: "886592862331",
+            appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+            measurementId: "G-PWCSRFXYJ8"
+        };
+     
 
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    
+        async function addProduct() {
+    const productId = document.getElementById("productId").value.trim();
+    const name = document.getElementById("productName").value.trim();
+    const nameAr = document.getElementById("productNameAr").value.trim();
+    const category = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(checkbox => checkbox.value);
+    const price = parseFloat(document.getElementById("productPrice").value);
+    const stockQuantity = parseInt(document.getElementById("productQuantity").value);
+    const unit = document.getElementById("unit").value;
+    const imageUrl = document.getElementById("imageUrl").value.trim();
+    const dietaryInfo = document.getElementById("dietaryInfo").value.trim();
+    const cuisineTags = document.getElementById("cuisineTags").value.trim();
+    const foodPairings = document.getElementById("foodPairings").value.trim();
+    const recipeSuggestions = document.getElementById("recipeSuggestions").value.trim();
+    const packSize = document.getElementById("packSize").value.trim();
+    const seasonal = document.getElementById("seasonal").checked; // true if checked, false if not
+
+    if (!name || isNaN(price) || isNaN(stockQuantity)) {
+        alert("⚠️ Please fill in all required fields correctly.");
+        return;
+    }
+
+    // Convert comma-separated string values into proper arrays
+    const formattedDietaryInfo = dietaryInfo ? dietaryInfo.split(",").map(item => item.trim()) : [];
+    const formattedCuisineTags = cuisineTags ? cuisineTags.split(",").map(item => item.trim()) : [];
+    const formattedFoodPairings = foodPairings ? foodPairings.split(",").map(item => item.trim()) : [];
+    const formattedRecipeSuggestions = recipeSuggestions ? recipeSuggestions.split(",").map(item => item.trim()) : [];
+
+    try {
+        const productRef = productId ? doc(db, "products", productId) : doc(collection(db, "products"));
+        const productData = {
+            id: productRef.id,
+            name,
+            nameAr,
+            category, // Array field
+            price,
+            stockQuantity,
+            unit,
+            imageUrl,
+            dietaryInfo: formattedDietaryInfo, // Ensure proper array format
+            cuisineTags: formattedCuisineTags, // Ensure proper array format
+            foodPairings: formattedFoodPairings, // Ensure proper array format
+            recipeSuggestions: formattedRecipeSuggestions, // Ensure proper array format
+            packSize,
+            inStock: stockQuantity > 0, // Boolean field
+            popularityScore: 0, // Default value
+            seasonal
+                };
+
+        await setDoc(productRef, productData);
+
+        console.log("✅ Product added:", productData);
+
+        // Display success message
+        const statusMsg = document.getElementById("status");
+        statusMsg.innerText = "✅ Product added successfully!";
+        statusMsg.className = "success";
+        statusMsg.style.display = "block";
+
+        // Clear all input fields
+        document.getElementById("addProductForm").reset();
+    } catch (error) {
+        console.error("❌ Error adding product:", error);
+        alert("❌ Error adding product. Please try again.");
+    }
+}
+
+
+        // Expose addProduct to the global scope
+        window.addProduct = addProduct;
+    </script>
+     <script>
         function navigate(page) {
             window.location.href = page;
         }
