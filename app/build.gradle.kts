@@ -45,11 +45,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
-    implementation ("com.google.firebase:firebase-firestore:24.7.1") // Ensure Firestore is up-to-date
 
     // 🔹 Glide for Image Loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation(libs.activity)
+    implementation("androidx.activity:activity:1.8.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // 🔹 Lottie for Animations
