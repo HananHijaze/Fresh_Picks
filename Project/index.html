@@ -5,224 +5,225 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fresh Picks - Manager Login</title>
     <style>
-       body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f0f8ff; /* Light blue background color */
-    min-height: 100vh; /* Ensure full height */
-    display: flex;
-    flex-direction: column; /* Arrange content in a column */
-    justify-content: space-between; /* Space out the content */
-}
+        body {
+     font-family: 'Arial', sans-serif;
+     margin: 0;
+     padding: 0;
+     background: #f0f8ff; /* Light blue background color */
+     min-height: 100vh; /* Ensure full height */
+     display: flex;
+     flex-direction: column; /* Arrange content in a column */
+     justify-content: space-between; /* Space out the content */
+ }
 
-.container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 400px;
-    text-align: center;
-    margin: auto; /* Center the container vertically */
-}
+ .container {
+     background: rgba(255, 255, 255, 0.95);
+     padding: 30px;
+     border-radius: 10px;
+     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+     width: 400px;
+     text-align: center;
+     margin: auto; /* Center the container vertically */
+ }
 
-footer {
-    text-align: center;
-    color: black;
-    padding: 20px;
-    font-size: 0.9em;
-    width: 100%; /* Ensure the footer spans the full width */
-}
-input[type="password"], input[type="text"] {
-            width: calc(100% - 50px);
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+ footer {
+     text-align: center;
+     background: url('images/img7.jpg') no-repeat center center/cover;
+     color: black;
+     padding: 20px;
+     font-size: 0.9em;
+     width: 100%; /* Ensure the footer spans the full width */
+ }
+ input[type="password"], input[type="text"] {
+             width: calc(100% - 50px);
+             padding: 12px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             font-size: 1em;
+             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+         }
 
-        /* Eye Icon */
-        .toggle-password {
-            position: absolute;
-            right: 0px;
-            cursor: pointer;
-            width: 20px;
-            height: 20px;
-        }
+         /* Eye Icon */
+         .toggle-password {
+             position: absolute;
+             right: 0px;
+             cursor: pointer;
+             width: 20px;
+             height: 20px;
+         }
 
 
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+         .logo {
+             text-align: center;
+             margin-bottom: 20px;
+         }
 
-        .logo img {
-            width: 200px;
-        }
+         .logo img {
+             width: 200px;
+         }
 
-       /* .form-group {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }*/
-        .form-group {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
+        /* .form-group {
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin-bottom: 15px;
+         }*/
+         .form-group {
+             position: relative;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin-bottom: 15px;
+         }
 
-        .form-group img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
+         .form-group img {
+             width: 40px;
+             height: 40px;
+             margin-right: 10px;
+         }
 
-       /* input[type="password"] {
-            width: calc(100% - 50px); /* Adjust width to account for image */
-           /* padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-        }*/
+        /* input[type="password"] {
+             width: calc(100% - 50px); /* Adjust width to account for image */
+            /* padding: 12px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             font-size: 1em;
+             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+         }*/
 
-        button {
-            background-color: #27ae60;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
+         button {
+             background-color: #27ae60;
+             color: white;
+             padding: 12px;
+             border: none;
+             border-radius: 5px;
+             font-size: 1em;
+             cursor: pointer;
+             transition: background-color 0.3s ease;
+             width: 100%;
+         }
 
-        button:hover {
-            background-color: #2ecc71;
-        }
+         button:hover {
+             background-color: #2ecc71;
+         }
 
-        p {
-            margin-top: 15px;
-            font-size: 0.9em;
-        }
+         p {
+             margin-top: 15px;
+             font-size: 0.9em;
+         }
 
-        #error {
-            display: none;
-            color: red;
-            margin-top: 10px;
-        }
+         #error {
+             display: none;
+             color: red;
+             margin-top: 10px;
+         }
 
 
 
     </style>
-	<script type="module">
-    // ✅ Import Firebase Authentication & Firestore
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    <script type="module">
+        // ✅ Import Firebase Authentication & Firestore
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    // ✅ Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
-        authDomain: "freshpicks-f76b9.firebaseapp.com",
-        projectId: "freshpicks-f76b9",
-        storageBucket: "freshpicks-f76b9.appspot.com",
-        messagingSenderId: "886592862331",
-        appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
-        measurementId: "G-PWCSRFXYJ8"
-    };
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBybaV3oc4ayeGWsv5QQlZstK_qmKlKofg",
+            authDomain: "freshpicks-f76b9.firebaseapp.com",
+            projectId: "freshpicks-f76b9",
+            storageBucket: "freshpicks-f76b9.appspot.com",
+            messagingSenderId: "886592862331",
+            appId: "1:886592862331:web:f0cc6da98d4f12abdb4ade",
+            measurementId: "G-PWCSRFXYJ8"
+        };
 
-    // ✅ Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    // ✅ Function to Handle Login
-    function checkPassword(event) {
-        event.preventDefault(); // Prevent form submission
+        // ✅ Function to Handle Login
+        function checkPassword(event) {
+            event.preventDefault(); // Prevent form submission
 
-        const email = "manager@freshpicks.com"; // Replace with a real manager email
-        const password = document.getElementById("password").value;
+            const email = "manager@freshpicks.com"; // Replace with a real manager email
+            const password = document.getElementById("password").value;
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log("Login successful", userCredential.user);
-                window.location.href = "menu.html"; // ✅ Redirect to manager menu
-            })
-            .catch((error) => {
-                console.error("Login failed", error.message);
-                document.getElementById("error").textContent = "Invalid password. Try again.";
-                document.getElementById("error").style.display = "block";
-            });
-    }
-
-    // ✅ Function to Toggle Password Visibility
-    function togglePassword() {
-        const passwordInput = document.getElementById("password");
-        const eyeIcon = document.querySelector(".toggle-password");
-
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            eyeIcon.src = "images/eye_closed.png"; // Show open eye icon
-        } else {
-            passwordInput.type = "password";
-            eyeIcon.src = "images/eye_open.png"; // Show closed eye icon
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log("Login successful", userCredential.user);
+                    window.location.href = "menu.html"; // ✅ Redirect to manager menu
+                })
+                .catch((error) => {
+                    console.error("Login failed", error.message);
+                    document.getElementById("error").textContent = "Invalid password. Try again.";
+                    document.getElementById("error").style.display = "block";
+                });
         }
-    }
-</script>
 
-</head>
-<body>
-    <div class="container">
-        <div class="logo">
-            <img src="images/fresh picks.jpg" alt="Fresh Picks Logo">
-        </div>
-        <h1>Manager Login</h1>
-        <form onsubmit="return checkPassword()">
-            <div class="form-group">
-                <img src="images/managerPassword.jpg" alt="Manager Password Icon">
-                <input type="password" id="password" placeholder="Enter Manager Password" required>
-                <img src="images/eye_open.png" alt="Toggle Password" class="toggle-password" onclick="togglePassword()">
-
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <p id="error">Invalid password. Try again.</p>
-    </div>
-    <footer>
-        <p>&copy; 2024 Fresh Picks, Taha Hijazi market. All rights reserved.</p>
-        <img src="images/img4.jpg" alt="Fresh Picks Logo" style="width: 60px; border-radius: 50%; margin-top: 10px;">
-    </footer>
-    <script>
-        const correctPassword = "manager123"; // Example password (replace securely in production)
-        function checkPassword() {
-            const input = document.getElementById("password").value;
-            if (input === correctPassword) {
-                window.location.href = "menu.html";
-                return false; // Prevent form submission
-            } else {
-                document.getElementById("error").style.display = "block";
-                return false;
-            }
-        }
+        // ✅ Function to Toggle Password Visibility
         function togglePassword() {
             const passwordInput = document.getElementById("password");
             const eyeIcon = document.querySelector(".toggle-password");
 
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                eyeIcon.src = "images/eye_closed.png"; // Change to an open eye image
+                eyeIcon.src = "images/eye_closed.png"; // Show open eye icon
             } else {
                 passwordInput.type = "password";
-                eyeIcon.src = "images/eye_open.png"; // Change to a closed eye image
+                eyeIcon.src = "images/eye_open.png"; // Show closed eye icon
             }
         }
-        function closePage() {
-            window.close();
-        }
     </script>
+
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <img src="images/fresh picks.jpg" alt="Fresh Picks Logo">
+    </div>
+    <h1>Manager Login</h1>
+    <form onsubmit="return checkPassword()">
+        <div class="form-group">
+            <img src="images/managerPassword.jpg" alt="Manager Password Icon">
+            <input type="password" id="password" placeholder="Enter Manager Password" required>
+            <img src="images/eye_open.png" alt="Toggle Password" class="toggle-password" onclick="togglePassword()">
+
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <p id="error">Invalid password. Try again.</p>
+</div>
+<footer>
+    <p>&copy; 2024 Fresh Picks, Taha Hijazi market. All rights reserved.</p>
+    <img src="images/img4.jpg" alt="Fresh Picks Logo" style="width: 60px; border-radius: 50%; margin-top: 10px;">
+</footer>
+<script>
+    const correctPassword = "manager123"; // Example password (replace securely in production)
+    function checkPassword() {
+        const input = document.getElementById("password").value;
+        if (input === correctPassword) {
+            window.location.href = "menu.html";
+            return false; // Prevent form submission
+        } else {
+            document.getElementById("error").style.display = "block";
+            return false;
+        }
+    }
+    function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.querySelector(".toggle-password");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.src = "images/eye_closed.png"; // Change to an open eye image
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.src = "images/eye_open.png"; // Change to a closed eye image
+        }
+    }
+    function closePage() {
+        window.close();
+    }
+</script>
 </body>
 </html>

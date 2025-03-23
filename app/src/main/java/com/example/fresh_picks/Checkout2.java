@@ -135,13 +135,27 @@ public class Checkout2 extends AppCompatActivity {
 
                                 cartItems.clear();
                                 for (Map.Entry<String, Object> entry : firestoreItems.entrySet()) {
-                                    Map<String, Object> productData = (Map<String, Object>) entry.getValue();
+                                    Object rawData = entry.getValue();
+
+                                    if (!(rawData instanceof Map)) {
+                                        Log.w("Checkout2", "⚠️ Skipping item: not a valid map format -> " + rawData);
+                                        continue;
+                                    }
+
+                                    Map<String, Object> productData = (Map<String, Object>) rawData;
                                     String productId = (String) productData.get("productId");
+
+                                    if (productId == null) {
+                                        Log.w("Checkout2", "⚠️ Skipping item with null productId: " + productData);
+                                        continue;
+                                    }
+
                                     int quantity = ((Number) productData.getOrDefault("quantity", 1)).intValue();
-                                    if (productId != null && quantity > 0) {
+                                    if (quantity > 0) {
                                         cartItems.put(productId, quantity);
                                     }
                                 }
+
 
                                 if (cartItems.isEmpty()) {
                                     showCartEmptyError();
